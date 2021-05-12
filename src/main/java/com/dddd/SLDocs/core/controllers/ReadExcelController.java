@@ -128,14 +128,12 @@ public class ReadExcelController {
                 group = new Group();
             }
         } catch (NullPointerException ex) {
-            System.out.println("puk puk");
+            System.out.println("end of the file or NPE");
         }
     }
 
     public void readAutumn(XSSFWorkbook workbook) throws IOException {
         XSSFSheet sheet = workbook.getSheetAt(0);
-        System.out.println("sheet: " + sheet.getSheetName());
-
         StudyLoad studyLoad = new StudyLoad();
         int rows = 0;
 
@@ -149,9 +147,6 @@ public class ReadExcelController {
             }
         }
         int cols = sheet.getRow(0).getLastCellNum();
-        System.out.println("rows: " + rows);
-        System.out.println("cols: " + cols);
-
         ArrayList<Object> arrayList = new ArrayList<>();
         try {
             for (int r = 10; r < rows; r++) {
@@ -159,8 +154,6 @@ public class ReadExcelController {
                 for (int c = 0; c < cols + 1; c++) {
 
                     XSSFCell cell = row.getCell(c);
-                    System.out.println("r: " + r);
-                    System.out.println("c: " + c);
                     if (cell.equals(null)) {
                         arrayList.add("");
                     } else {
@@ -180,11 +173,9 @@ public class ReadExcelController {
                             case FORMULA:
                                 switch (cell.getCachedFormulaResultType()) {
                                     case NUMERIC:
-                                        System.out.println("Last evaluated as: " + cell.getNumericCellValue());
                                         arrayList.add(cell.getNumericCellValue());
                                         break;
                                     case STRING:
-                                        System.out.println("Last evaluated as \"" + cell.getRichStringCellValue() + "\"");
                                         arrayList.add(cell.getStringCellValue());
                                         break;
                                 }
@@ -225,7 +216,6 @@ public class ReadExcelController {
                 studyLoad.getCurriculum().setHourly_wage(arrayList.get(32).toString());
                 studyLoad.getCurriculum().setTotal(arrayList.get(33).toString());
                 studyLoad.getCurriculum().setNote(arrayList.get(34).toString());
-                System.out.println("ss");
                 if (professorService.findByName(arrayList.get(35).toString())==null) {
                     studyLoad.getProfessor().setName(arrayList.get(35).toString());
                     professorService.save(studyLoad.getProfessor());
@@ -288,11 +278,9 @@ public class ReadExcelController {
                 curriculumService.save(studyLoad.getCurriculum());
                 arrayList = new ArrayList<>();
                 studyLoad = new StudyLoad();
-                //studyLoad.getDiscipline().setName(arrayList.get(1).toString());
-                //studyLoad.getGroup().setName(arrayList.get(1).toString());
             }
         } catch (NullPointerException ex) {
-            System.out.println("puk puk");
+            System.out.println("end of the file or NPE");
         }
     }
 }
