@@ -20,7 +20,7 @@ public class Group {
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     private Curriculum curriculum;
 

@@ -13,8 +13,11 @@ import java.util.List;
 @Transactional
 public class GroupServiceImpl implements GroupService {
 
-    @Autowired
-    GroupRepository groupRepository;
+    private GroupRepository groupRepository;
+
+    public GroupServiceImpl(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
+    }
 
     @Override
     public List<Group> ListAll() {

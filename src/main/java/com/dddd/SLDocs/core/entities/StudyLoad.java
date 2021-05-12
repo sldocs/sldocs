@@ -11,6 +11,16 @@ public class StudyLoad {
     private Specialty specialty;
 
 
+    public StudyLoad() {
+        curriculum = new Curriculum();
+        department = new Department();
+        discipline = new Discipline();
+        faculty = new Faculty();
+        group = new Group();
+        professor = new Professor();
+        specialty = new Specialty();
+    }
+
     public Curriculum getCurriculum() {
         return curriculum;
     }
