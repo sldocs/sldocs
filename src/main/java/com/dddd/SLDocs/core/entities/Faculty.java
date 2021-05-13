@@ -15,7 +15,7 @@ public class Faculty {
     private String code;
     private String name;
 
-    @OneToMany(mappedBy = "faculty")
+    @OneToMany(mappedBy = "faculty", cascade = {CascadeType.ALL})
     private Set<Department> departments = new HashSet<>();
 
     public Long getId() {

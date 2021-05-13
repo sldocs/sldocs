@@ -3,6 +3,7 @@ package com.dddd.SLDocs.core.controllers;
 import com.dddd.SLDocs.core.entities.Group;
 import com.dddd.SLDocs.core.entities.StudyLoad;
 import com.dddd.SLDocs.core.servImpls.*;
+import javassist.compiler.SymbolTable;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -22,19 +23,24 @@ import java.util.regex.Pattern;
 @RequestMapping("/")
 public class ReadExcelController {
 
-    private CurriculumServiceImpl curriculumService;
+    private final String space_regex = "\\s+";
+    private final String comma_regex = ",";
 
-    private DepartmentServiceImpl departmentService;
+    private final String group_regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})([і].*|.[і]|[\\p{L}]*)?$";
 
-    private DisciplineServiceImpl disciplineService;
+    private final CurriculumServiceImpl curriculumService;
 
-    private FacultyServiceImpl facultyService;
+    private final DepartmentServiceImpl departmentService;
 
-    private GroupServiceImpl groupService;
+    private final DisciplineServiceImpl disciplineService;
 
-    private ProfessorServiceImpl professorService;
+    private final FacultyServiceImpl facultyService;
 
-    private SpecialtyServiceImpl specialtyService;
+    private final GroupServiceImpl groupService;
+
+    private final ProfessorServiceImpl professorService;
+
+    private final SpecialtyServiceImpl specialtyService;
 
     public ReadExcelController(CurriculumServiceImpl curriculumService, DepartmentServiceImpl departmentService,
                                DisciplineServiceImpl disciplineService, FacultyServiceImpl facultyService,
@@ -57,8 +63,12 @@ public class ReadExcelController {
         XSSFWorkbook workbook = new XSSFWorkbook(fis);
 
         //readTroops(workbook);
-        readAutumn(workbook);
+        long m = System.currentTimeMillis();
+        for (int i = 0; i < 2; i++) {
+            readAutumn(workbook, i);
+        }
 
+        System.out.println(System.currentTimeMillis() - m);
 
         return "redirect:/";
     }
@@ -132,8 +142,8 @@ public class ReadExcelController {
         }
     }
 
-    public void readAutumn(XSSFWorkbook workbook) throws IOException {
-        XSSFSheet sheet = workbook.getSheetAt(0);
+    public void readAutumn(XSSFWorkbook workbook, int sheet_num) throws IOException {
+        XSSFSheet sheet = workbook.getSheetAt(sheet_num);
         StudyLoad studyLoad = new StudyLoad();
         int rows = 0;
 
@@ -148,9 +158,44 @@ public class ReadExcelController {
         }
         int cols = sheet.getRow(0).getLastCellNum();
         ArrayList<Object> arrayList = new ArrayList<>();
+        ArrayList<Object> dep_fac_sem = new ArrayList<>();
         try {
+            XSSFRow row = sheet.getRow(6);
+            dep_fac_sem.add(row.getCell(0));
+            dep_fac_sem.add(row.getCell(16));
+            dep_fac_sem.add(row.getCell(31));
+            StringBuffer stringBuffer = new StringBuffer();
+            for (int p = 0; p < 2; p++) {
+                String[] values = dep_fac_sem.get(p).toString().split(space_regex);
+
+                for (int i = 1; i < values.length; i++) {
+                    stringBuffer.append(values[i] + " ");
+                }
+                dep_fac_sem.set(p, stringBuffer);
+                stringBuffer = new StringBuffer();
+            }
+            row = sheet.getRow(3);
+            String[] values;
+            for (int pp = 0; pp < row.getLastCellNum(); pp++) {
+                if (!(row.getCell(pp) == null)) {
+                    if (!(row.getCell(pp).getStringCellValue().equals(""))) {
+                        values = row.getCell(pp).getStringCellValue().split(space_regex);
+                        dep_fac_sem.add(values[6]);
+                    }
+                }
+            }
+
+            if (facultyService.findByName(dep_fac_sem.get(1).toString()) == null) {
+                studyLoad.getDepartment().setName(dep_fac_sem.get(0).toString());
+                studyLoad.getFaculty().setName(dep_fac_sem.get(1).toString());
+                studyLoad.getFaculty().getDepartments().add(studyLoad.getDepartment());
+                studyLoad.getDepartment().setFaculty(studyLoad.getFaculty());
+                facultyService.save(studyLoad.getFaculty());
+                departmentService.save(studyLoad.getDepartment());
+            }
+
             for (int r = 10; r < rows; r++) {
-                XSSFRow row = sheet.getRow(r);
+                row = sheet.getRow(r);
                 for (int c = 0; c < cols + 1; c++) {
 
                     XSSFCell cell = row.getCell(c);
@@ -187,7 +232,6 @@ public class ReadExcelController {
                     }
                     System.out.println();
                 }
-                System.out.println(arrayList.toString());
                 studyLoad.getGroup().setCourse(arrayList.get(3).toString());
                 studyLoad.getCurriculum().setNumber_of_streams(arrayList.get(6).toString());
                 studyLoad.getCurriculum().setNumber_of_subgroups(arrayList.get(7).toString());
@@ -216,60 +260,51 @@ public class ReadExcelController {
                 studyLoad.getCurriculum().setHourly_wage(arrayList.get(32).toString());
                 studyLoad.getCurriculum().setTotal(arrayList.get(33).toString());
                 studyLoad.getCurriculum().setNote(arrayList.get(34).toString());
-                if (professorService.findByName(arrayList.get(35).toString())==null) {
+                if (professorService.findByName(arrayList.get(35).toString()) == null) {
                     studyLoad.getProfessor().setName(arrayList.get(35).toString());
                     professorService.save(studyLoad.getProfessor());
                     studyLoad.getCurriculum().getProfessors().add(studyLoad.getProfessor());
-                }else{
+                } else {
                     studyLoad.getCurriculum().getProfessors().add(professorService.findByName(arrayList.get(35).toString()));
                 }
 
-                if (disciplineService.findByName(arrayList.get(1).toString())==null) {
+                if (disciplineService.findByName(arrayList.get(1).toString()) == null) {
                     studyLoad.getDiscipline().setName(arrayList.get(1).toString());
                     disciplineService.save(studyLoad.getDiscipline());
                     studyLoad.getCurriculum().getDisciplines().add(studyLoad.getDiscipline());
-                }else{
+                } else {
                     studyLoad.getCurriculum().getDisciplines().add(disciplineService.findByName(arrayList.get(1).toString()));
                 }
 
-
-                String[] values = arrayList.get(5).toString().split(",");
-                final String regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})([і].*|.[і]|[\\p{L}]*)?$";
-                Pattern pattern = Pattern.compile(regex);
+                String[] values_groups = arrayList.get(5).toString().split(comma_regex);
+                Pattern pattern = Pattern.compile(group_regex);
                 Matcher matcher;
-                StringBuffer stringBuffer;
-                System.out.println("dd");
-                for (int i = 0; i < values.length; i++) {
-                    matcher = pattern.matcher(values[i].trim());
+                for (int i = 0; i < values_groups.length; i++) {
+                    matcher = pattern.matcher(values_groups[i].trim());
                     while (matcher.find()) {
                         if (Character.isDigit(matcher.group(3).charAt(0))) {
                             if (!matcher.group(4).equals("") && matcher.group(4).length() > 1) {
                                 if (matcher.group(4).charAt(0) == 'і' | matcher.group(4).charAt(1) == 'і' | matcher.group(4).charAt(1) == 'е') {
-                                    studyLoad.getGroup().setName(matcher.group(0));
-                                    studyLoad.getCurriculum().getGroups().add(studyLoad.getGroup());
-                                    studyLoad.getGroup().setCurriculum(studyLoad.getCurriculum());
-                                    groupService.save(studyLoad.getGroup());
+                                    readGroups(studyLoad, matcher, dep_fac_sem);
                                 } else {
                                     for (int j = 0; j < matcher.group(4).length(); j++) {
                                         stringBuffer = new StringBuffer();
                                         stringBuffer.append(matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4).charAt(j));
                                         studyLoad.getGroup().setName(stringBuffer.toString());
+                                        studyLoad.getGroup().setYear(dep_fac_sem.get(3).toString());
+                                        studyLoad.getGroup().setSemester(dep_fac_sem.get(2).toString());
                                         studyLoad.getCurriculum().getGroups().add(studyLoad.getGroup());
+                                        studyLoad.getDepartment().getGroups().add(studyLoad.getGroup());
                                         studyLoad.getGroup().setCurriculum(studyLoad.getCurriculum());
+                                        studyLoad.getGroup().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
                                         groupService.save(studyLoad.getGroup());
                                     }
                                 }
                             } else {
-                                studyLoad.getGroup().setName(matcher.group(0));
-                                studyLoad.getCurriculum().getGroups().add(studyLoad.getGroup());
-                                studyLoad.getGroup().setCurriculum(studyLoad.getCurriculum());
-                                groupService.save(studyLoad.getGroup());
+                                readGroups(studyLoad, matcher, dep_fac_sem);
                             }
                         } else {
-                            studyLoad.getGroup().setName(matcher.group(0));
-                            studyLoad.getCurriculum().getGroups().add(studyLoad.getGroup());
-                            studyLoad.getGroup().setCurriculum(studyLoad.getCurriculum());
-                            groupService.save(studyLoad.getGroup());
+                            readGroups(studyLoad, matcher, dep_fac_sem);
                         }
                     }
                 }
@@ -282,5 +317,15 @@ public class ReadExcelController {
         } catch (NullPointerException ex) {
             System.out.println("end of the file or NPE");
         }
+    }
+
+    private void readGroups(StudyLoad studyLoad, Matcher matcher, ArrayList<Object> dep_fac_sem) {
+        studyLoad.getGroup().setName(matcher.group(0));
+        studyLoad.getGroup().setYear(dep_fac_sem.get(3).toString());
+        studyLoad.getGroup().setSemester(dep_fac_sem.get(2).toString());
+        studyLoad.getCurriculum().getGroups().add(studyLoad.getGroup());
+        studyLoad.getGroup().setCurriculum(studyLoad.getCurriculum());
+        studyLoad.getGroup().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
+        groupService.save(studyLoad.getGroup());
     }
 }

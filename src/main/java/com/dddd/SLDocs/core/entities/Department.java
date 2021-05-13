@@ -16,11 +16,11 @@ public class Department {
     private String name;
     private String short_name;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "faculty_id", referencedColumnName = "id")
     private Faculty faculty;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department",cascade = {CascadeType.ALL})
     private Set<Group> groups = new HashSet<>();
 
     public Long getId() {

@@ -40,6 +40,11 @@ public class Curriculum {
     private String lab;
     private String pract_hours;
     private String ind_task_hours;
+    private String semester;
+    private String group_names;
+    private String students_number;
+    private String course;
+
 
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

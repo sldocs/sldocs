@@ -15,14 +15,23 @@ public class Group {
     private String year;
     private String students_number;
     private String course;
+    private String semester;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     private Curriculum curriculum;
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
 
     public Long getId() {
         return id;
