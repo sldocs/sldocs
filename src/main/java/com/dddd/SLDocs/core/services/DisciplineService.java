@@ -2,6 +2,7 @@ package com.dddd.SLDocs.core.services;
 
 import com.dddd.SLDocs.core.entities.Department;
 import com.dddd.SLDocs.core.entities.Discipline;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 

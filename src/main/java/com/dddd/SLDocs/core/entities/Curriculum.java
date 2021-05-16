@@ -70,6 +70,38 @@ public class Curriculum {
     @OneToMany(mappedBy = "curriculum",cascade = {CascadeType.ALL})
     private Set<Group> groups = new HashSet<>();
 
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    public String getGroup_names() {
+        return group_names;
+    }
+
+    public void setGroup_names(String group_names) {
+        this.group_names = group_names;
+    }
+
+    public String getStudents_number() {
+        return students_number;
+    }
+
+    public void setStudents_number(String students_number) {
+        this.students_number = students_number;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
     public Curriculum() {
         professors = new HashSet<>();
     }

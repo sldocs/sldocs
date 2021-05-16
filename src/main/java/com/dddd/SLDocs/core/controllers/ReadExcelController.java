@@ -5,6 +5,7 @@ import com.dddd.SLDocs.core.entities.StudyLoad;
 import com.dddd.SLDocs.core.servImpls.*;
 import javassist.compiler.SymbolTable;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -73,103 +74,44 @@ public class ReadExcelController {
         return "redirect:/";
     }
 
-    public void readTroops(XSSFWorkbook workbook) throws IOException {
-        XSSFSheet sheet = workbook.getSheetAt(2);
-        Group group = new Group();
-        int rows = 0;
-        while (true) {
-            XSSFRow row = sheet.getRow(rows);
-            try {
-                row.getCell(1);
-                rows++;
-            } catch (NullPointerException ex) {
-                break;
-            }
-        }
-        int cols = sheet.getRow(0).getLastCellNum();
-        double course = 0;
-        ArrayList<Object> arrayList = new ArrayList<>();
-        try {
-            for (int r = 2; r < rows; r++) {
-                XSSFRow row = sheet.getRow(r);
-                for (int c = 0; c < cols - 1; c++) {
-                    XSSFCell cell = row.getCell(c);
-                    if (c == 0) {
-                        if (cell.getCellType().equals(CellType.NUMERIC)) {
-                            course = cell.getNumericCellValue();
-                        }
-                        arrayList.add(course);
-                    } else {
-                        if (cell.equals(null)) {
-                            arrayList.add("");
-                        } else {
-                            switch (cell.getCellType()) {
-                                case STRING:
-                                    arrayList.add(cell.getStringCellValue());
-                                    break;
-                                case NUMERIC:
-                                    arrayList.add(cell.getNumericCellValue());
-                                    break;
-                                case BOOLEAN:
-                                    arrayList.add(cell.getBooleanCellValue());
-                                    break;
-                                case FORMULA:
-                                    switch (cell.getCachedFormulaResultType()) {
-                                        case NUMERIC:
-                                            arrayList.add(cell.getNumericCellValue());
-                                            break;
-                                        case STRING:
-                                            arrayList.add(cell.getStringCellValue());
-                                            break;
-                                    }
-                                    break;
-                                default:
-                                    arrayList.add("");
-                                    break;
-                            }
-                        }
-                    }
-                }
-                group.setCourse(arrayList.get(0).toString());
-                group.setName(arrayList.get(1).toString());
-                group.setStudents_number(arrayList.get(2).toString());
-                groupService.save(group);
-                arrayList = new ArrayList<>();
-                group = new Group();
-            }
-        } catch (NullPointerException ex) {
-            System.out.println("end of the file or NPE");
-        }
-    }
 
     public void readAutumn(XSSFWorkbook workbook, int sheet_num) throws IOException {
         XSSFSheet sheet = workbook.getSheetAt(sheet_num);
+        DataFormatter df = new DataFormatter();
         StudyLoad studyLoad = new StudyLoad();
-        int rows = 0;
-
+        int rows = 10;
+        XSSFRow row;
         while (true) {
-            XSSFRow row = sheet.getRow(rows);
+
+           row = sheet.getRow(rows);
             try {
-                row.getCell(1);
+                if(df.formatCellValue(row.getCell(3)).equals("")){
+                    break;
+                }
                 rows++;
             } catch (NullPointerException ex) {
                 break;
             }
         }
         int cols = sheet.getRow(0).getLastCellNum();
+
         ArrayList<Object> arrayList = new ArrayList<>();
         ArrayList<Object> dep_fac_sem = new ArrayList<>();
         try {
-            XSSFRow row = sheet.getRow(6);
+            row = sheet.getRow(6);
             dep_fac_sem.add(row.getCell(0));
             dep_fac_sem.add(row.getCell(16));
-            dep_fac_sem.add(row.getCell(31));
+            if(row.getCell(31).toString().equals("ОСІННІЙ")){
+                dep_fac_sem.add("1");
+            }else{
+                dep_fac_sem.add("2");
+            }
             StringBuffer stringBuffer = new StringBuffer();
             for (int p = 0; p < 2; p++) {
                 String[] values = dep_fac_sem.get(p).toString().split(space_regex);
 
                 for (int i = 1; i < values.length; i++) {
-                    stringBuffer.append(values[i] + " ");
+                    stringBuffer.append(values[i]).append(" ");
                 }
                 dep_fac_sem.set(p, stringBuffer);
                 stringBuffer = new StringBuffer();
@@ -199,7 +141,7 @@ public class ReadExcelController {
                 for (int c = 0; c < cols + 1; c++) {
 
                     XSSFCell cell = row.getCell(c);
-                    if (cell.equals(null)) {
+                    if (cell==null) {
                         arrayList.add("");
                     } else {
                         switch (cell.getCellType()) {
@@ -218,9 +160,11 @@ public class ReadExcelController {
                             case FORMULA:
                                 switch (cell.getCachedFormulaResultType()) {
                                     case NUMERIC:
+                                        System.out.println(cell.getNumericCellValue());
                                         arrayList.add(cell.getNumericCellValue());
                                         break;
                                     case STRING:
+                                        System.out.println(cell.getStringCellValue());
                                         arrayList.add(cell.getStringCellValue());
                                         break;
                                 }
@@ -232,7 +176,11 @@ public class ReadExcelController {
                     }
                     System.out.println();
                 }
-                studyLoad.getGroup().setCourse(arrayList.get(3).toString());
+                studyLoad.getCurriculum().setName(arrayList.get(0).toString());
+                studyLoad.getCurriculum().setCourse(arrayList.get(3).toString());
+                studyLoad.getCurriculum().setStudents_number(arrayList.get(4).toString());
+                studyLoad.getCurriculum().setSemester(dep_fac_sem.get(2).toString());
+                studyLoad.getCurriculum().setGroup_names(arrayList.get(5).toString());
                 studyLoad.getCurriculum().setNumber_of_streams(arrayList.get(6).toString());
                 studyLoad.getCurriculum().setNumber_of_subgroups(arrayList.get(7).toString());
                 studyLoad.getCurriculum().setLec(arrayList.get(8).toString());
@@ -276,38 +224,6 @@ public class ReadExcelController {
                     studyLoad.getCurriculum().getDisciplines().add(disciplineService.findByName(arrayList.get(1).toString()));
                 }
 
-                String[] values_groups = arrayList.get(5).toString().split(comma_regex);
-                Pattern pattern = Pattern.compile(group_regex);
-                Matcher matcher;
-                for (int i = 0; i < values_groups.length; i++) {
-                    matcher = pattern.matcher(values_groups[i].trim());
-                    while (matcher.find()) {
-                        if (Character.isDigit(matcher.group(3).charAt(0))) {
-                            if (!matcher.group(4).equals("") && matcher.group(4).length() > 1) {
-                                if (matcher.group(4).charAt(0) == 'і' | matcher.group(4).charAt(1) == 'і' | matcher.group(4).charAt(1) == 'е') {
-                                    readGroups(studyLoad, matcher, dep_fac_sem);
-                                } else {
-                                    for (int j = 0; j < matcher.group(4).length(); j++) {
-                                        stringBuffer = new StringBuffer();
-                                        stringBuffer.append(matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4).charAt(j));
-                                        studyLoad.getGroup().setName(stringBuffer.toString());
-                                        studyLoad.getGroup().setYear(dep_fac_sem.get(3).toString());
-                                        studyLoad.getGroup().setSemester(dep_fac_sem.get(2).toString());
-                                        studyLoad.getCurriculum().getGroups().add(studyLoad.getGroup());
-                                        studyLoad.getDepartment().getGroups().add(studyLoad.getGroup());
-                                        studyLoad.getGroup().setCurriculum(studyLoad.getCurriculum());
-                                        studyLoad.getGroup().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
-                                        groupService.save(studyLoad.getGroup());
-                                    }
-                                }
-                            } else {
-                                readGroups(studyLoad, matcher, dep_fac_sem);
-                            }
-                        } else {
-                            readGroups(studyLoad, matcher, dep_fac_sem);
-                        }
-                    }
-                }
 
 
                 curriculumService.save(studyLoad.getCurriculum());
@@ -315,6 +231,7 @@ public class ReadExcelController {
                 studyLoad = new StudyLoad();
             }
         } catch (NullPointerException ex) {
+            ex.printStackTrace();
             System.out.println("end of the file or NPE");
         }
     }
