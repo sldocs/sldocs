@@ -11,17 +11,11 @@
         <input type="text" th:name="path">
         <input type="submit" value="read" />
     </form>
-    <form method="post" enctype="multipart/form-data">
-        <div>
-            <label for="file">Choose file to upload</label>
-            <input type="file" id="file" name="file" multiple>
-        </div>
-        <div>
-            <button>Submit</button>
-        </div>
-    </form>
     <form th:action="@{/EdAsSt}" method="post">
-        <input type="submit" value="Create EdAsSt" />
+        <input type="submit" value="Сформувати відомість учбових доручень" />
+    </form>
+    <form th:action="@{/PSL}" method="post">
+        <input type="submit" value="Сформувати розподіл навантаження по викладачам" />
     </form>
 </div>
 </body>

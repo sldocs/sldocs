@@ -5,10 +5,8 @@ import com.dddd.SLDocs.core.servImpls.DisciplineServiceImpl;
 import com.dddd.SLDocs.core.servImpls.EAS_VMServiceImpl;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,17 +20,15 @@ import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/")
-public class WriteExcelController {
+public class WriteEASController {
 
     private final String space_regex = "\\s+";
     private final String comma_regex = ",";
-    private final String group_regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})([і].*|.[і]|[\\p{L}]*)?$";
+    private final String group_regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})(.[.].*|[і].*|.[і].*|[\\p{L}]*)?$";
 
-    private final DisciplineServiceImpl disciplineService;
     private final EAS_VMServiceImpl eas_vmService;
 
-    public WriteExcelController(DisciplineServiceImpl disciplineService, EAS_VMServiceImpl eas_vmService) {
-        this.disciplineService = disciplineService;
+    public WriteEASController(EAS_VMServiceImpl eas_vmService) {
         this.eas_vmService = eas_vmService;
     }
 
@@ -59,6 +55,8 @@ public class WriteExcelController {
 
 
             CellStyle style = workbook.createCellStyle();
+            style.setVerticalAlignment(VerticalAlignment.CENTER);
+            style.setAlignment(HorizontalAlignment.CENTER);
             style.setBorderBottom(BorderStyle.THIN);
             style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
             style.setBorderLeft(BorderStyle.THIN);
@@ -72,25 +70,25 @@ public class WriteExcelController {
             int rowCount = 5;
             List<EAS_VM> data = eas_vmService.getEAS_VM13Data("1", "4.0");
 
-            writeSheet(font, style, sheet, rowCount, data, false);
+            writeSheet(font, style, sheet, rowCount, data, false, workbook);
 
             sheet = workbook.getSheetAt(1);
             rowCount = 5;
             data = eas_vmService.getEAS_VM4Data("1", "4.0");
 
-            writeSheet(font, style, sheet, rowCount, data, false);
+            writeSheet(font, style, sheet, rowCount, data, false, workbook);
 
             sheet = workbook.getSheetAt(2);
             rowCount = 5;
             data = eas_vmService.getEAS_VM13Data("2", "4.0");
 
-            writeSheet(font, style, sheet, rowCount, data, false);
+            writeSheet(font, style, sheet, rowCount, data, false, workbook);
 
             sheet = workbook.getSheetAt(3);
             rowCount = 5;
             data = eas_vmService.getEAS_VM4Data("2", "4.0");
 
-            writeSheet(font, style, sheet, rowCount, data, true);
+            writeSheet(font, style, sheet, rowCount, data, true, workbook);
 
             inputStream.close();
 
@@ -105,7 +103,10 @@ public class WriteExcelController {
         return "redirect:/";
     }
 
-    private void writeSheet(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, Boolean divider) {
+    private void writeSheet(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount,
+                            List<EAS_VM> data, Boolean divider, XSSFWorkbook workbook) {
+
+
 
 
         for (int i = 0; i < data.size(); i++) {
@@ -142,8 +143,90 @@ public class WriteExcelController {
                 }
             }
         }
-        sheet.autoSizeColumn(1);
-        sheet.autoSizeColumn(2);
+        int rows = 6;
+        DataFormatter df = new DataFormatter();
+        XSSFRow row;
+        while (true) {
+            row = sheet.getRow(rows);
+            try {
+                if(df.formatCellValue(row.getCell(0)).equals("")){
+                    break;
+                }
+                rows++;
+            } catch (NullPointerException ex) {
+                break;
+            }
+        }
+        CellStyle styleBig = workbook.createCellStyle();
+        styleBig.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleBig.setAlignment(HorizontalAlignment.CENTER);
+        XSSFFont fontBig = workbook.createFont();
+        fontBig.setFontHeightInPoints((short) 24);
+        fontBig.setFontName("Times New Roman");
+        fontBig.setColor(IndexedColors.BLACK.getIndex());
+        fontBig.setBold(true);
+        fontBig.setItalic(false);
+
+        row = sheet.getRow(2);
+        String[] res = row.getCell(0).toString().split(space_regex);
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int p=0;p<res.length;p++){
+            if(p==4){
+                stringBuilder.append(data.get(0).getYear()).append(" ");
+            }else{
+                stringBuilder.append(res[p]).append(" ");
+            }
+        }
+        row.getCell(0).setCellValue(stringBuilder.toString());
+        styleBig.setFont(fontBig);
+        row.getCell(0).setCellStyle(styleBig);
+
+
+
+        row = sheet.createRow(rows+1);
+        Cell cell = row.createCell(1);
+        cell.setCellValue("\"_____\" ______________________ 2020 р.");
+        CellStyle style2 = workbook.createCellStyle();
+        XSSFFont fontCustom = workbook.createFont();
+        fontCustom.setFontHeightInPoints((short) 12);
+        fontCustom.setFontName("Times New Roman");
+        fontCustom.setColor(IndexedColors.BLACK.getIndex());
+        fontCustom.setItalic(true);
+        style2.setFont(fontCustom);
+        cell.setCellStyle(style2);
+        cell = row.createCell(2);
+        cell.setCellValue("В.о. зав. кафедрою");
+        style2 = workbook.createCellStyle();
+        fontCustom = workbook.createFont();
+        fontCustom.setFontHeightInPoints((short) 12);
+        fontCustom.setFontName("Times New Roman");
+        fontCustom.setColor(IndexedColors.BLACK.getIndex());
+        fontCustom.setItalic(true);
+        fontCustom.setBold(true);
+        style2.setFont(fontCustom);
+        cell.setCellStyle(style2);
+        cell = row.createCell(4);
+        style2 = workbook.createCellStyle();
+        style2.setBorderBottom(BorderStyle.THIN);
+        style2.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        cell.setCellStyle(style2);
+        cell = row.createCell(5);
+        style2 = workbook.createCellStyle();
+        style2.setBorderBottom(BorderStyle.THIN);
+        style2.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        cell.setCellStyle(style2);
+        cell = row.createCell(6);
+        cell.setCellValue("Михайло ГОДЛЕВСЬКИЙ");
+        style2 = workbook.createCellStyle();
+        style2.setFont(font);
+        style2.setBorderBottom(BorderStyle.THIN);
+        style2.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        cell.setCellStyle(style2);
+        row = sheet.createRow(rows+2);
+        cell = row.createCell(4);
+        cell.setCellValue("(підпис)");
+        sheet.setFitToPage(true); //this will resize both height and width to fit
+        sheet.getPrintSetup().setLandscape(true);
     }
 
     private int writePract_hours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i, Boolean divider) {
@@ -351,6 +434,8 @@ public class WriteExcelController {
         cell = row.createCell(2);
         style.setFont(font);
         cell.setCellStyle(style);
+        style.setWrapText(true);
+        row.setRowStyle(style);
         return cell;
     }
 }

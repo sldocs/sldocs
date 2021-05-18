@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public class EAS_VMServiceImpl implements EAS_VMService {
 
-    private EAS_VMRepository eas_vmRepository;
+    private final EAS_VMRepository eas_vmRepository;
 
     public EAS_VMServiceImpl(EAS_VMRepository eas_vmRepository) {
         this.eas_vmRepository = eas_vmRepository;

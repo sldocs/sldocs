@@ -19,6 +19,7 @@ public class EAS_VM {
     private String pract_hours;
     private String note;
     private String number_of_subgroups;
+    private String year;
 
     public Long getId() {
         return id;
@@ -106,5 +107,13 @@ public class EAS_VM {
 
     public void setNumber_of_subgroups(String number_of_subgroups) {
         this.number_of_subgroups = number_of_subgroups;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 }
