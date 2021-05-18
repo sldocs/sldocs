@@ -32,6 +32,7 @@ public class PSL_VM {
     private String pname;
     private String dname;
     private String dep_name;
+    private String fac_name;
 
 
     public String getId() {
@@ -224,5 +225,13 @@ public class PSL_VM {
 
     public void setDep_name(String dep_name) {
         this.dep_name = dep_name;
+    }
+
+    public String getFac_name() {
+        return fac_name;
+    }
+
+    public void setFac_name(String fac_name) {
+        this.fac_name = fac_name;
     }
 }

@@ -10,11 +10,11 @@ import java.util.List;
 
 @Service
 @Transactional
-public class PLS_VMServiceImpl implements PSL_VMService {
+public class PSL_VMServiceImpl implements PSL_VMService {
 
     private final PSL_VMRepository psl_vmRepository;
 
-    public PLS_VMServiceImpl(PSL_VMRepository psl_vmRepository) {
+    public PSL_VMServiceImpl(PSL_VMRepository psl_vmRepository) {
         this.psl_vmRepository = psl_vmRepository;
     }
 

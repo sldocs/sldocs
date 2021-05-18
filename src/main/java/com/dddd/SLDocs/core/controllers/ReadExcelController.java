@@ -9,7 +9,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,10 +17,6 @@ import java.util.ArrayList;
 @Controller
 @RequestMapping("/")
 public class ReadExcelController {
-
-    private final String space_regex = "\\s+";
-    private final String comma_regex = ",";
-    private final String group_regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})([і].*|.[і]|[\\p{L}]*)?$";
 
     private final CurriculumServiceImpl curriculumService;
 
@@ -90,6 +85,7 @@ public class ReadExcelController {
             } else {
                 dep_fac_sem.add("2");
             }
+            String space_regex = "\\s+";
             String[] res = workbook.getSheetAt(2).getRow(0).getCell(0).toString().split(space_regex);
             StringBuffer stringBuffer = new StringBuffer();
             for (int p = 0; p < 2; p++) {

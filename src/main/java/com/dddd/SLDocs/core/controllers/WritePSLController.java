@@ -2,7 +2,7 @@ package com.dddd.SLDocs.core.controllers;
 
 import com.dddd.SLDocs.core.entities.Professor;
 import com.dddd.SLDocs.core.entities.views.PSL_VM;
-import com.dddd.SLDocs.core.servImpls.PLS_VMServiceImpl;
+import com.dddd.SLDocs.core.servImpls.PSL_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
@@ -20,10 +20,10 @@ import java.util.List;
 @RequestMapping("/")
 public class WritePSLController {
 
-    private final PLS_VMServiceImpl pls_vmService;
+    private final PSL_VMServiceImpl pls_vmService;
     private final ProfessorServiceImpl professorService;
 
-    public WritePSLController(PLS_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService) {
+    public WritePSLController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService) {
         this.pls_vmService = pls_vmService;
         this.professorService = professorService;
     }
@@ -31,6 +31,7 @@ public class WritePSLController {
     @RequestMapping("PSL")
     public String writePSL() {
 
+        long m = System.currentTimeMillis();
         try {
             FileInputStream inputStream = new FileInputStream("PSLExample.xlsx");
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
@@ -330,6 +331,7 @@ public class WritePSLController {
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
         }
+        System.out.println(System.currentTimeMillis() - m);
         return "redirect:/";
     }
 
@@ -458,7 +460,6 @@ public class WritePSLController {
         } else {
             cell.setCellValue(Double.parseDouble(psl_vm.getOther_forms_hours()));
         }
-        cell.setCellValue(psl_vm.getOther_forms_hours());
         cell.setCellStyle(style);
         cell = row.createCell(19);
         return cell;

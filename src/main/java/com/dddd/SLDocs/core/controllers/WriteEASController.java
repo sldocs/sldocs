@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 @RequestMapping("/")
 public class WriteEASController {
 
-    private final String space_regex = "\\s+";
     private final String comma_regex = ",";
     private final String group_regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})(.[.].*|[і].*|.[і].*|[\\p{L}]*)?$";
 
@@ -168,6 +167,7 @@ public class WriteEASController {
         fontBig.setItalic(false);
 
         row = sheet.getRow(2);
+        String space_regex = "\\s+";
         String[] res = row.getCell(0).toString().split(space_regex);
         StringBuilder stringBuilder = new StringBuilder();
         for(int p=0;p<res.length;p++){
