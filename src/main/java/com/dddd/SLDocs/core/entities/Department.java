@@ -20,8 +20,8 @@ public class Department {
     @JoinColumn(name = "faculty_id", referencedColumnName = "id")
     private Faculty faculty;
 
-    @OneToMany(mappedBy = "department",cascade = {CascadeType.ALL})
-    private Set<Group> groups = new HashSet<>();
+    @OneToMany(mappedBy = "department")
+    private Set<Curriculum> curriculums = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -63,11 +63,11 @@ public class Department {
         this.faculty = faculty;
     }
 
-    public Set<Group> getGroups() {
-        return groups;
+    public Set<Curriculum> getCurriculums() {
+        return curriculums;
     }
 
-    public void setGroups(Set<Group> groups) {
-        this.groups = groups;
+    public void setCurriculums(Set<Curriculum> curriculums) {
+        this.curriculums = curriculums;
     }
 }

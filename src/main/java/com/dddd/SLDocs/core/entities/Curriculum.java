@@ -31,7 +31,7 @@ public class Curriculum {
     private String diploma_hours;
     private String dec_cell;
     private String ndrs;
-    private String aspirants;
+    private String aspirant_hours;
     private String practice;
     private String other_forms_hours;
     private String hourly_wage;
@@ -67,8 +67,41 @@ public class Curriculum {
     @JoinColumn(name = "specialty_id", referencedColumnName = "id")
     private Specialty specialty;
 
-    @OneToMany(mappedBy = "curriculum",cascade = {CascadeType.ALL})
-    private Set<Group> groups = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "id")
+    private Department department;
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    public String getGroup_names() {
+        return group_names;
+    }
+
+    public void setGroup_names(String group_names) {
+        this.group_names = group_names;
+    }
+
+    public String getStudents_number() {
+        return students_number;
+    }
+
+    public void setStudents_number(String students_number) {
+        this.students_number = students_number;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
 
     public Curriculum() {
         professors = new HashSet<>();
@@ -162,12 +195,12 @@ public class Curriculum {
         this.ndrs = ndrs;
     }
 
-    public String getAspirants() {
-        return aspirants;
+    public String getAspirant_hours() {
+        return aspirant_hours;
     }
 
-    public void setAspirants(String aspirants) {
-        this.aspirants = aspirants;
+    public void setAspirant_hours(String aspirant_hours) {
+        this.aspirant_hours = aspirant_hours;
     }
 
     public String getPractice() {
@@ -338,11 +371,12 @@ public class Curriculum {
         this.specialty = specialty;
     }
 
-    public Set<Group> getGroups() {
-        return groups;
+
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setGroups(Set<Group> groups) {
-        this.groups = groups;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

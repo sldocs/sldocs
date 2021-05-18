@@ -11,6 +11,12 @@
         <input type="text" th:name="path">
         <input type="submit" value="read" />
     </form>
+    <form th:action="@{/EdAsSt}" method="post">
+        <input type="submit" value="Сформувати відомість учбових доручень" />
+    </form>
+    <form th:action="@{/PSL}" method="post">
+        <input type="submit" value="Сформувати розподіл навантаження по викладачам" />
+    </form>
 </div>
 </body>
 </html>
