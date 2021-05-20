@@ -8,14 +8,20 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Objects;
 
 @Controller
-@RequestMapping("/")
 public class ReadExcelController {
 
     private final CurriculumServiceImpl curriculumService;
@@ -38,12 +44,33 @@ public class ReadExcelController {
         this.professorService = professorService;
     }
 
-    @RequestMapping("read")
+    @PostMapping("/upload")
+    public String uploadToLocalFileSystem(@RequestParam("file") MultipartFile file) throws IOException {
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Path path = Paths.get(fileName);
+        try {
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return read(file.getOriginalFilename());
+    }
+
+    @RequestMapping("/read")
     public String read(@RequestParam("path") String path) throws IOException {
 
         FileInputStream fis = new FileInputStream(path);
         XSSFWorkbook workbook = new XSSFWorkbook(fis);
-
+        try{
+            String space_regex = "\\s+";
+            String[] res =workbook.getSheetAt(0).getRow(3).getCell(3).toString().split(space_regex);
+            System.out.println("test: " + res[0]);
+            if(!res[0].equals("ПЛАН")){
+                return "bad_file";
+            }
+        }catch(Exception ex){
+            return "bad_file";
+        }
         long m = System.currentTimeMillis();
         for (int i = 0; i < 2; i++) {
             readSheet(workbook, i);
@@ -85,6 +112,7 @@ public class ReadExcelController {
             } else {
                 dep_fac_sem.add("2");
             }
+
             String space_regex = "\\s+";
             String[] res = workbook.getSheetAt(2).getRow(0).getCell(0).toString().split(space_regex);
             StringBuffer stringBuffer = new StringBuffer();
@@ -152,21 +180,11 @@ public class ReadExcelController {
                         }
                     }
                 }
-                studyLoad.getCurriculum().setName(arrayList.get(0).toString());
                 studyLoad.getCurriculum().setCourse(arrayList.get(3).toString());
                 studyLoad.getCurriculum().setStudents_number(arrayList.get(4).toString());
                 studyLoad.getCurriculum().setSemester(dep_fac_sem.get(2).toString());
                 studyLoad.getCurriculum().setGroup_names(arrayList.get(5).toString());
-                studyLoad.getCurriculum().setNumber_of_streams(arrayList.get(6).toString());
                 studyLoad.getCurriculum().setNumber_of_subgroups(arrayList.get(7).toString());
-                studyLoad.getCurriculum().setLec(arrayList.get(8).toString());
-                studyLoad.getCurriculum().setLab(arrayList.get(9).toString());
-                studyLoad.getCurriculum().setPract_seminars(arrayList.get(10).toString());
-                studyLoad.getCurriculum().setOther_forms(arrayList.get(11).toString());
-                studyLoad.getCurriculum().setCourse_projects(arrayList.get(12).toString());
-                studyLoad.getCurriculum().setTasks(arrayList.get(13).toString());
-                studyLoad.getCurriculum().setZalik(arrayList.get(14).toString());
-                studyLoad.getCurriculum().setExam(arrayList.get(15).toString());
                 studyLoad.getCurriculum().setLec_hours(arrayList.get(16).toString());
                 studyLoad.getCurriculum().setConsult_hours(arrayList.get(17).toString());
                 studyLoad.getCurriculum().setLab_hours(arrayList.get(18).toString());
@@ -181,9 +199,6 @@ public class ReadExcelController {
                 studyLoad.getCurriculum().setAspirant_hours(arrayList.get(27).toString());
                 studyLoad.getCurriculum().setPractice(arrayList.get(28).toString());
                 studyLoad.getCurriculum().setOther_forms_hours(arrayList.get(30).toString());
-                studyLoad.getCurriculum().setHourly_wage(arrayList.get(32).toString());
-                studyLoad.getCurriculum().setTotal(arrayList.get(33).toString());
-                studyLoad.getCurriculum().setNote(arrayList.get(34).toString());
                 studyLoad.getCurriculum().setYear(dep_fac_sem.get(4).toString());
                 studyLoad.getCurriculum().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
 

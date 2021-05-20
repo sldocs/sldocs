@@ -17,17 +17,17 @@ public class Professor {
     private String vch_zvana;
     private String stavka;
     private String note;
+    private String ip_filename;
+    private String email_address;
     @Lob
     @Column
-    private byte[] indplanxlsx;
-    @Lob
-    @Column
-    private byte[] indplanpdf;
+    private byte[] ip_file;
 
 
 
     @ManyToMany(mappedBy = "professors", fetch = FetchType.LAZY)
     private Set<Curriculum> curriculums = new HashSet<>();
+
 
     public Long getId() {
         return id;
@@ -85,20 +85,28 @@ public class Professor {
         this.note = note;
     }
 
-    public byte[] getIndplanxlsx() {
-        return indplanxlsx;
+    public String getIp_filename() {
+        return ip_filename;
     }
 
-    public void setIndplanxlsx(byte[] indplanxlsx) {
-        this.indplanxlsx = indplanxlsx;
+    public void setIp_filename(String ip_filename) {
+        this.ip_filename = ip_filename;
     }
 
-    public byte[] getIndplanpdf() {
-        return indplanpdf;
+    public String getEmail_address() {
+        return email_address;
     }
 
-    public void setIndplanpdf(byte[] indplanpdf) {
-        this.indplanpdf = indplanpdf;
+    public void setEmail_address(String email_address) {
+        this.email_address = email_address;
+    }
+
+    public byte[] getIp_file() {
+        return ip_file;
+    }
+
+    public void setIp_file(byte[] ip_file) {
+        this.ip_file = ip_file;
     }
 
     public Set<Curriculum> getCurriculums() {

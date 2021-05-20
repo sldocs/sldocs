@@ -1,9 +1,11 @@
 package com.dddd.SLDocs.core.controllers;
 
+import com.dddd.SLDocs.core.entities.Faculty;
 import com.dddd.SLDocs.core.entities.Professor;
 import com.dddd.SLDocs.core.entities.views.PSL_VM;
 import com.dddd.SLDocs.core.servImpls.PSL_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -16,6 +18,7 @@ import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -728,12 +731,18 @@ public class WriteIPController {
                         cell.setCellStyle(style12ThickBotTopRight);
 
                         row = sheet.createRow(rownum++);
+                        for(int c=0; c<51; c++){
+                            row.createCell(c);
+                        }
                         row = sheet.createRow(rownum++);
                         cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 9);
                         sheet.addMergedRegion(cellRangeAddress);
                         cell = row.createCell(1);
                         cell.setCellValue("Затвердженно на засіданні кафедри \"____\"___________20__р. Протокол № ____");
                         cell.setCellStyle(style12I);
+                        for(int c=10; c<33; c++){
+                            row.createCell(c);
+                        }
                         cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 33, 44);
                         sheet.addMergedRegion(cellRangeAddress);
                         cell = row.createCell(33);
@@ -741,21 +750,30 @@ public class WriteIPController {
                         cell.setCellStyle(style12I);
 
                         row = sheet.createRow(rownum++);
+                        for(int c=0; c<51; c++){
+                            row.createCell(c);
+                        }
                         row = sheet.createRow(rownum);
                         cell = row.createCell(2);
                         cell.setCellValue(professor.getName());
                         cell.setCellStyle(style12I);
-
+                        for(int c=3; c<51; c++){
+                            row.createCell(c);
+                        }
                         sheet.setFitToPage(true);
                         sheet.getPrintSetup().setFitWidth((short) 1);
                         sheet.getPrintSetup().setFitHeight((short) 0);
                         sheet.getPrintSetup().setLandscape(true);
                     }
                     iS.close();
-                    FileOutputStream outputStream = new FileOutputStream(professor.getName() + ".xlsx");
+                    File someFile = new File(professor.getName()+".xlsx");
+                    FileOutputStream outputStream = new FileOutputStream(someFile);
                     workbook.write(outputStream);
                     workbook.close();
                     outputStream.close();
+                    professor.setIp_file(FileUtils.readFileToByteArray(someFile));
+                    professor.setIp_filename(someFile.getName());
+                    professorService.save(professor);
                 }
             }
         } catch (IOException | EncryptedDocumentException ex) {

@@ -4,7 +4,7 @@ import com.dddd.SLDocs.core.entities.Faculty;
 import com.dddd.SLDocs.core.entities.views.EAS_VM;
 import com.dddd.SLDocs.core.servImpls.EAS_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
-import com.dddd.SLDocs.core.utils.StreamConverter;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
@@ -101,26 +101,10 @@ public class WriteEASController {
             workbook.write(outputStream);
             workbook.close();
             outputStream.close();
-            FileInputStream fis = new FileInputStream(someFile);
-            FileOutputStream fos = new FileOutputStream(someFile);
-            fos.write(StreamConverter.ous2Bytes(fis));
-            fos.flush();
-            fos.close();
             List<Faculty> faculties = facultyService.ListAll();
-            faculties.get(0).setEdasstxlsx(StreamConverter.ous2Bytes(fis));
+            faculties.get(0).setEas_file(FileUtils.readFileToByteArray(someFile));
+            faculties.get(0).setEas_filename(someFile.getName());
             facultyService.save(faculties.get(0));
-            faculties = facultyService.ListAll();
-            File file = new File("outputfile.xlsx");
-            fos = null;
-            try {
-                fos = new FileOutputStream(file);
-                fos.write(faculties.get(0).getEdasstxlsx());
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found" + e);
-            } catch (IOException ioe) {
-                System.out.println("Exception while writing file " + ioe);
-            }
-
 
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();

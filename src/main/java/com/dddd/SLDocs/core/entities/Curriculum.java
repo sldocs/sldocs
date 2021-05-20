@@ -11,18 +11,10 @@ public class Curriculum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
     private String year;
     private String lec_hours;
     private String lab_hours;
-    private String pract_seminars;
-    private String other_forms;
-    private String course_projects;
-    private String tasks;
-    private String zalik;
-    private String exam;
     private String note;
-    private String number_of_streams;
     private String number_of_subgroups;
     private String exam_hours;
     private String zalik_hours;
@@ -34,10 +26,6 @@ public class Curriculum {
     private String aspirant_hours;
     private String practice;
     private String other_forms_hours;
-    private String hourly_wage;
-    private String total;
-    private String lec;
-    private String lab;
     private String pract_hours;
     private String ind_task_hours;
     private String semester;
@@ -123,22 +111,6 @@ public class Curriculum {
         this.ind_task_hours = ind_task_hours;
     }
 
-    public String getLec() {
-        return lec;
-    }
-
-    public void setLec(String lec) {
-        this.lec = lec;
-    }
-
-    public String getLab() {
-        return lab;
-    }
-
-    public void setLab(String lab) {
-        this.lab = lab;
-    }
-
     public String getExam_hours() {
         return exam_hours;
     }
@@ -219,46 +191,6 @@ public class Curriculum {
         this.other_forms_hours = other_forms_hours;
     }
 
-    public String getHourly_wage() {
-        return hourly_wage;
-    }
-
-    public void setHourly_wage(String hourly_wage) {
-        this.hourly_wage = hourly_wage;
-    }
-
-    public String getTotal() {
-        return total;
-    }
-
-    public void setTotal(String total) {
-        this.total = total;
-    }
-
-    public String getExam() {
-        return exam;
-    }
-
-    public void setExam(String exam) {
-        this.exam = exam;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getYear() {
         return year;
     }
@@ -281,62 +213,6 @@ public class Curriculum {
 
     public void setLab_hours(String lab_hours) {
         this.lab_hours = lab_hours;
-    }
-
-    public String getPract_seminars() {
-        return pract_seminars;
-    }
-
-    public void setPract_seminars(String pract_seminars) {
-        this.pract_seminars = pract_seminars;
-    }
-
-    public String getOther_forms() {
-        return other_forms;
-    }
-
-    public void setOther_forms(String other_forms) {
-        this.other_forms = other_forms;
-    }
-
-    public String getCourse_projects() {
-        return course_projects;
-    }
-
-    public void setCourse_projects(String course_projects) {
-        this.course_projects = course_projects;
-    }
-
-    public String getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(String tasks) {
-        this.tasks = tasks;
-    }
-
-    public String getZalik() {
-        return zalik;
-    }
-
-    public void setZalik(String zalik) {
-        this.zalik = zalik;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getNumber_of_streams() {
-        return number_of_streams;
-    }
-
-    public void setNumber_of_streams(String number_of_streams) {
-        this.number_of_streams = number_of_streams;
     }
 
     public String getNumber_of_subgroups() {

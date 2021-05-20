@@ -1,9 +1,12 @@
 package com.dddd.SLDocs.core.controllers;
 
+import com.dddd.SLDocs.core.entities.Faculty;
 import com.dddd.SLDocs.core.entities.Professor;
 import com.dddd.SLDocs.core.entities.views.PSL_VM;
+import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
 import com.dddd.SLDocs.core.servImpls.PSL_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -12,6 +15,7 @@ import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,10 +27,13 @@ public class WritePSLController {
 
     private final PSL_VMServiceImpl pls_vmService;
     private final ProfessorServiceImpl professorService;
+    private final FacultyServiceImpl facultyService;
 
-    public WritePSLController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService) {
+    public WritePSLController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService,
+                              FacultyServiceImpl facultyService) {
         this.pls_vmService = pls_vmService;
         this.professorService = professorService;
+        this.facultyService = facultyService;
     }
 
     @RequestMapping("PSL")
@@ -331,10 +338,15 @@ public class WritePSLController {
 
             workbook.removeSheetAt(1);
             inputStream.close();
-            FileOutputStream outputStream = new FileOutputStream("Навантаження_по_викладачах_20_21.xlsx");
+            File someFile = new File("Навантаження_по_викладачах_20_21.xlsx");
+            FileOutputStream outputStream = new FileOutputStream(someFile);
             workbook.write(outputStream);
             workbook.close();
             outputStream.close();
+            List<Faculty> faculties = facultyService.ListAll();
+            faculties.get(0).setPsl_file(FileUtils.readFileToByteArray(someFile));
+            faculties.get(0).setPsl_filename(someFile.getName());
+            facultyService.save(faculties.get(0));
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
         }

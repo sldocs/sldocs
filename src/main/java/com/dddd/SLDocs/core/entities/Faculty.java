@@ -14,19 +14,14 @@ public class Faculty {
     private Long id;
     private String code;
     private String name;
+    private String eas_filename;
+    private String psl_filename;
     @Lob
     @Column
-    private byte[] edasstxlsx;
+    private byte[] eas_file;
     @Lob
     @Column
-    private byte[] edasstpdf;
-    @Lob
-    @Column
-    private byte[] pslxlsx;
-    @Lob
-    @Column
-    private byte[] pslpdf;
-
+    private byte[] psl_file;
 
     @OneToMany(mappedBy = "faculty", cascade = {CascadeType.ALL})
     private Set<Department> departments = new HashSet<>();
@@ -55,43 +50,43 @@ public class Faculty {
         this.name = name;
     }
 
+    public String getEas_filename() {
+        return eas_filename;
+    }
+
+    public void setEas_filename(String eas_filename) {
+        this.eas_filename = eas_filename;
+    }
+
+    public String getPsl_filename() {
+        return psl_filename;
+    }
+
+    public void setPsl_filename(String psl_filename) {
+        this.psl_filename = psl_filename;
+    }
+
+    public byte[] getEas_file() {
+        return eas_file;
+    }
+
+    public void setEas_file(byte[] eas_file) {
+        this.eas_file = eas_file;
+    }
+
+    public byte[] getPsl_file() {
+        return psl_file;
+    }
+
+    public void setPsl_file(byte[] psl_file) {
+        this.psl_file = psl_file;
+    }
+
     public Set<Department> getDepartments() {
         return departments;
     }
 
     public void setDepartments(Set<Department> departments) {
         this.departments = departments;
-    }
-
-    public byte[] getEdasstxlsx() {
-        return edasstxlsx;
-    }
-
-    public void setEdasstxlsx(byte[] edasstxlsx) {
-        this.edasstxlsx = edasstxlsx;
-    }
-
-    public byte[] getEdasstpdf() {
-        return edasstpdf;
-    }
-
-    public void setEdasstpdf(byte[] edasstpdf) {
-        this.edasstpdf = edasstpdf;
-    }
-
-    public byte[] getPslxlsx() {
-        return pslxlsx;
-    }
-
-    public void setPslxlsx(byte[] pslxlsx) {
-        this.pslxlsx = pslxlsx;
-    }
-
-    public byte[] getPslpdf() {
-        return pslpdf;
-    }
-
-    public void setPslpdf(byte[] pslpdf) {
-        this.pslpdf = pslpdf;
     }
 }
