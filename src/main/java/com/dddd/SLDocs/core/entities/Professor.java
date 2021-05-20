@@ -12,12 +12,18 @@ public class Professor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String year;
-    private String position;
-    private String degree;
-    private String advanced_degree;
-    private String interest;
+    private String posada;
+    private String nauk_stupin;
+    private String vch_zvana;
+    private String stavka;
     private String note;
+    @Lob
+    @Column
+    private byte[] indplanxlsx;
+    @Lob
+    @Column
+    private byte[] indplanpdf;
+
 
 
     @ManyToMany(mappedBy = "professors", fetch = FetchType.LAZY)
@@ -39,44 +45,36 @@ public class Professor {
         this.name = name;
     }
 
-    public String getYear() {
-        return year;
+    public String getPosada() {
+        return posada;
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public void setPosada(String posada) {
+        this.posada = posada;
     }
 
-    public String getPosition() {
-        return position;
+    public String getNauk_stupin() {
+        return nauk_stupin;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setNauk_stupin(String nauk_stupin) {
+        this.nauk_stupin = nauk_stupin;
     }
 
-    public String getDegree() {
-        return degree;
+    public String getVch_zvana() {
+        return vch_zvana;
     }
 
-    public void setDegree(String degree) {
-        this.degree = degree;
+    public void setVch_zvana(String vch_zvana) {
+        this.vch_zvana = vch_zvana;
     }
 
-    public String getAdvanced_degree() {
-        return advanced_degree;
+    public String getStavka() {
+        return stavka;
     }
 
-    public void setAdvanced_degree(String advanced_degree) {
-        this.advanced_degree = advanced_degree;
-    }
-
-    public String getInterest() {
-        return interest;
-    }
-
-    public void setInterest(String interest) {
-        this.interest = interest;
+    public void setStavka(String stavka) {
+        this.stavka = stavka;
     }
 
     public String getNote() {
@@ -85,6 +83,22 @@ public class Professor {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public byte[] getIndplanxlsx() {
+        return indplanxlsx;
+    }
+
+    public void setIndplanxlsx(byte[] indplanxlsx) {
+        this.indplanxlsx = indplanxlsx;
+    }
+
+    public byte[] getIndplanpdf() {
+        return indplanpdf;
+    }
+
+    public void setIndplanpdf(byte[] indplanpdf) {
+        this.indplanpdf = indplanpdf;
     }
 
     public Set<Curriculum> getCurriculums() {

@@ -1,19 +1,17 @@
 package com.dddd.SLDocs.core.controllers;
 
+import com.dddd.SLDocs.core.entities.Faculty;
 import com.dddd.SLDocs.core.entities.views.EAS_VM;
-import com.dddd.SLDocs.core.servImpls.DisciplineServiceImpl;
 import com.dddd.SLDocs.core.servImpls.EAS_VMServiceImpl;
+import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
+import com.dddd.SLDocs.core.utils.StreamConverter;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,9 +24,11 @@ public class WriteEASController {
     private final String group_regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})(.[.].*|[і].*|.[і].*|[\\p{L}]*)?$";
 
     private final EAS_VMServiceImpl eas_vmService;
+    private final FacultyServiceImpl facultyService;
 
-    public WriteEASController(EAS_VMServiceImpl eas_vmService) {
+    public WriteEASController(EAS_VMServiceImpl eas_vmService, FacultyServiceImpl facultyService) {
         this.eas_vmService = eas_vmService;
+        this.facultyService = facultyService;
     }
 
     @RequestMapping("EdAsSt")
@@ -64,37 +64,63 @@ public class WriteEASController {
             style.setRightBorderColor(IndexedColors.BLACK.getIndex());
             style.setBorderTop(BorderStyle.THIN);
             style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+            style.setWrapText(true);
+
+
+            XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
+            rowAutoHeightStyle.setWrapText(true);
 
             XSSFSheet sheet = workbook.getSheetAt(0);
             int rowCount = 5;
             List<EAS_VM> data = eas_vmService.getEAS_VM13Data("1", "4.0");
 
-            writeSheet(font, style, sheet, rowCount, data, false, workbook);
+            writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
 
             sheet = workbook.getSheetAt(1);
             rowCount = 5;
             data = eas_vmService.getEAS_VM4Data("1", "4.0");
 
-            writeSheet(font, style, sheet, rowCount, data, false, workbook);
+            writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
 
             sheet = workbook.getSheetAt(2);
             rowCount = 5;
             data = eas_vmService.getEAS_VM13Data("2", "4.0");
 
-            writeSheet(font, style, sheet, rowCount, data, false, workbook);
+            writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
 
             sheet = workbook.getSheetAt(3);
             rowCount = 5;
             data = eas_vmService.getEAS_VM4Data("2", "4.0");
 
-            writeSheet(font, style, sheet, rowCount, data, true, workbook);
+            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
 
             inputStream.close();
 
-            FileOutputStream outputStream = new FileOutputStream("EdAsSt.xlsx");
+            File someFile = new File("Відомість_учбових_доручень.xlsx");
+            FileOutputStream outputStream = new FileOutputStream(someFile);
             workbook.write(outputStream);
             workbook.close();
             outputStream.close();
+            FileInputStream fis = new FileInputStream(someFile);
+            FileOutputStream fos = new FileOutputStream(someFile);
+            fos.write(StreamConverter.ous2Bytes(fis));
+            fos.flush();
+            fos.close();
+            List<Faculty> faculties = facultyService.ListAll();
+            faculties.get(0).setEdasstxlsx(StreamConverter.ous2Bytes(fis));
+            facultyService.save(faculties.get(0));
+            faculties = facultyService.ListAll();
+            File file = new File("outputfile.xlsx");
+            fos = null;
+            try {
+                fos = new FileOutputStream(file);
+                fos.write(faculties.get(0).getEdasstxlsx());
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found" + e);
+            } catch (IOException ioe) {
+                System.out.println("Exception while writing file " + ioe);
+            }
+
 
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
@@ -103,9 +129,7 @@ public class WriteEASController {
     }
 
     private void writeSheet(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount,
-                            List<EAS_VM> data, Boolean divider, XSSFWorkbook workbook) {
-
-
+                            List<EAS_VM> data, Boolean divider, XSSFWorkbook workbook, XSSFCellStyle rowAutoHeightStyle) {
 
 
         for (int i = 0; i < data.size(); i++) {
@@ -113,29 +137,29 @@ public class WriteEASController {
             if ((!(data.get(i).getLec_hours().equals("") | data.get(i).getLec_hours().equals("0.0"))) &&
                     (data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0")) &&
                     (data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0"))) {
-                rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider);
+                rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
             } else {
                 if ((!(data.get(i).getLec_hours().equals("") | data.get(i).getLec_hours().equals("0.0"))) &&
                         (!(data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0"))) &&
                         (data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0"))) {
-                    rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider);
+                    rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
 
-                    rowCount = writeLab_hours(font, style, sheet, rowCount, data, i, divider);
+                    rowCount = writeLab_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
                 } else {
                     if ((!(data.get(i).getLec_hours().equals("") | data.get(i).getLec_hours().equals("0.0"))) &&
                             (data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0")) &&
                             (!(data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0")))) {
-                        rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider);
+                        rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
 
-                        rowCount = writePract_hours(font, style, sheet, rowCount, data, i, divider);
+                        rowCount = writePract_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
                     } else {
                         if ((!(data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0"))) &&
                                 ((data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0")))) {
-                            rowCount = writeLab_hours(font, style, sheet, rowCount, data, i, divider);
+                            rowCount = writeLab_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
                         } else {
                             if ((data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0")) &&
                                     ((!(data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0"))))) {
-                                rowCount = writePract_hours(font, style, sheet, rowCount, data, i, divider);
+                                rowCount = writePract_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
                             }
                         }
                     }
@@ -148,7 +172,7 @@ public class WriteEASController {
         while (true) {
             row = sheet.getRow(rows);
             try {
-                if(df.formatCellValue(row.getCell(0)).equals("")){
+                if (df.formatCellValue(row.getCell(0)).equals("")) {
                     break;
                 }
                 rows++;
@@ -156,6 +180,7 @@ public class WriteEASController {
                 break;
             }
         }
+
         CellStyle styleBig = workbook.createCellStyle();
         styleBig.setVerticalAlignment(VerticalAlignment.CENTER);
         styleBig.setAlignment(HorizontalAlignment.CENTER);
@@ -170,10 +195,10 @@ public class WriteEASController {
         String space_regex = "\\s+";
         String[] res = row.getCell(0).toString().split(space_regex);
         StringBuilder stringBuilder = new StringBuilder();
-        for(int p=0;p<res.length;p++){
-            if(p==4){
+        for (int p = 0; p < res.length; p++) {
+            if (p == 4) {
                 stringBuilder.append(data.get(0).getYear()).append(" ");
-            }else{
+            } else {
                 stringBuilder.append(res[p]).append(" ");
             }
         }
@@ -182,8 +207,7 @@ public class WriteEASController {
         row.getCell(0).setCellStyle(styleBig);
 
 
-
-        row = sheet.createRow(rows+1);
+        row = sheet.createRow(rows + 1);
         Cell cell = row.createCell(1);
         cell.setCellValue("\"_____\" ______________________ 2020 р.");
         CellStyle style2 = workbook.createCellStyle();
@@ -222,14 +246,15 @@ public class WriteEASController {
         style2.setBorderBottom(BorderStyle.THIN);
         style2.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         cell.setCellStyle(style2);
-        row = sheet.createRow(rows+2);
+        row = sheet.createRow(rows + 2);
         cell = row.createCell(4);
         cell.setCellValue("(підпис)");
-        sheet.setFitToPage(true); //this will resize both height and width to fit
+        sheet.setFitToPage(true);
         sheet.getPrintSetup().setLandscape(true);
     }
 
-    private int writePract_hours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i, Boolean divider) {
+    private int writePract_hours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i,
+                                 Boolean divider, XSSFCellStyle rowAutoHeightStyle) {
         Row row;
         Cell cell;
         StringBuffer stringBuffer;
@@ -242,14 +267,14 @@ public class WriteEASController {
                 if (Character.isDigit(matcher.group(3).charAt(0))) {
                     if (!matcher.group(4).equals("") && matcher.group(4).length() > 1) {
                         if (matcher.group(4).charAt(0) == 'і' | matcher.group(4).charAt(1) == 'і' | matcher.group(4).charAt(1) == 'е' | matcher.group(4).charAt(1) == '.') {
-                            rowCount = writePract_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider);
+                            rowCount = writePract_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
                         } else {
                             for (int i1 = 0; i1 < matcher.group(4).length(); i1++) {
                                 stringBuffer = new StringBuffer();
                                 stringBuffer.append(matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4).charAt(i1));
                                 row = sheet.createRow(++rowCount);
                                 cell = row.createCell(0);
-                                cell = writeDnGn(font, style, data, i, row, cell);
+                                cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
                                 cell.setCellValue(stringBuffer.toString());
                                 cell = row.createCell(3);
                                 style.setFont(font);
@@ -262,22 +287,23 @@ public class WriteEASController {
                             }
                         }
                     } else {
-                        rowCount = writePract_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider);
+                        rowCount = writePract_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
                     }
                 } else {
-                    rowCount = writePract_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider);
+                    rowCount = writePract_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
                 }
             }
         }
         return rowCount;
     }
 
-    private int writePract_hours_inner(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i, Matcher matcher, Boolean divider) {
+    private int writePract_hours_inner(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i,
+                                       Matcher matcher, Boolean divider, XSSFCellStyle rowAutoHeightStyle) {
         Row row;
         Cell cell;
         row = sheet.createRow(++rowCount);
         cell = row.createCell(0);
-        cell = writeDnGn(font, style, data, i, row, cell);
+        cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
         cell.setCellValue(matcher.group(0));
         cell = row.createCell(3);
         style.setFont(font);
@@ -290,7 +316,8 @@ public class WriteEASController {
         return rowCount;
     }
 
-    private void writePract_hours_inner_inner(XSSFFont font, CellStyle style, List<EAS_VM> data, int i, Row row, Cell cell, Boolean divider) {
+    private void writePract_hours_inner_inner(XSSFFont font, CellStyle style, List<EAS_VM> data, int i, Row row, Cell cell,
+                                              Boolean divider) {
         cell.setCellValue("");
         cell = row.createCell(5);
         style.setFont(font);
@@ -312,7 +339,8 @@ public class WriteEASController {
         cell.setCellValue(data.get(i).getNote());
     }
 
-    private int writeLab_hours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i, Boolean divider) {
+    private int writeLab_hours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i,
+                               Boolean divider, XSSFCellStyle rowAutoHeightStyle) {
         Row row;
         Cell cell;
         StringBuffer stringBuffer;
@@ -325,14 +353,14 @@ public class WriteEASController {
                 if (Character.isDigit(matcher.group(3).charAt(0))) {
                     if (!matcher.group(4).equals("") && matcher.group(4).length() > 1) {
                         if (matcher.group(4).charAt(0) == 'і' | matcher.group(4).charAt(1) == 'і' | matcher.group(4).charAt(1) == 'е' | matcher.group(4).charAt(1) == '.') {
-                            rowCount = writeLab_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider);
+                            rowCount = writeLab_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
                         } else {
                             for (int i1 = 0; i1 < matcher.group(4).length(); i1++) {
                                 stringBuffer = new StringBuffer();
                                 stringBuffer.append(matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4).charAt(i1));
                                 row = sheet.createRow(++rowCount);
                                 cell = row.createCell(0);
-                                cell = writeDnGn(font, style, data, i, row, cell);
+                                cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
                                 cell.setCellValue(stringBuffer.toString());
                                 cell = row.createCell(3);
                                 style.setFont(font);
@@ -341,26 +369,27 @@ public class WriteEASController {
                                 cell = row.createCell(4);
                                 style.setFont(font);
                                 cell.setCellStyle(style);
-                                writeLab_hours_inner_inner(font, style, data, i, row, cell, divider);
+                                writeLab_hours_inner_inner(font, style, data, i, row, cell, divider, rowAutoHeightStyle);
                             }
                         }
                     } else {
-                        rowCount = writeLab_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider);
+                        rowCount = writeLab_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
                     }
                 } else {
-                    rowCount = writeLab_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider);
+                    rowCount = writeLab_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
                 }
             }
         }
         return rowCount;
     }
 
-    private int writeLab_hours_inner(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i, Matcher matcher, Boolean divider) {
+    private int writeLab_hours_inner(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i,
+                                     Matcher matcher, Boolean divider, XSSFCellStyle rowAutoHeightStyle) {
         Row row;
         Cell cell;
         row = sheet.createRow(++rowCount);
         cell = row.createCell(0);
-        cell = writeDnGn(font, style, data, i, row, cell);
+        cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
         cell.setCellValue(matcher.group(0));
         cell = row.createCell(3);
         style.setFont(font);
@@ -369,11 +398,12 @@ public class WriteEASController {
         cell = row.createCell(4);
         style.setFont(font);
         cell.setCellStyle(style);
-        writeLab_hours_inner_inner(font, style, data, i, row, cell, divider);
+        writeLab_hours_inner_inner(font, style, data, i, row, cell, divider, rowAutoHeightStyle);
         return rowCount;
     }
 
-    private void writeLab_hours_inner_inner(XSSFFont font, CellStyle style, List<EAS_VM> data, int i, Row row, Cell cell, Boolean divider) {
+    private void writeLab_hours_inner_inner(XSSFFont font, CellStyle style, List<EAS_VM> data, int i, Row row, Cell cell,
+                                            Boolean divider, XSSFCellStyle rowAutoHeightStyle) {
         if (divider) {
             cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLab_hours()) /
                     Double.parseDouble(data.get(i).getNumber_of_subgroups()) / 10));
@@ -387,18 +417,19 @@ public class WriteEASController {
         writePnN(font, style, data, i, row, cell);
     }
 
-    private int writeLec_hours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i, Boolean divider) {
+    private int writeLec_hours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EAS_VM> data, int i,
+                               Boolean divider, XSSFCellStyle rowAutoHeightStyle) {
         Row row = sheet.createRow(++rowCount);
         Cell cell = row.createCell(0);
-        cell = writeDnGn(font, style, data, i, row, cell);
+        cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
         cell.setCellValue(data.get(i).getGroup_names());
         cell = row.createCell(3);
         style.setFont(font);
         cell.setCellStyle(style);
         if (divider) {
-            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLec_hours())/10));
+            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLec_hours()) / 10));
         } else {
-            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLec_hours())/16));
+            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLec_hours()) / 16));
         }
         cell = row.createCell(4);
         style.setFont(font);
@@ -423,7 +454,7 @@ public class WriteEASController {
         cell.setCellValue(data.get(i).getNote());
     }
 
-    private Cell writeDnGn(XSSFFont font, CellStyle style, List<EAS_VM> data, int i, Row row, Cell cell) {
+    private Cell writeDnGn(XSSFFont font, CellStyle style, List<EAS_VM> data, int i, Row row, Cell cell, XSSFCellStyle rowAutoHeightStyle) {
         style.setFont(font);
         cell.setCellStyle(style);
         cell.setCellValue(i + 1);
@@ -434,8 +465,8 @@ public class WriteEASController {
         cell = row.createCell(2);
         style.setFont(font);
         cell.setCellStyle(style);
-        style.setWrapText(true);
-        row.setRowStyle(style);
+
+        row.setRowStyle(rowAutoHeightStyle);
         return cell;
     }
 }

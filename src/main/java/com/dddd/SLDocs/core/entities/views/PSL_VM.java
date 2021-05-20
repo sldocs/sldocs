@@ -33,7 +33,10 @@ public class PSL_VM {
     private String dname;
     private String dep_name;
     private String fac_name;
-
+    private String nauk_stupin;
+    private String posada;
+    private String vch_zvana;
+    private String stavka;
 
     public String getId() {
         return id;
@@ -233,5 +236,37 @@ public class PSL_VM {
 
     public void setFac_name(String fac_name) {
         this.fac_name = fac_name;
+    }
+
+    public String getNauk_stupin() {
+        return nauk_stupin;
+    }
+
+    public void setNauk_stupin(String nauk_stupin) {
+        this.nauk_stupin = nauk_stupin;
+    }
+
+    public String getPosada() {
+        return posada;
+    }
+
+    public void setPosada(String posada) {
+        this.posada = posada;
+    }
+
+    public String getVch_zvana() {
+        return vch_zvana;
+    }
+
+    public void setVch_zvana(String vch_zvana) {
+        this.vch_zvana = vch_zvana;
+    }
+
+    public String getStavka() {
+        return stavka;
+    }
+
+    public void setStavka(String stavka) {
+        this.stavka = stavka;
     }
 }

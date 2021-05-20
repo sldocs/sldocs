@@ -7,6 +7,7 @@ import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -160,18 +161,24 @@ public class WritePSLController {
                         cell = row.getCell(0);
                         cell.setCellValue(professor.getName());
                         cell.setCellStyle(style14);
-                        sheet.addMergedRegion(new CellRangeAddress(
-                                2, //first row (0-based)
-                                2, //last row  (0-based)
-                                5, //first column (0-based)
-                                18  //last column  (0-based)
-                        ));
+
+                        cell = row.createCell(4);
+                        cell.setCellValue(professor.getStavka());
+                        cell.setCellStyle(style14);
+
                         cell = row.getCell(5);
                         if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("1", professor.getName());
                         } else {
                             psl_vmList = pls_vmService.getPSL_VMData("2", professor.getName());
                         }
+                        CellRangeAddress cellRangeAddress = new CellRangeAddress(2, 2, 5, 18);
+                        sheet.addMergedRegion(cellRangeAddress);
+                        cell.setCellStyle(style14);
+                        RegionUtil.setBorderBottom(cell.getCellStyle().getBorderBottom(), cellRangeAddress, sheet);
+                        RegionUtil.setBorderTop(cell.getCellStyle().getBorderTop(), cellRangeAddress, sheet);
+                        RegionUtil.setBorderLeft(cell.getCellStyle().getBorderLeft(), cellRangeAddress, sheet);
+                        RegionUtil.setBorderRight(cell.getCellStyle().getBorderRight(), cellRangeAddress, sheet);
                         cell.setCellValue("Кафедра " + psl_vmList.get(0).getDep_name() + " на " + psl_vmList.get(0).getYear());
                         cell.setCellStyle(style14);
                         rownum = 5;
@@ -189,7 +196,7 @@ public class WritePSLController {
                         rownum = writeLine(style, rownum, sheet);
                         String[] ends1 = {"КЕРІВНИЦТВО", "здобувач"};
                         rownum = writeKerivnictvo(style, style14Bold, rownum, sheet, ends1);
-                        String[] ends2 = {"аспірант", "докторант", "магістр", "фахівець", "курсові", "курсові 5 курс"};
+                        String[] ends2 = {"Аспірант", "Докторант", "Магістр", "Фахівець", "Курсові", "Курсові 5 курс"};
                         rownum = writeKerivnictvo(style, style14RightAl, rownum, sheet, ends2);
 
 
@@ -316,7 +323,7 @@ public class WritePSLController {
                         cell = row.createCell(cell_count);
                         cell.setCellFormula("ROUND(SUM(T" + (autumn_sum+1) + "+" + "T" + rownum + "),0)");
                         cell.setCellStyle(styleThickBotTopRightBord);
-                        sheet.setFitToPage(true); //this will resize both height and width to fit
+                        sheet.setFitToPage(true);
                         sheet.getPrintSetup().setLandscape(true);
                     }
                 }

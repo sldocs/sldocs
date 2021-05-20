@@ -14,6 +14,19 @@ public class Faculty {
     private Long id;
     private String code;
     private String name;
+    @Lob
+    @Column
+    private byte[] edasstxlsx;
+    @Lob
+    @Column
+    private byte[] edasstpdf;
+    @Lob
+    @Column
+    private byte[] pslxlsx;
+    @Lob
+    @Column
+    private byte[] pslpdf;
+
 
     @OneToMany(mappedBy = "faculty", cascade = {CascadeType.ALL})
     private Set<Department> departments = new HashSet<>();
@@ -48,5 +61,37 @@ public class Faculty {
 
     public void setDepartments(Set<Department> departments) {
         this.departments = departments;
+    }
+
+    public byte[] getEdasstxlsx() {
+        return edasstxlsx;
+    }
+
+    public void setEdasstxlsx(byte[] edasstxlsx) {
+        this.edasstxlsx = edasstxlsx;
+    }
+
+    public byte[] getEdasstpdf() {
+        return edasstpdf;
+    }
+
+    public void setEdasstpdf(byte[] edasstpdf) {
+        this.edasstpdf = edasstpdf;
+    }
+
+    public byte[] getPslxlsx() {
+        return pslxlsx;
+    }
+
+    public void setPslxlsx(byte[] pslxlsx) {
+        this.pslxlsx = pslxlsx;
+    }
+
+    public byte[] getPslpdf() {
+        return pslpdf;
+    }
+
+    public void setPslpdf(byte[] pslpdf) {
+        this.pslpdf = pslpdf;
     }
 }
