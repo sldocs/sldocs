@@ -1,8 +1,37 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"lang="ua">
 <head>
 </head>
 <body class="hold-transition register-page">
+<nav>
+    <div id="logo">Study load docs</div>
+    <label for="drop" class="toggle">Menu</label>
+    <input type="checkbox" id="drop"/>
+    <ul class="menu">
+        <li><a href="/">Home</a></li>
+        <li sec:authorize="hasRole('ADMIN')">
+            <label for="drop-1" class="toggle">Викладачі +</label>
+            <a href="/professors">Викладачі</a>
+            <input type="checkbox" id="drop-1"/>
+            <ul>
+                <li><a href="/professors">Вказати посади, звання та ін.</a></li>
+                <li><a href="/professors/send">Розіслати документи</a></li>
+            </ul>
+
+        </li>
+        <li>
+            <label for="drop-2" class="toggle">Налаштування акаунтів +</label>
+            <a href="#">Налаштування акаунтів</a>
+            <input type="checkbox" id="drop-2"/>
+            <ul>
+                <li><a href="/user">Мій акаунт</a></li>
+                <li sec:authorize="hasRole('ADMIN')"><a href="/users">Активувати акауннти</a></li>
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
 <div class="register-box">
     <div class="card">
         <div class="card-body register-card-body">

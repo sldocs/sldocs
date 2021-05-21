@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="ua"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -289,52 +290,30 @@
 </style>
 <body>
 <nav>
-    <div id="logo">Your Logo here</div>
-
+    <div id="logo">Study load docs</div>
     <label for="drop" class="toggle">Menu</label>
     <input type="checkbox" id="drop"/>
     <ul class="menu">
-        <li><a href="/">Home</a></li>
-        <li>
-            <!-- First Tier Drop Down -->
-            <label for="drop-1" class="toggle">WordPress +</label>
-            <a href="#">WordPress</a>
+        <li><a href="/">Головна</a></li>
+        <li sec:authorize="hasRole('ADMIN')">
+            <label for="drop-1" class="toggle">Викладачі +</label>
+            <a href="/professors">Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li><a href="#">Themes and stuff</a></li>
-                <li><a href="#">Plugins</a></li>
-                <li><a href="#">Tutorials</a></li>
+                <li><a href="/professors">Вказати посади, звання та ін.</a></li>
+                <li><a href="/professors/send">Розіслати документи</a></li>
             </ul>
-
         </li>
         <li>
-
-            <!-- First Tier Drop Down -->
-            <label for="drop-2" class="toggle">Web Design +</label>
-            <a href="#">Web Design</a>
+            <label for="drop-2" class="toggle">Налаштування акаунтів +</label>
+            <a href="#">Налаштування акаунтів</a>
             <input type="checkbox" id="drop-2"/>
             <ul>
-                <li><a href="#">Resources</a></li>
-                <li><a href="#">Links</a></li>
-                <li>
-
-                    <!-- Second Tier Drop Down -->
-                    <label for="drop-3" class="toggle">Tutorials +</label>
-                    <a href="#">Tutorials</a>
-                    <input type="checkbox" id="drop-3"/>
-
-                    <ul>
-                        <li><a href="#">HTML/CSS</a></li>
-                        <li><a href="#">jQuery</a></li>
-                        <li><a href="#">Other</a></li>
-                    </ul>
-                </li>
+                <li><a href="/user">Мій акаунт</a></li>
+                <li sec:authorize="hasRole('ADMIN')"><a href="/users">Активувати акауннти</a></li>
             </ul>
         </li>
-        <li><a href="#">Graphic Design</a></li>
-        <li><a href="#">Inspiration</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">About</a></li>
+        <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
 <div align="center">

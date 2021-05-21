@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http:/www.thymeleaf.org">
+<html  lang="ua"
+       xmlns:th="http:/www.thymeleaf.org"
+       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="ISO-8859-1">
     <title>Login - Company ABC</title>
 </head>
 <body>
+<nav>
+    <div id="logo">Study load docs</div>
+    <label for="drop" class="toggle">Menu</label>
+    <input type="checkbox" id="drop"/>
+    <ul class="menu">
+        <li><a href="/">???????</a></li>
+        <li sec:authorize="hasRole('ADMIN')">
+            <label for="drop-1" class="toggle">????????? +</label>
+            <a href="/professors">?????????</a>
+            <input type="checkbox" id="drop-1"/>
+            <ul>
+                <li><a href="/professors">??????? ??????, ?????? ?? ??.</a></li>
+                <li><a href="/professors/send">????????? ?????????</a></li>
+            </ul>
+        </li>
+        <li>
+            <label for="drop-2" class="toggle">???????????? ???????? +</label>
+            <a href="#">???????????? ????????</a>
+            <input type="checkbox" id="drop-2"/>
+            <ul>
+                <li><a href="/user">??? ??????</a></li>
+                <li sec:authorize="hasRole('ADMIN')"><a href="/users">?????????? ????????</a></li>
+            </ul>
+        </li>
+        <li><a href="/logout">?????</a></li>
+    </ul>
+</nav>
 <div>
     <form th:action="@{/login}" method="post" style="max-width: 400px; margin: 0 auto;">
         <p>
