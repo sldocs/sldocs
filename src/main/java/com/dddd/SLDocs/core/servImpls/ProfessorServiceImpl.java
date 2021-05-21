@@ -32,4 +32,20 @@ public class ProfessorServiceImpl implements ProfessorService {
     public Professor findByName(String name) {
         return professorRepository.getProfessorByName(name);
     }
+
+    @Override
+    public Professor getByID(long id) {
+        return professorRepository.getById(id);
+    }
+
+    @Override
+    public List<String> listIpFilenames(){
+        return professorRepository.listIpFilenames();
+    }
+
+    @Override
+    public List<Professor> listUnedited() {
+        return professorRepository.listUnedited();
+    }
+
 }

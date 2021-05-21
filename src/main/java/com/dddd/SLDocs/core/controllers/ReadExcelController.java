@@ -64,7 +64,6 @@ public class ReadExcelController {
         try{
             String space_regex = "\\s+";
             String[] res =workbook.getSheetAt(0).getRow(3).getCell(3).toString().split(space_regex);
-            System.out.println("test: " + res[0]);
             if(!res[0].equals("ПЛАН")){
                 return "bad_file";
             }

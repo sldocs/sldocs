@@ -3,6 +3,7 @@ package com.dddd.SLDocs.core.controllers;
 import com.dddd.SLDocs.core.entities.Faculty;
 import com.dddd.SLDocs.core.entities.Professor;
 import com.dddd.SLDocs.core.entities.views.PSL_VM;
+import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
 import com.dddd.SLDocs.core.servImpls.PSL_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
 import org.apache.commons.io.FileUtils;
@@ -12,27 +13,28 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequestMapping("/")
 public class WriteIPController {
     private final PSL_VMServiceImpl pls_vmService;
     private final ProfessorServiceImpl professorService;
+    private final FacultyServiceImpl facultyService;
 
-    public WriteIPController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService) {
+    public WriteIPController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService,
+                             FacultyServiceImpl facultyService) {
         this.pls_vmService = pls_vmService;
         this.professorService = professorService;
+        this.facultyService = facultyService;
     }
 
 
@@ -43,7 +45,9 @@ public class WriteIPController {
             List<Professor> professors = professorService.ListAll();
             XSSFRow row;
             XSSFCell cell;
-
+            File zipFile = new File("Vikladachi.zip");
+            FileOutputStream fos = new FileOutputStream(zipFile);
+            ZipOutputStream zipOS = new ZipOutputStream(fos);
             int last_vert_cell_sum;
             int rownum;
             for (Professor professor : professors) {
@@ -774,13 +778,39 @@ public class WriteIPController {
                     professor.setIp_file(FileUtils.readFileToByteArray(someFile));
                     professor.setIp_filename(someFile.getName());
                     professorService.save(professor);
+                    writeToZipFile(someFile.getName(),zipOS);
                 }
             }
+            Faculty faculty = facultyService.ListAll().get(0);
+            faculty.setIpzip_file(FileUtils.readFileToByteArray(zipFile));
+            faculty.setIpzip_filename(zipFile.getName());
+            facultyService.save(faculty);
+            zipOS.close();
+            fos.close();
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
         }
         System.out.println(System.currentTimeMillis() - m);
 
         return "redirect:/";
+    }
+    public static void writeToZipFile(String path, ZipOutputStream zipStream)
+            throws FileNotFoundException, IOException {
+
+        System.out.println("Writing file : '" + path + "' to zip file");
+
+        File aFile = new File(path);
+        FileInputStream fis = new FileInputStream(aFile);
+        ZipEntry zipEntry = new ZipEntry(path);
+        zipStream.putNextEntry(zipEntry);
+
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zipStream.write(bytes, 0, length);
+        }
+
+        zipStream.closeEntry();
+        fis.close();
     }
 }

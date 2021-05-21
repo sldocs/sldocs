@@ -16,12 +16,16 @@ public class Faculty {
     private String name;
     private String eas_filename;
     private String psl_filename;
+    private String ipzip_filename;
     @Lob
     @Column
     private byte[] eas_file;
     @Lob
     @Column
     private byte[] psl_file;
+    @Lob
+    @Column
+    private byte[] ipzip_file;
 
     @OneToMany(mappedBy = "faculty", cascade = {CascadeType.ALL})
     private Set<Department> departments = new HashSet<>();
@@ -88,5 +92,21 @@ public class Faculty {
 
     public void setDepartments(Set<Department> departments) {
         this.departments = departments;
+    }
+
+    public String getIpzip_filename() {
+        return ipzip_filename;
+    }
+
+    public void setIpzip_filename(String ipzip_filename) {
+        this.ipzip_filename = ipzip_filename;
+    }
+
+    public byte[] getIpzip_file() {
+        return ipzip_file;
+    }
+
+    public void setIpzip_file(byte[] ipzip_file) {
+        this.ipzip_file = ipzip_file;
     }
 }

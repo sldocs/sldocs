@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <title>Title</title>
-  </head>
-<body>
+    <meta charset="UTF-8">
+    <title>Пук</title>
+</head>
 <nav>
     <div id="logo">Your Logo here</div>
 
@@ -55,43 +53,7 @@
         <li><a href="#">About</a></li>
     </ul>
 </nav>
-<div align="center">
-    <p>1. Зчитайте навантаження у базу даних</p>
-
-    <form  th:action="@{/upload}" method="post" enctype="multipart/form-data">
-        <div>
-            <label for="file">Оберіть файл для зчитування</label>
-            <input type="file" id="file" name="file">
-        </div>
-        <div>
-            <button>Зчитати у базу даних</button>
-        </div>
-    </form>
-
-    <p>2. Вкажіть посади, звання, ставки зчитаним викладачам</p>
-    <a href="/professors">Перелік викладачів</a>
-
-    <p>3. Сформуйте необхідні файли</p>
-    <form th:action="@{/EdAsSt}" method="post">
-        <input type="submit" value="Сформувати відомість учбових доручень"/>
-    </form>
-    <form th:action="@{/downloadEAS}">
-        <input type="submit" value="Завантажити"/>
-    </form>
-    <form th:action="@{/PSL}" method="post">
-        <input type="submit" value="Сформувати розподіл навантаження по викладачам"/>
-    </form>
-    <form th:action="@{/downloadPSL}">
-        <input type="submit" value="Завантажити"/>
-    </form>
-    <form th:action="@{/IP}" method="post">
-        <input type="submit" value="Сформувати індивідуальні плани"/>
-    </form>
-    <form th:action="@{/downloadProfZip}">
-        <input type="submit" value="Завантажити"/>
-    </form>
-
-</div>
+<p>Пук пуук..(</p>
 </body>
 <style>
     @import url(https://fonts.googleapis.com/css?family=Open+Sans);
@@ -370,5 +332,5 @@
         }
 
     }
-</style>
+</style>body>
 </html>
