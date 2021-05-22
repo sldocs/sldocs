@@ -22,8 +22,8 @@
             <ul>
                 <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors">Вказати посади, звання та ін.</a>
                 </li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors/send">Розіслати документи</a></li>
-                <li sec:authorize="hasAnyAuthority('USER')"><a href="/professors/get">Завантажити індивідуальний
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors/docs">Розіслати документи</a></li>
+                <li sec:authorize="hasAnyAuthority('USER')"><a href="/professor/get">Завантажити індивідуальний
                     план</a></li>
             </ul>
         </li>
@@ -79,17 +79,19 @@
                             <input type="submit" value="Сформувати документ"/>
                         </form>
                     </li>
-                    <li th:if="${eas==true}">
-                        <form th:action="@{/downloadEAS}">
-                            <input type="submit" value="Завантажити"/>
-                        </form>
-                    </li>
-                    <li>
-                        <form th:action="@{/sendTo}" method="post">
-                            <input type="text" th:name="to" value="someAddress@mail.com">
-                            <input type="submit" value="Надіслати"/>
-                        </form>
-                    </li>
+                    <div th:if="${eas==true}">
+                        <li>
+                            <form th:action="@{/downloadEAS}">
+                                <input type="submit" value="Завантажити"/>
+                            </form>
+                        </li>
+                        <li>
+                            <form th:action="@{/sendTo}" method="post">
+                                <input type="text" th:name="to" value="someAddress@mail.com">
+                                <input type="submit" value="Надіслати"/>
+                            </form>
+                        </li>
+                    </div>
                 </ul>
             </li>
             <li class="content__elem">

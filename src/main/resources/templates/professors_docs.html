@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html  lang="ua"
-       xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:th="https:/www.thymeleaf.org"
-       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="ua"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Company ABC</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <title>Title</title>
 </head>
 <body>
 <nav>
@@ -42,23 +42,39 @@
             <input type="checkbox" id="drop-3"/>
             <ul>
                 <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/delete">Очистити БД(Усе зчитане)</a></li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWithoutProfs">Очистити БД(викладачі залишаться)</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWithoutProfs">Очистити БД(викладачі
+                    залишаться)</a></li>
             </ul>
         </li>
         <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
-<div class="login">
-    <form th:action="@{/login}" method="post">
-        <div>
-            E-mail: <input type="email" name="username" required />
-        </div>
-        <div>
-            Password: <input type="password" name="password" required />
-            <input type="submit" value="Login" />
-        </div>
+<div align="center">
+    <p>Надіслати усім заповненим або окремим викладачам</p>
+    <form th:action="@{/professor/sendAll}" method="post">
+        <td><input type="submit" value="Надіслати усім"/></td>
     </form>
+
+    <table style="border-color:#254441;" class="table__prof" border="1" cellpadding="10">
+        <thead>
+        <tr>
+            <th>Викладач</th>
+            <th>Електронна пошта</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="professor : ${professors}">
+            <form th:action="@{/professor/sendTo}" method="post">
+                <input type="hidden" th:name="name" th:value="*{professor.name}"/>
+                <input type="hidden" th:name="email" th:value="*{professor.email_address}"/>
+                <td th:text="*{professor.name}"></td>
+                <td th:text="*{professor.email_address}"><input type="hidden" th:name="email"/></td>
+                <td><input type="submit" value="Надіслати"/></td>
+            </form>
+        </tr>
+
+        </tbody>
+    </table>
 </div>
 </body>
-
 </html>

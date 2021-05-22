@@ -4,6 +4,8 @@ import com.dddd.SLDocs.core.entities.Faculty;
 import com.dddd.SLDocs.core.entities.Professor;
 import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
 import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
+import com.dddd.SLDocs.core.utils.email.Sender;
+import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -54,8 +57,21 @@ public class ProfessorController {
         return "professors";
     }
 
+    @RequestMapping("/professors/docs")
+    public String viewProfDocsSendPage(Model model) {
+        List<Professor> professors = professorService.listUnedited();
+        model.addAttribute("professors", professors);
+        return "professors_docs";
+    }
+
     @RequestMapping("/professor/sendTo")
-    public String sendProfTo(@RequestParam("to") String to) {
+    public String sendProfTo(@RequestParam("name") String name, @RequestParam("email") String email) {
+        Sender.Send(email, professorService.findByName(name).getIp_filename());
+        return "redirect:/professor/docs";
+    }
+
+    @RequestMapping("/professor/sendAll")
+    public String sendToAll() {
         List<File> fileList;
         return "";
     }

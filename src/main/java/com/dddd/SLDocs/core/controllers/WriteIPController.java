@@ -688,7 +688,7 @@ public class WriteIPController {
                         last_vert_cell_sum = rownum - 1;
                         for (String sum : sums) {
                             cell = row.createCell(cell_count++);
-                            cell.setCellFormula("ROUND(SUM(" + sum + autumn_sum + ":" + sum + last_vert_cell_sum + "),0)");
+                            cell.setCellFormula("ROUND(SUM(" + sum + autumn_sum+1 + ":" + sum + last_vert_cell_sum + "),0)");
                             cell.setCellStyle(style12ThickBotTop);
                         }
                         cell = row.createCell(cell_count++);

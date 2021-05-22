@@ -27,7 +27,7 @@ public class Sender {
         multipart.addBodyPart(messageBodyPart);
     }
 
-    public static void Send(String to, List<File> list) {
+    public static void Send(String to, String filename) {
         String from = "studyloaddocs@gmail.com";
         Properties props = new Properties();
         props.put("mail.smtp.user", "username");
@@ -51,9 +51,9 @@ public class Sender {
             BodyPart messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText("Mail Body");
             Multipart multipart = new MimeMultipart();
-            for (File file : list) {
-                addFile(file.getAbsolutePath(), multipart, file.getName());
-            }
+            DataSource source = new FileDataSource(filename);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(filename);
             multipart.addBodyPart(messageBodyPart);
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
