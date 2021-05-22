@@ -6,7 +6,6 @@ public class StudyLoad {
     private Department department;
     private Discipline discipline;
     private Faculty faculty;
-    private Group group;
     private Professor professor;
     private Specialty specialty;
 
@@ -16,7 +15,6 @@ public class StudyLoad {
         department = new Department();
         discipline = new Discipline();
         faculty = new Faculty();
-        group = new Group();
         professor = new Professor();
         specialty = new Specialty();
     }
@@ -51,14 +49,6 @@ public class StudyLoad {
 
     public void setFaculty(Faculty faculty) {
         this.faculty = faculty;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
     }
 
     public Professor getProfessor() {

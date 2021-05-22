@@ -8,4 +8,5 @@ public interface CurriculumService {
 
     List<Curriculum> ListAll();
     void save(Curriculum curriculum);
+    void deleteAll();
 }

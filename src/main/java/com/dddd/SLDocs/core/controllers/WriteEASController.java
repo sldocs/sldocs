@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
-@RequestMapping("/")
 public class WriteEASController {
 
     private final String comma_regex = ",";
@@ -31,7 +30,7 @@ public class WriteEASController {
         this.facultyService = facultyService;
     }
 
-    @RequestMapping("EdAsSt")
+    @RequestMapping("/EdAsSt")
     public String createExcel() {
         try {
             FileInputStream inputStream = new FileInputStream(new File("EdAsStExample.xlsx"));
@@ -118,31 +117,31 @@ public class WriteEASController {
 
         for (int i = 0; i < data.size(); i++) {
 
-            if ((!(data.get(i).getLec_hours().equals("") | data.get(i).getLec_hours().equals("0.0"))) &&
-                    (data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0")) &&
-                    (data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0"))) {
+            if ((!(data.get(i).getLec_hours().equals("") || data.get(i).getLec_hours().equals("0.0"))) &&
+                    (data.get(i).getLab_hours().equals("") || data.get(i).getLab_hours().equals("0.0")) &&
+                    (data.get(i).getPract_hours().equals("") || data.get(i).getPract_hours().equals("0.0"))) {
                 rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
             } else {
-                if ((!(data.get(i).getLec_hours().equals("") | data.get(i).getLec_hours().equals("0.0"))) &&
-                        (!(data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0"))) &&
-                        (data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0"))) {
+                if ((!(data.get(i).getLec_hours().equals("") || data.get(i).getLec_hours().equals("0.0"))) &&
+                        (!(data.get(i).getLab_hours().equals("") || data.get(i).getLab_hours().equals("0.0"))) &&
+                        (data.get(i).getPract_hours().equals("") || data.get(i).getPract_hours().equals("0.0"))) {
                     rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
 
                     rowCount = writeLab_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
                 } else {
-                    if ((!(data.get(i).getLec_hours().equals("") | data.get(i).getLec_hours().equals("0.0"))) &&
-                            (data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0")) &&
-                            (!(data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0")))) {
+                    if ((!(data.get(i).getLec_hours().equals("") || data.get(i).getLec_hours().equals("0.0"))) &&
+                            (data.get(i).getLab_hours().equals("") || data.get(i).getLab_hours().equals("0.0")) &&
+                            (!(data.get(i).getPract_hours().equals("") || data.get(i).getPract_hours().equals("0.0")))) {
                         rowCount = writeLec_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
 
                         rowCount = writePract_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
                     } else {
-                        if ((!(data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0"))) &&
-                                ((data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0")))) {
+                        if ((!(data.get(i).getLab_hours().equals("") || data.get(i).getLab_hours().equals("0.0"))) &&
+                                ((data.get(i).getPract_hours().equals("") || data.get(i).getPract_hours().equals("0.0")))) {
                             rowCount = writeLab_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
                         } else {
-                            if ((data.get(i).getLab_hours().equals("") | data.get(i).getLab_hours().equals("0.0")) &&
-                                    ((!(data.get(i).getPract_hours().equals("") | data.get(i).getPract_hours().equals("0.0"))))) {
+                            if ((data.get(i).getLab_hours().equals("") || data.get(i).getLab_hours().equals("0.0")) &&
+                                    ((!(data.get(i).getPract_hours().equals("") || data.get(i).getPract_hours().equals("0.0"))))) {
                                 rowCount = writePract_hours(font, style, sheet, rowCount, data, i, divider, rowAutoHeightStyle);
                             }
                         }
@@ -250,7 +249,7 @@ public class WriteEASController {
             while (matcher.find()) {
                 if (Character.isDigit(matcher.group(3).charAt(0))) {
                     if (!matcher.group(4).equals("") && matcher.group(4).length() > 1) {
-                        if (matcher.group(4).charAt(0) == 'і' | matcher.group(4).charAt(1) == 'і' | matcher.group(4).charAt(1) == 'е' | matcher.group(4).charAt(1) == '.') {
+                        if (matcher.group(4).charAt(0) == 'і' || matcher.group(4).charAt(1) == 'і' || matcher.group(4).charAt(1) == 'е' || matcher.group(4).charAt(1) == '.') {
                             rowCount = writePract_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
                         } else {
                             for (int i1 = 0; i1 < matcher.group(4).length(); i1++) {
@@ -336,7 +335,7 @@ public class WriteEASController {
             while (matcher.find()) {
                 if (Character.isDigit(matcher.group(3).charAt(0))) {
                     if (!matcher.group(4).equals("") && matcher.group(4).length() > 1) {
-                        if (matcher.group(4).charAt(0) == 'і' | matcher.group(4).charAt(1) == 'і' | matcher.group(4).charAt(1) == 'е' | matcher.group(4).charAt(1) == '.') {
+                        if (matcher.group(4).charAt(0) == 'і' || matcher.group(4).charAt(1) == 'і' || matcher.group(4).charAt(1) == 'е' || matcher.group(4).charAt(1) == '.') {
                             rowCount = writeLab_hours_inner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
                         } else {
                             for (int i1 = 0; i1 < matcher.group(4).length(); i1++) {

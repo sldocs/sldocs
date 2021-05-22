@@ -12,7 +12,7 @@ import java.util.List;
 @Transactional
 public class FacultyServiceImpl implements FacultyService {
 
-    private FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
     public FacultyServiceImpl(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
@@ -31,5 +31,10 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public Faculty findByName(String name) {
         return facultyRepository.getFacultyByName(name);
+    }
+
+    @Override
+    public void deleteAll() {
+        facultyRepository.deleteAll();
     }
 }

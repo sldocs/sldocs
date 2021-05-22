@@ -12,7 +12,7 @@ import java.util.List;
 @Transactional
 public class ProfessorServiceImpl implements ProfessorService {
 
-    private ProfessorRepository professorRepository;
+    private final ProfessorRepository professorRepository;
 
     public ProfessorServiceImpl(ProfessorRepository professorRepository) {
         this.professorRepository = professorRepository;
@@ -46,6 +46,11 @@ public class ProfessorServiceImpl implements ProfessorService {
     @Override
     public List<Professor> listUnedited() {
         return professorRepository.listUnedited();
+    }
+
+    @Override
+    public void deleteAll() {
+        professorRepository.deleteAll();
     }
 
 }

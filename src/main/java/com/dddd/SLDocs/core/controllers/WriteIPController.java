@@ -24,7 +24,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Controller
-@RequestMapping("/")
 public class WriteIPController {
     private final PSL_VMServiceImpl pls_vmService;
     private final ProfessorServiceImpl professorService;
@@ -38,7 +37,7 @@ public class WriteIPController {
     }
 
 
-    @RequestMapping("IP")
+    @RequestMapping("/IP")
     public String createExcel() {
         long m = System.currentTimeMillis();
         try {
@@ -213,7 +212,7 @@ public class WriteIPController {
                     XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
                     rowAutoHeightStyle.setWrapText(true);
                     if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0
-                            | pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
+                            || pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
                         if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("1", professor.getName());
                         } else {

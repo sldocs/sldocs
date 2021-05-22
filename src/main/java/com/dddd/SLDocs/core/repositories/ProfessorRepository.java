@@ -2,12 +2,17 @@ package com.dddd.SLDocs.core.repositories;
 
 import com.dddd.SLDocs.core.entities.Professor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface ProfessorRepository extends JpaRepository<Professor,Long> {
+
+    @Modifying
+    @Query("delete from Professor p")
+    void deleteAll();
 
     @Query("SELECT u FROM Professor u WHERE u.name = :name")
     Professor getProfessorByName(@Param("name") String name);

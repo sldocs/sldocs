@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public class SpecialtyServiceImpl implements SpecialtyService {
 
-    private SpecialtyRepository specialtyRepository;
+    private final SpecialtyRepository specialtyRepository;
 
     public SpecialtyServiceImpl(SpecialtyRepository specialtyRepository) {
         this.specialtyRepository = specialtyRepository;
@@ -32,5 +32,10 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     @Override
     public Specialty findByName(String name) {
         return specialtyRepository.getSpecialtyByName(name);
+    }
+
+    @Override
+    public void deleteAll() {
+        specialtyRepository.deleteAll();
     }
 }

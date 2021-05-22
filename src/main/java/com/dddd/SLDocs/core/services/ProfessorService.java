@@ -14,4 +14,6 @@ public interface ProfessorService {
     Professor getByID(long id);
     List<String> listIpFilenames();
     List<Professor> listUnedited();
+    void deleteAll();
+
 }

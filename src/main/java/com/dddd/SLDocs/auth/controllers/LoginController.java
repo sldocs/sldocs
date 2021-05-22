@@ -1,13 +1,11 @@
 package com.dddd.SLDocs.auth.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class LoginController {
-    @GetMapping("/login")
+    @RequestMapping(path="/login", method = RequestMethod.GET)
     public String viewLoginPage() {
         return "login";
     }

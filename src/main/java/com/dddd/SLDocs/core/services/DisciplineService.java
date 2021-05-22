@@ -11,4 +11,5 @@ public interface DisciplineService {
     List<Discipline> ListAll();
     void save(Discipline discipline);
     Discipline findByName(String name);
+    void deleteAll();
 }

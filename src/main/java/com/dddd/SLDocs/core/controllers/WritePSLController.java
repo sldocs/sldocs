@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
 public class WritePSLController {
 
     private final PSL_VMServiceImpl pls_vmService;
@@ -36,7 +35,7 @@ public class WritePSLController {
         this.facultyService = facultyService;
     }
 
-    @RequestMapping("PSL")
+    @RequestMapping("/PSL")
     public String writePSL() {
 
         long m = System.currentTimeMillis();
@@ -162,7 +161,7 @@ public class WritePSLController {
                 if (!professor.getName().equals("")) {
                     List<PSL_VM> psl_vmList;
                     if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0
-                            | pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
+                            || pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
                         XSSFSheet sheet = workbook.cloneSheet(1, professor.getName());
                         row = sheet.getRow(2);
                         cell = row.getCell(0);

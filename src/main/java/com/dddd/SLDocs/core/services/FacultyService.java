@@ -10,4 +10,5 @@ public interface FacultyService {
     List<Faculty> ListAll();
     void save(Faculty faculty);
     Faculty findByName(String name);
+    void deleteAll();
 }

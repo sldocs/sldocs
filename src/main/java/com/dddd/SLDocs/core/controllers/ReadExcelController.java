@@ -201,10 +201,15 @@ public class ReadExcelController {
                 studyLoad.getCurriculum().setYear(dep_fac_sem.get(4).toString());
                 studyLoad.getCurriculum().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
 
+
+
                 if (professorService.findByName(arrayList.get(35).toString()) == null) {
-                    studyLoad.getProfessor().setName(arrayList.get(35).toString());
-                    professorService.save(studyLoad.getProfessor());
-                    studyLoad.getCurriculum().getProfessors().add(studyLoad.getProfessor());
+                    if(!(arrayList.get(35).toString().equals("")||arrayList.get(35).toString().isEmpty())
+                            ||!(arrayList.get(35).toString().equals("курсові"))){
+                        studyLoad.getProfessor().setName(arrayList.get(35).toString());
+                        professorService.save(studyLoad.getProfessor());
+                        studyLoad.getCurriculum().getProfessors().add(studyLoad.getProfessor());
+                    }
                 } else {
                     studyLoad.getCurriculum().getProfessors().add(professorService.findByName(arrayList.get(35).toString()));
                 }

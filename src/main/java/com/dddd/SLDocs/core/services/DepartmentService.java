@@ -10,4 +10,5 @@ public interface DepartmentService {
     List<Department> ListAll();
     void save(Department department);
     Department findByName(String name);
+    void deleteAll();
 }

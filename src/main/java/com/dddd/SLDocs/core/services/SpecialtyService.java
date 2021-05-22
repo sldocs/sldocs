@@ -10,4 +10,6 @@ public interface SpecialtyService {
     List<Specialty> ListAll();
     void save(Specialty specialty);
     Specialty findByName(String name);
+    void deleteAll();
+
 }

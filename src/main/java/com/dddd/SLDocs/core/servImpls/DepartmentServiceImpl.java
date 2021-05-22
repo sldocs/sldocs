@@ -12,7 +12,7 @@ import java.util.List;
 @Transactional
 public class DepartmentServiceImpl implements DepartmentService {
 
-    private DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;
 
     public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
@@ -31,5 +31,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Department findByName(String name) {
         return departmentRepository.getDepartmentByName(name);
+    }
+
+    @Override
+    public void deleteAll() {
+        departmentRepository.deleteAll();
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @Transactional
 public class CurriculumServiceImpl implements CurriculumService {
 
-    private CurriculumRepository curriculumRepository;
+    private final CurriculumRepository curriculumRepository;
 
     public CurriculumServiceImpl(CurriculumRepository curriculumRepository) {
         this.curriculumRepository = curriculumRepository;
@@ -26,6 +26,11 @@ public class CurriculumServiceImpl implements CurriculumService {
     @Override
     public void save(Curriculum curriculum) {
         curriculumRepository.save(curriculum);
+    }
+
+    @Override
+    public void deleteAll() {
+        curriculumRepository.deleteAll();
     }
 
 }

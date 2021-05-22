@@ -12,7 +12,7 @@ import java.util.List;
 @Transactional
 public class DisciplineServiceImpl implements DisciplineService {
 
-    private DisciplineRepository disciplineRepository;
+    private final DisciplineRepository disciplineRepository;
 
     public DisciplineServiceImpl(DisciplineRepository disciplineRepository) {
         this.disciplineRepository = disciplineRepository;
@@ -31,5 +31,10 @@ public class DisciplineServiceImpl implements DisciplineService {
     @Override
     public Discipline findByName(String name) {
         return disciplineRepository.getDisciplineByName(name);
+    }
+
+    @Override
+    public void deleteAll() {
+        disciplineRepository.deleteAll();
     }
 }
