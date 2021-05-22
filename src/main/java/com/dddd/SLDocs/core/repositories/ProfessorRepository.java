@@ -23,8 +23,8 @@ public interface ProfessorRepository extends JpaRepository<Professor,Long> {
     @Query("SELECT u.ip_filename FROM Professor u")
     List<String> listIpFilenames();
 
-    @Query("SELECT u FROM Professor u WHERE u.posada IS NULL OR u.posada='' OR u.nauk_stupin IS NULL OR u.nauk_stupin='' " +
+    @Query(value="SELECT * FROM Professor as u WHERE u.posada IS NULL OR u.posada='' OR u.nauk_stupin IS NULL OR u.nauk_stupin='' " +
             "OR u.vch_zvana IS NULL OR u.vch_zvana='' OR u.stavka IS NULL OR  u.stavka='' OR u.email_address IS NULL " +
-            "OR u.email_address='' ORDER BY u.name")
+            "OR u.email_address='' AND u.name NOT LIKE 'курсов%' AND NOT u.name='' OR u.name IS NULL ORDER BY u.name", nativeQuery = true)
     List<Professor> listUnedited();
 }

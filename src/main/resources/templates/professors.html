@@ -15,78 +15,100 @@
     <input type="checkbox" id="drop"/>
     <ul class="menu">
         <li><a href="/">Головна</a></li>
-        <li sec:authorize="hasRole('ADMIN')">
+        <li>
             <label for="drop-1" class="toggle">Викладачі +</label>
-            <a href="/professors">Викладачі</a>
+            <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li><a href="/professors">Вказати посади, звання та ін.</a></li>
-                <li><a href="/professors/send">Розіслати документи</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors">Вказати посади, звання та ін.</a>
+                </li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors/send">Розіслати документи</a></li>
+                <li sec:authorize="hasAnyAuthority('USER')"><a href="/professors/get">Завантажити індивідуальний
+                    план</a></li>
             </ul>
         </li>
         <li>
-            <label for="drop-2" class="toggle">Налаштування акаунтів +</label>
+            <label for="drop-2" class="toggle">Налаштування акаунтів</label>
             <a href="#">Налаштування акаунтів</a>
             <input type="checkbox" id="drop-2"/>
             <ul>
                 <li><a href="/user">Мій акаунт</a></li>
-                <li sec:authorize="hasRole('ADMIN')"><a href="/users">Активувати акауннти</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/users">Активувати акауннти</a></li>
+            </ul>
+        </li>
+        <li>
+            <label for="drop-2" class="toggle">Налаштування бази даних</label>
+            <a href="#">Налаштування бд</a>
+            <input type="checkbox" id="drop-3"/>
+            <ul>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/delete">Очистити БД(Усе зчитане)</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWithoutProfs">Очистити БД(викладачі залишаться)</a></li>
             </ul>
         </li>
         <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
 <div align="center">
-    <table>
-        <tr class="tableHeads">
-            <td>Посади: </td>
-            <td>Наукові ступені: </td>
-            <td>Вчені звання: </td>
-            <td>Ставки: </td>
-            <td>Примітки: </td>
-        </tr>
-        <tr class="tableBody">
-            <td>
-               <ul>
-                   <li>Завідувач кафедри</li>
-                   <li>Професор</li>
-                   <li>Доцент</li>
-                   <li>Старший викладач</li>
-                   <li>Асистент</li>
-               </ul>
-            </td>
-            <td>
-                <ul>
-                    <li>к.т.н.</li>
+    <div class="content">
+        <ul class="content__list">
+            <li class="content__elem">
+                <div class="content__title">
+                    Посади:
+                </div>
+                <ul class="content__text">
+                    <li>Завідувач кафедри</li>
+                    <li>Професор</li>
+                    <li>Доцент</li>
+                    <li>Старший викладач</li>
+                    <li>Асистент</li>
                 </ul>
-            </td>
-            <td>
-                <ul>
+            </li>
+            <li class="content__elem">
+                <div class="content__title">
+                    Наукові ступені:
+                </div>
+                <ul class="content__text">
+                    <li>к.т.н.</li>
+
+                </ul>
+            </li>
+            <li class="content__elem">
+                <div class="content__title">
+                    Вчені звання:
+                </div>
+                <ul class="content__text">
                     <li>Професор</li>
                     <li>Доцент</li>
                     <li>Старший науковий співробітник</li>
                     <li>Старший дослідник</li>
                 </ul>
-            </td>
-            <td>
-                <ul>
+            </li>
+            <li class="content__elem">
+                <div class="content__title">
+                    Ставки:
+                </div>
+                <ul class="content__text">
                     <li>1.5</li>
                     <li>1.25</li>
                     <li>1</li>
                     <li>0.5</li>
                     <li>0.25</li>
                 </ul>
-            </td>
-            <td>
-                <ul>
-                    <li>Штат.</li>
-                    <li>Внутрішній сумісник</li>
-                    <li>Зовнішній сумісник</li>
+            </li>
+            <li class="content__elem">
+                <div class="content__title">
+                    Примітки:
+                </div>
+                <ul class="content__text">
+                    <li class="content__text-elem">Штат.</li>
+                    <li class="content__text-elem">Внутрішній сумісник</li>
+                    <li class="content__text-elem">Зовнішній сумісник</li>
                 </ul>
-            </td>
-        </tr>
-    </table>
-    <table border="1" cellpadding="10">
+            </li>
+        </ul>
+    </div>
+
+    <table style="border-color:#254441;" class="table__prof" border="1" cellpadding="10">
         <thead>
         <tr>
             <th>Викладач</th>
@@ -95,7 +117,7 @@
             <th>Вчене звання</th>
             <th>Ставка</th>
             <th>Примітка</th>
-            <th>Електронна поштова скринька</th>
+            <th>Електронна пошта</th>
         </tr>
         </thead>
         <tbody>

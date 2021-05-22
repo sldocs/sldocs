@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -98,9 +99,10 @@ public class IndexController {
     }
 
     @GetMapping(value = "/downloadProfZip", produces = "application/zip")
-    public void downloadIpZip(HttpServletResponse response) {
-        Faculty faculty = facultyService.ListAll().get(0);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + faculty.getIpzip_filename() + "\"");
+    public ResponseEntity downloadIpZip() {
+        return ResponseEntity.ok()
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + facultyService.ListAll().get(0).getIpzip_filename() + "\"")
+                .body(facultyService.ListAll().get(0).getIpzip_file());
     }
 }

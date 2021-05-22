@@ -202,10 +202,13 @@ public class ReadExcelController {
                 studyLoad.getCurriculum().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
 
 
-
+                if(arrayList.get(35).toString().equals("курсові")) {
+                    System.out.println("Викладач: " + arrayList.get(35).toString());
+                    System.out.println("empty: " + !(arrayList.get(35).toString().equals("") || arrayList.get(35).toString().isEmpty()));
+                    System.out.println("kursov: " + (arrayList.get(35).toString().equals("курсові")));
+                }
                 if (professorService.findByName(arrayList.get(35).toString()) == null) {
-                    if(!(arrayList.get(35).toString().equals("")||arrayList.get(35).toString().isEmpty())
-                            ||!(arrayList.get(35).toString().equals("курсові"))){
+                    if(!(arrayList.get(35).toString().equals("")||arrayList.get(35).toString().equals("курсові"))){
                         studyLoad.getProfessor().setName(arrayList.get(35).toString());
                         professorService.save(studyLoad.getProfessor());
                         studyLoad.getCurriculum().getProfessors().add(studyLoad.getProfessor());

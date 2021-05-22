@@ -781,10 +781,12 @@ public class WriteIPController {
                 }
             }
             Faculty faculty = facultyService.ListAll().get(0);
+            zipOS.flush();
+            zipOS.close();
             faculty.setIpzip_file(FileUtils.readFileToByteArray(zipFile));
             faculty.setIpzip_filename(zipFile.getName());
             facultyService.save(faculty);
-            zipOS.close();
+
             fos.close();
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();

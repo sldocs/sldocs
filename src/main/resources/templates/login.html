@@ -4,7 +4,7 @@
        xmlns:th="https:/www.thymeleaf.org"
        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <meta charset="ISO-8859-1">
+    <meta charset="UTF-8">
     <title>Login - Company ABC</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
@@ -14,26 +14,38 @@
     <label for="drop" class="toggle">Menu</label>
     <input type="checkbox" id="drop"/>
     <ul class="menu">
-        <li><a href="/">???????</a></li>
-        <li >
-            <label for="drop-1" class="toggle">????????? +</label>
-            <a href="/professors">?????????</a>
+        <li><a href="/">Головна</a></li>
+        <li>
+            <label for="drop-1" class="toggle">Викладачі +</label>
+            <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li><a href="/professors">??????? ??????, ?????? ?? ??.</a></li>
-                <li><a href="/professors/send">????????? ?????????</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors">Вказати посади, звання та ін.</a>
+                </li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors/send">Розіслати документи</a></li>
+                <li sec:authorize="hasAnyAuthority('USER')"><a href="/professors/get">Завантажити індивідуальний
+                    план</a></li>
             </ul>
         </li>
         <li>
-            <label for="drop-2" class="toggle">???????????? ???????? +</label>
-            <a href="#">???????????? ????????</a>
+            <label for="drop-2" class="toggle">Налаштування акаунтів</label>
+            <a href="#">Налаштування акаунтів</a>
             <input type="checkbox" id="drop-2"/>
             <ul>
-                <li><a href="/user">??? ??????</a></li>
-                <li sec:authorize="hasRole('ADMIN')"><a href="/users">?????????? ????????</a></li>
+                <li><a href="/user">Мій акаунт</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/users">Активувати акауннти</a></li>
             </ul>
         </li>
-        <li><a href="/logout">?????</a></li>
+        <li>
+            <label for="drop-2" class="toggle">Налаштування бази даних</label>
+            <a href="#">Налаштування бд</a>
+            <input type="checkbox" id="drop-3"/>
+            <ul>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/delete">Очистити БД(Усе зчитане)</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWithoutProfs">Очистити БД(викладачі залишаться)</a></li>
+            </ul>
+        </li>
+        <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
 <div>

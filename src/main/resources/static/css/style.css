@@ -7,8 +7,46 @@ input[type="text"], textarea {
     background-color : #212121;
 }
 
-.tableHeads{
+ul,
+li {
+    padding: 0;
+    margin: 0;
+}
 
+.content__list {
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    width: 87%;
+}
+
+.content__elem {
+    width: 19%;
+    border: 1px solid #254441;
+    padding: 20px;
+    list-style: none;
+}
+
+.content__title {
+    padding: 10px 0 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #254441;
+}
+
+.content__text li {
+
+    padding-bottom: 15px;
+    margin-left: 25px;
+    font-size: 16px;
+}
+
+.content__text li:last-child {
+    padding-bottom: 0;
+}
+
+
+.table__prof table, td, tr{
+    border-color: #254441;
 }
 
 body {

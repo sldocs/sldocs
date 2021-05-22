@@ -42,7 +42,8 @@
             <input type="checkbox" id="drop-3"/>
             <ul>
                 <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/delete">Очистити БД(Усе зчитане)</a></li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWithoutProfs">Очистити БД(викладачі залишаться)</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWithoutProfs">Очистити БД(викладачі
+                    залишаться)</a></li>
             </ul>
         </li>
         <li><a href="/logout">Вийти</a></li>
@@ -65,57 +66,85 @@
     <a href="/professors">Перелік викладачів</a>
 
     <p>3. Сформуйте необхідні файли</p>
-    <table>
-        <tr>
-            <td>Відомість учбових доручень</td>
-            <td>Навантаження по викладачах</td>
-            <td>індивідуальні плани</td>
-        </tr>
-        <tr>
-            <td>
-                <form th:action="@{/EdAsSt}" method="post">
-                    <input type="submit" value="Сформувати документ"/>
-                </form>
-                <div th:if="${eas==true}">
-                    <form th:action="@{/downloadEAS}">
-                        <input type="submit" value="Завантажити"/>
-                    </form>
-                    <form th:action="@{/sendTo}" method="post">
-                        <input type="text" th:name="to" value="someAddress@mail.com">
-                        <input type="submit" value="Відправити"/>
-                    </form>
+
+    <div class="content">
+        <ul class="content__list">
+            <li class="content__elem">
+                <div class="content__title">
+                    Відомість учбових доручень:
                 </div>
-            </td>
-            <td>
-                <form th:action="@{/PSL}" method="post">
-                    <input type="submit" value="Сформувати документ"/>
-                </form>
-                <div th:if="${psl==true}">
-                    <form th:action="@{/downloadPSL}">
-                        <input type="submit" value="Завантажити"/>
-                    </form>
-                    <form th:action="@{/sendTo}" method="post">
-                        <input type="text" th:name="to" value="someAddress@mail.com">
-                        <input type="submit" value="Відправити"/>
-                    </form>
+                <ul class="content__text">
+                    <li>
+                        <form th:action="@{/EdAsSt}" method="post">
+                            <input type="submit" value="Сформувати документ"/>
+                        </form>
+                    </li>
+                    <li th:if="${eas==true}">
+                        <form th:action="@{/downloadEAS}">
+                            <input type="submit" value="Завантажити"/>
+                        </form>
+                    </li>
+                    <li>
+                        <form th:action="@{/sendTo}" method="post">
+                            <input type="text" th:name="to" value="someAddress@mail.com">
+                            <input type="submit" value="Надіслати"/>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+            <li class="content__elem">
+                <div class="content__title">
+                    Навантаження по викладачх:
                 </div>
-            </td>
-            <td>
-                <form th:action="@{/IP}" method="post">
-                    <input type="submit" value="Сформувати документ"/>
-                </form>
-                <div th:if="${ip==true}">
-                    <form th:action="@{/downloadProfZip}">
-                        <input type="submit" value="Завантажити"/>
-                    </form>
-                    <form th:action="@{/sendTo}" method="post">
-                        <input type="text" th:name="to" value="someAddress@mail.com">
-                        <input type="submit" value="Відправити"/>
-                    </form>
+                <ul class="content__text">
+                    <li>
+                        <form th:action="@{/PSL}" method="post">
+                            <input type="submit" value="Сформувати документ"/>
+                        </form>
+                    </li>
+                    <div th:if="${psl==true}">
+                        <li>
+                            <form th:action="@{/downloadPSL}">
+                                <input type="submit" value="Завантажити"/>
+                            </form>
+                        </li>
+                        <li>
+                            <form th:action="@{/sendTo}" method="post">
+                                <input type="text" th:name="to" value="someAddress@mail.com">
+                                <input type="submit" value="Надіслати"/>
+                            </form>
+                        </li>
+                    </div>
+
+                </ul>
+            </li>
+            <li class="content__elem">
+                <div class="content__title">
+                    Індивідуальні плани:
                 </div>
-            </td>
-        </tr>
-    </table>
+                <ul class="content__text">
+                    <li>
+                        <form th:action="@{/IP}" method="post">
+                            <input type="submit" value="Сформувати документ"/>
+                        </form>
+                    </li>
+                    <div th:if="${ip==true}">
+                        <li>
+                            <form th:action="@{/downloadProfZip}">
+                                <input type="submit" value="Завантажити"/>
+                            </form>
+                        </li>
+                        <li>
+                            <form th:action="@{/sendTo}" method="post">
+                                <input type="text" th:name="to" value="someAddress@mail.com">
+                                <input type="submit" value="Надіслати"/>
+                            </form>
+                        </li>
+                    </div>
+                </ul>
+            </li>
+        </ul>
+    </div>
 </div>
 <div sec:authorize="hasAnyAuthority('USER')">
     <p>1. Завантажте або отримайте на пошту</p>
