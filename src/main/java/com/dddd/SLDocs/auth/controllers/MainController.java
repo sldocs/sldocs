@@ -10,7 +10,7 @@ public class MainController implements ErrorController {
 
     @RequestMapping(value = PATH)
     public String error() {
-        return "500";
+        return "errors/500";
     }
 
     @Override

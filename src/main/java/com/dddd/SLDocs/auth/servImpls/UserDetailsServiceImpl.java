@@ -4,7 +4,9 @@ import com.dddd.SLDocs.auth.entities.User;
 import com.dddd.SLDocs.auth.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired

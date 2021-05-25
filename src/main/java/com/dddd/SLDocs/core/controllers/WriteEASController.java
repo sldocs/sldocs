@@ -6,12 +6,21 @@ import com.dddd.SLDocs.core.servImpls.EAS_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
+import org.apache.poi.poifs.crypt.EncryptionMode;
+import org.apache.poi.poifs.crypt.Encryptor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.*;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,12 +103,39 @@ public class WriteEASController {
             writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
 
             inputStream.close();
-
             File someFile = new File("Відомість_учбових_доручень.xlsx");
             FileOutputStream outputStream = new FileOutputStream(someFile);
             workbook.write(outputStream);
             workbook.close();
             outputStream.close();
+
+        /*try (POIFSFileSystem fs = new POIFSFileSystem()) {
+            EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile);
+            // EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile,
+            // CipherAlgorithm.aes192, HashAlgorithm.sha384, -1, -1, null);
+            Encryptor enc = info.getEncryptor();
+            enc.confirmPassword("hello");
+            // Read in an existing OOXML file and write to encrypted output stream
+            // don't forget to close the output stream otherwise the padding bytes aren't
+            // added
+            try (OPCPackage opc = OPCPackage.open(someFile, PackageAccess.READ_WRITE);
+                 OutputStream os = enc.getDataStream(fs)) {
+                opc.save(os);
+            } catch (InvalidFormatException | IOException | GeneralSecurityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            // Write out the encrypted version
+            try (FileOutputStream fos = new FileOutputStream(someFile)) {
+                fs.writeFilesystem(fos);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } catch (IOException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        }*/
             List<Faculty> faculties = facultyService.ListAll();
             faculties.get(0).setEas_file(FileUtils.readFileToByteArray(someFile));
             faculties.get(0).setEas_filename(someFile.getName());

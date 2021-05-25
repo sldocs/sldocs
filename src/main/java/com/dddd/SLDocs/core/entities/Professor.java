@@ -19,6 +19,7 @@ public class Professor {
     private String note;
     private String ip_filename;
     private String email_address;
+    private String emailed_date;
     @Lob
     @Column
     private byte[] ip_file;
@@ -115,5 +116,13 @@ public class Professor {
 
     public void setCurriculums(Set<Curriculum> curriculums) {
         this.curriculums = curriculums;
+    }
+
+    public String getEmailed_date() {
+        return emailed_date;
+    }
+
+    public void setEmailed_date(String emailed_date) {
+        this.emailed_date = emailed_date;
     }
 }

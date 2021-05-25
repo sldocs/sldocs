@@ -16,7 +16,7 @@
     <ul class="menu">
         <li><a href="/">Головна</a></li>
         <li>
-            <label for="drop-1" class="toggle">Викладачі +</label>
+            <label for="drop-1" class="toggle">Викладачі</label>
             <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
@@ -28,21 +28,12 @@
             </ul>
         </li>
         <li>
-            <label for="drop-2" class="toggle">Налаштування акаунтів</label>
-            <a href="#">Налаштування акаунтів</a>
-            <input type="checkbox" id="drop-2"/>
-            <ul>
-                <li><a href="/user">Мій акаунт</a></li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/users">Активувати акауннти</a></li>
-            </ul>
-        </li>
-        <li>
-            <label for="drop-2" class="toggle">Налаштування бази даних</label>
+            <label for="drop-3" class="toggle">Налаштування бази даних</label>
             <a href="#">Налаштування бд</a>
             <input type="checkbox" id="drop-3"/>
             <ul>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/delete">Очистити БД(Усе зчитане)</a></li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWithoutProfs">Очистити БД(викладачі
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/delete">Очистити БД (Усе зчитане)</a></li>
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWOProfs">Очистити БД (викладачі
                     залишаться)</a></li>
             </ul>
         </li>
@@ -85,12 +76,6 @@
                                 <input type="submit" value="Завантажити"/>
                             </form>
                         </li>
-                        <li>
-                            <form th:action="@{/sendTo}" method="post">
-                                <input type="text" th:name="to" value="someAddress@mail.com">
-                                <input type="submit" value="Надіслати"/>
-                            </form>
-                        </li>
                     </div>
                 </ul>
             </li>
@@ -108,12 +93,6 @@
                         <li>
                             <form th:action="@{/downloadPSL}">
                                 <input type="submit" value="Завантажити"/>
-                            </form>
-                        </li>
-                        <li>
-                            <form th:action="@{/sendTo}" method="post">
-                                <input type="text" th:name="to" value="someAddress@mail.com">
-                                <input type="submit" value="Надіслати"/>
                             </form>
                         </li>
                     </div>
@@ -136,16 +115,14 @@
                                 <input type="submit" value="Завантажити"/>
                             </form>
                         </li>
-                        <li>
-                            <form th:action="@{/sendTo}" method="post">
-                                <input type="text" th:name="to" value="someAddress@mail.com">
-                                <input type="submit" value="Надіслати"/>
-                            </form>
-                        </li>
                     </div>
                 </ul>
             </li>
         </ul>
+        <p>4. Надішліть готові файли на електронні адреси</p>
+        <a href="/professors/docs">Перелік викладачів для відправки</a>
+
+
     </div>
 </div>
 <div sec:authorize="hasAnyAuthority('USER')">

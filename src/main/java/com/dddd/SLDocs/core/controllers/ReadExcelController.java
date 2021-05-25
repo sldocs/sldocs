@@ -59,16 +59,21 @@ public class ReadExcelController {
     @RequestMapping("/read")
     public String read(@RequestParam("path") String path) throws IOException {
 
+        String[] parts = path.split("\\.");
+        if(!parts[1].equals("xlsx")){
+            return "errors/bad_file";
+        }
+
         FileInputStream fis = new FileInputStream(path);
         XSSFWorkbook workbook = new XSSFWorkbook(fis);
         try{
             String space_regex = "\\s+";
             String[] res =workbook.getSheetAt(0).getRow(3).getCell(3).toString().split(space_regex);
             if(!res[0].equals("ПЛАН")){
-                return "bad_file";
+                return "errors/bad_file";
             }
         }catch(Exception ex){
-            return "bad_file";
+            return "errors/bad_file";
         }
         long m = System.currentTimeMillis();
         for (int i = 0; i < 2; i++) {

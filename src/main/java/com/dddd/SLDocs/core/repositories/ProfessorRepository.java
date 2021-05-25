@@ -27,4 +27,7 @@ public interface ProfessorRepository extends JpaRepository<Professor,Long> {
             "OR u.vch_zvana IS NULL OR u.vch_zvana='' OR u.stavka IS NULL OR  u.stavka='' OR u.email_address IS NULL " +
             "OR u.email_address='' AND u.name NOT LIKE 'курсов%' AND NOT u.name='' OR u.name IS NULL ORDER BY u.name", nativeQuery = true)
     List<Professor> listUnedited();
+
+    @Query(value="SELECT u FROM Professor u WHERE u.email_address IS NOT NULL OR NOT u.email_address=''")
+    List<Professor> listWithEmails();
 }

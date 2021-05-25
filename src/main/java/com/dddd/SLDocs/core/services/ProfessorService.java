@@ -15,5 +15,6 @@ public interface ProfessorService {
     List<String> listIpFilenames();
     List<Professor> listUnedited();
     void deleteAll();
+    List<Professor> listWithEmails();
 
 }

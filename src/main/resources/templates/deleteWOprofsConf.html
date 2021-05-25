@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ua"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="https:/www.thymeleaf.org"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Company ABC</title>
+    <title>Видалення БД</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
 <body>
@@ -40,31 +40,19 @@
         <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
-<div class="login-page">
-    <div class="form">
-        <form th:action="@{/registration}" method="post" class="login-form">
-            <input type="text" placeholder="імейл" name="username"/>
-            <input type="password" name="password" id="password" placeholder="пароль"/>
-            <input type="password" id="confirm_password" placeholder="повторіть пароль"/>
-            <input type="submit" value="Зареєструватись"/>
-            <p class="message">Вже зареєстровані? <a href="/login">Увійти</a></p>
-        </form>
-    </div>
+<p>
+    Ви впевнені? Наступна дія видалить УСІ дані з БД, але залишить перелік викладачів.
+</p>
+<div align="center">
+    <form th:action="@{/deleteWithoutProfs}">
+        <input type="submit" value="Все одно видалити"/>
+    </form>
 </div>
+
+
+<p>
+    Або повернутись на головну.
+    <a href="/">На головну</a>
+</p>
 </body>
-<script>
-    var password = document.getElementById("password")
-        , confirm_password = document.getElementById("confirm_password");
-
-    function validatePassword(){
-        if(password.value !== confirm_password.value) {
-            confirm_password.setCustomValidity("Passwords Don't Match");
-        } else {
-            confirm_password.setCustomValidity('');
-        }
-    }
-
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
-</script>
 </html>

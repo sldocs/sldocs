@@ -44,7 +44,7 @@ public class WriteIPController {
             List<Professor> professors = professorService.ListAll();
             XSSFRow row;
             XSSFCell cell;
-            File zipFile = new File("Vikladachi.zip");
+            File zipFile = new File("Інд_плани.zip");
             FileOutputStream fos = new FileOutputStream(zipFile);
             ZipOutputStream zipOS = new ZipOutputStream(fos);
             int last_vert_cell_sum;
@@ -253,199 +253,14 @@ public class WriteIPController {
                         sheet = workbook.getSheetAt(2);
                         if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("1", professor.getName());
-                            for (PSL_VM psl_vm : psl_vmList) {
-                                row = sheet.createRow(rownum++);
-                                row.createCell(0);
-                                cell.setCellStyle(style);
-                                cell = row.createCell(1);
-                                cell.setCellStyle(style);
-                                cell = row.createCell(2);
-                                cell.setCellValue(psl_vm.getDname());
-                                cell.setCellStyle(style);
-                                cell = row.createCell(3);
-                                cell.setCellStyle(style);
-
-
-                                cell = row.createCell(4);
-                                if (psl_vm.getCourse().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getCourse()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(5);
-                                if (psl_vm.getStudents_number().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getStudents_number()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(6);
-                                cell.setCellValue(psl_vm.getGroup_names());
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(7);
-                                if (psl_vm.getLec_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getLec_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(9);
-                                if (psl_vm.getConsult_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getConsult_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(11);
-                                if (psl_vm.getLab_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getLab_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(13);
-                                if (psl_vm.getPract_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getPract_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(15);
-                                if (psl_vm.getInd_task_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getInd_task_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(17);
-                                if (psl_vm.getCp_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getCp_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(19);
-                                if (psl_vm.getZalik_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getZalik_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(21);
-                                if (psl_vm.getExam_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getExam_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(23);
-                                if (psl_vm.getDiploma_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getDiploma_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(25);
-                                if (psl_vm.getDec_cell().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getDec_cell()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(27);
-                                if (psl_vm.getNdrs().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getNdrs()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(29);
-                                if (psl_vm.getAspirant_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getAspirant_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(31);
-                                if (psl_vm.getPractice().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getPractice()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(33);
-                                cell.setCellValue(0);
-                                cell.setCellStyle(style);
-                                cell = row.createCell(35);
-                                if (psl_vm.getOther_forms_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getOther_forms_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                for (int c = 8; c < 37; c += 2) {
-                                    cell = row.createCell(c);
-                                    cell.setCellValue(Double.parseDouble("0"));
-                                    cell.setCellStyle(style);
-                                }
-                                for (int c = 37; c < 49; c++) {
-                                    cell = row.createCell(c);
-                                    cell.setCellValue(0);
-                                    cell.setCellStyle(style);
-                                }
-
-                                cell = row.createCell(49);
-                                cell.setCellFormula("H" + rownum + "+J" + rownum + "+L" + rownum + "+N" + rownum + "+P" + rownum +
-                                        "+R" + rownum + "+T" + rownum + "+V" + rownum + "+X" + rownum + "+Z" + rownum +
-                                        "+AB" + rownum + "+AD" + rownum + "+AF" + rownum + "+AH" + rownum + "+AL" + rownum + "+AJ" + rownum +
-                                        "+AN" + rownum + "+AP" + rownum + "+AR" + rownum + "+AT" + rownum + "+AV" + rownum);
-                                cell.setCellStyle(style);
-                                cell = row.createCell(50);
-                                cell.setCellFormula("I" + rownum + "+K" + rownum + "+M" + rownum + "+O" + rownum + "+Q" + rownum +
-                                        "+S" + rownum + "+U" + rownum + "+W" + rownum + "+Y" + rownum + "+AA" + rownum + "+AC" + rownum +
-                                        "+AE" + rownum + "+AG" + rownum + "+AI" + rownum + "+AK" + rownum + "+AM" + rownum + "+AO" + rownum +
-                                        "+AQ" + rownum + "+AS" + rownum + "+AU" + rownum + "+AW" + rownum);
-                                cell.setCellStyle(style);
-                                row.setRowStyle(rowAutoHeightStyle);
-                            }
+                            rownum = getRownum(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
                         }
                         String[] ends1 = {"КЕРІВНИЦТВО"};
-                        for (String end : ends1) {
-                            row = sheet.createRow(rownum++);
-                            cell = row.createCell(1);
-                            cell.setCellStyle(style);
-                            cell = row.createCell(2);
-                            cell.setCellValue(end);
-                            cell.setCellStyle(style12Bold);
-                            for (int l = 3; l < 51; l++) {
-                                cell = row.createCell(l);
-                                cell.setCellValue("");
-                                cell.setCellStyle(style);
-                            }
-                        }
+                        rownum = writeKerivnictvo(rownum, style, style12Bold, sheet, ends1);
                         String[] ends2 = {"                  Аспірант", "                  Докторанти",
                                 "                  Магістр", "                  Фахівець",
                                 "                  Курсові", "                  Курсові 5 курс"};
-                        for (String end : ends2) {
-                            row = sheet.createRow(rownum++);
-                            cell = row.createCell(1);
-                            cell.setCellStyle(style);
-                            cell = row.createCell(2);
-                            cell.setCellValue(end);
-                            cell.setCellStyle(style12);
-                            for (int l = 3; l < 51; l++) {
-                                cell = row.createCell(l);
-                                cell.setCellValue("");
-                                cell.setCellStyle(style);
-                            }
-                        }
+                        rownum = writeKerivnictvo(rownum, style, style12, sheet, ends2);
                         row = sheet.createRow(rownum++);
                         int autumn_sum = rownum;
                         CellRangeAddress cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 6);
@@ -484,195 +299,10 @@ public class WriteIPController {
 
                         if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("2", professor.getName());
-                            for (PSL_VM psl_vm : psl_vmList) {
-                                row = sheet.createRow(rownum++);
-                                row.createCell(0);
-                                cell.setCellStyle(style);
-                                cell = row.createCell(1);
-                                cell.setCellStyle(style);
-                                cell = row.createCell(2);
-                                cell.setCellValue(psl_vm.getDname());
-                                cell.setCellStyle(style);
-                                cell = row.createCell(3);
-                                cell.setCellStyle(style);
-
-
-                                cell = row.createCell(4);
-                                if (psl_vm.getCourse().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getCourse()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(5);
-                                if (psl_vm.getStudents_number().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getStudents_number()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(6);
-                                cell.setCellValue(psl_vm.getGroup_names());
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(7);
-                                if (psl_vm.getLec_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getLec_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(9);
-                                if (psl_vm.getConsult_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getConsult_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(11);
-                                if (psl_vm.getLab_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getLab_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(13);
-                                if (psl_vm.getPract_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getPract_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                cell = row.createCell(15);
-                                if (psl_vm.getInd_task_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getInd_task_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(17);
-                                if (psl_vm.getCp_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getCp_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(19);
-                                if (psl_vm.getZalik_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getZalik_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(21);
-                                if (psl_vm.getExam_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getExam_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(23);
-                                if (psl_vm.getDiploma_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getDiploma_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(25);
-                                if (psl_vm.getDec_cell().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getDec_cell()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(27);
-                                if (psl_vm.getNdrs().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getNdrs()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(29);
-                                if (psl_vm.getAspirant_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getAspirant_hours()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(31);
-                                if (psl_vm.getPractice().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getPractice()));
-                                }
-                                cell.setCellStyle(style);
-                                cell = row.createCell(33);
-                                cell.setCellValue(0);
-                                cell.setCellStyle(style);
-                                cell = row.createCell(35);
-                                if (psl_vm.getOther_forms_hours().isEmpty()) {
-                                    cell.setCellValue(0);
-                                } else {
-                                    cell.setCellValue(Double.parseDouble(psl_vm.getOther_forms_hours()));
-                                }
-                                cell.setCellStyle(style);
-
-                                for (int c = 8; c < 37; c += 2) {
-                                    cell = row.createCell(c);
-                                    cell.setCellValue(Double.parseDouble("0"));
-                                    cell.setCellStyle(style);
-                                }
-                                for (int c = 37; c < 49; c++) {
-                                    cell = row.createCell(c);
-                                    cell.setCellValue(0);
-                                    cell.setCellStyle(style);
-                                }
-
-                                cell = row.createCell(49);
-                                cell.setCellFormula("H" + rownum + "+J" + rownum + "+L" + rownum + "+N" + rownum + "+P" + rownum +
-                                        "+R" + rownum + "+T" + rownum + "+V" + rownum + "+X" + rownum + "+Z" + rownum +
-                                        "+AB" + rownum + "+AD" + rownum + "+AF" + rownum + "+AH" + rownum + "+AL" + rownum + "+AJ" + rownum +
-                                        "+AN" + rownum + "+AP" + rownum + "+AR" + rownum + "+AT" + rownum + "+AV" + rownum);
-                                cell.setCellStyle(style);
-                                cell = row.createCell(50);
-                                cell.setCellFormula("I" + rownum + "+K" + rownum + "+M" + rownum + "+O" + rownum + "+Q" + rownum +
-                                        "+S" + rownum + "+U" + rownum + "+W" + rownum + "+Y" + rownum + "+AA" + rownum + "+AC" + rownum +
-                                        "+AE" + rownum + "+AG" + rownum + "+AI" + rownum + "+AK" + rownum + "+AM" + rownum + "+AO" + rownum +
-                                        "+AQ" + rownum + "+AS" + rownum + "+AU" + rownum + "+AW" + rownum);
-                                cell.setCellStyle(style);
-                                row.setRowStyle(rowAutoHeightStyle);
-                            }
+                            rownum = getRownum(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
                         }
-                        for (String end : ends1) {
-                            row = sheet.createRow(rownum++);
-                            cell = row.createCell(1);
-                            cell.setCellStyle(style);
-                            cell = row.createCell(2);
-                            cell.setCellValue(end);
-                            cell.setCellStyle(style12Bold);
-                            for (int l = 3; l < 51; l++) {
-                                cell = row.createCell(l);
-                                cell.setCellValue("");
-                                cell.setCellStyle(style);
-                            }
-                        }
-                        for (String end : ends2) {
-                            row = sheet.createRow(rownum++);
-                            cell = row.createCell(1);
-                            cell.setCellStyle(style);
-                            cell = row.createCell(2);
-                            cell.setCellValue(end);
-                            cell.setCellStyle(style12);
-                            for (int l = 3; l < 51; l++) {
-                                cell = row.createCell(l);
-                                cell.setCellValue("");
-                                cell.setCellStyle(style);
-                            }
-                        }
+                        rownum = writeKerivnictvo(rownum, style, style12Bold, sheet, ends1);
+                        rownum = writeKerivnictvo(rownum, style, style12, sheet, ends2);
                         row = sheet.createRow(rownum++);
                         int spring_sum = rownum;
                         cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 6);
@@ -688,7 +318,7 @@ public class WriteIPController {
                         last_vert_cell_sum = rownum - 1;
                         for (String sum : sums) {
                             cell = row.createCell(cell_count++);
-                            cell.setCellFormula("ROUND(SUM(" + sum + autumn_sum+1 + ":" + sum + last_vert_cell_sum + "),0)");
+                            cell.setCellFormula("ROUND(SUM(" + sum + (autumn_sum + 1) + ":" + sum + last_vert_cell_sum + "),0)");
                             cell.setCellStyle(style12ThickBotTop);
                         }
                         cell = row.createCell(cell_count++);
@@ -704,6 +334,7 @@ public class WriteIPController {
                                 "+AQ" + rownum + "+AS" + rownum + "+AU" + rownum + "+AW" + rownum);
                         cell.setCellStyle(style12ThickBotTopRight);
 
+                        int whole_sum_row = rownum;
                         row = sheet.createRow(rownum++);
                         cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 6);
                         sheet.addMergedRegion(cellRangeAddress);
@@ -726,6 +357,9 @@ public class WriteIPController {
                                 "+AB" + rownum + "+AD" + rownum + "+AF" + rownum + "+AH" + rownum + "+AL" + rownum + "+AJ" + rownum +
                                 "+AN" + rownum + "+AP" + rownum + "+AR" + rownum + "+AT" + rownum + "+AV" + rownum);
                         cell.setCellStyle(style12ThickBotTop);
+                        cell = row.getCell(cell_count - 1);
+                        cell.getCachedFormulaResultType();
+                        double total_sum=cell.getNumericCellValue();
                         cell = row.createCell(cell_count);
                         cell.setCellFormula("I" + rownum + "+K" + rownum + "+M" + rownum + "+O" + rownum + "+Q" + rownum +
                                 "+S" + rownum + "+U" + rownum + "+W" + rownum + "+Y" + rownum + "+AA" + rownum + "+AC" + rownum +
@@ -734,7 +368,7 @@ public class WriteIPController {
                         cell.setCellStyle(style12ThickBotTopRight);
 
                         row = sheet.createRow(rownum++);
-                        for(int c=0; c<51; c++){
+                        for (int c = 0; c < 51; c++) {
                             row.createCell(c);
                         }
                         row = sheet.createRow(rownum++);
@@ -743,7 +377,7 @@ public class WriteIPController {
                         cell = row.createCell(1);
                         cell.setCellValue("Затвердженно на засіданні кафедри \"____\"___________20__р. Протокол № ____");
                         cell.setCellStyle(style12I);
-                        for(int c=10; c<33; c++){
+                        for (int c = 10; c < 33; c++) {
                             row.createCell(c);
                         }
                         cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 33, 44);
@@ -753,23 +387,30 @@ public class WriteIPController {
                         cell.setCellStyle(style12I);
 
                         row = sheet.createRow(rownum++);
-                        for(int c=0; c<51; c++){
+                        for (int c = 0; c < 51; c++) {
                             row.createCell(c);
                         }
                         row = sheet.createRow(rownum);
                         cell = row.createCell(2);
                         cell.setCellValue(professor.getName());
                         cell.setCellStyle(style12I);
-                        for(int c=3; c<51; c++){
+                        for (int c = 3; c < 51; c++) {
                             row.createCell(c);
                         }
                         sheet.setFitToPage(true);
                         sheet.getPrintSetup().setFitWidth((short) 1);
                         sheet.getPrintSetup().setFitHeight((short) 0);
                         sheet.getPrintSetup().setLandscape(true);
+
+                        sheet = workbook.getSheetAt(1);
+                        row= sheet.getRow(18);
+                        cell=row.getCell(3);
+                        cell.setCellValue(total_sum);
+                        sheet.setFitToPage(true);
+                        sheet.getPrintSetup().setLandscape(true);
                     }
                     iS.close();
-                    File someFile = new File(professor.getName()+".xlsx");
+                    File someFile = new File(professor.getName() + ".xlsx");
                     FileOutputStream outputStream = new FileOutputStream(someFile);
                     workbook.write(outputStream);
                     workbook.close();
@@ -777,7 +418,7 @@ public class WriteIPController {
                     professor.setIp_file(FileUtils.readFileToByteArray(someFile));
                     professor.setIp_filename(someFile.getName());
                     professorService.save(professor);
-                    writeToZipFile(someFile.getName(),zipOS);
+                    writeToZipFile(someFile.getName(), zipOS);
                 }
             }
             Faculty faculty = facultyService.ListAll().get(0);
@@ -795,10 +436,195 @@ public class WriteIPController {
 
         return "redirect:/";
     }
+
+    private int writeKerivnictvo(int rownum, CellStyle style, CellStyle style12Bold, XSSFSheet sheet, String[] ends1) {
+        XSSFRow row;
+        XSSFCell cell;
+        for (String end : ends1) {
+            row = sheet.createRow(rownum++);
+            cell = row.createCell(1);
+            cell.setCellStyle(style);
+            cell = row.createCell(2);
+            cell.setCellValue(end);
+            cell.setCellStyle(style12Bold);
+            for (int l = 3; l < 51; l++) {
+                cell = row.createCell(l);
+                cell.setCellValue("");
+                cell.setCellStyle(style);
+            }
+        }
+        return rownum;
+    }
+
+    private int getRownum(XSSFCell cell, int rownum, List<PSL_VM> psl_vmList, CellStyle style, XSSFCellStyle rowAutoHeightStyle, XSSFSheet sheet) {
+        XSSFRow row;
+        for (PSL_VM psl_vm : psl_vmList) {
+            row = sheet.createRow(rownum++);
+            row.createCell(0);
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellStyle(style);
+            cell = row.createCell(2);
+            cell.setCellValue(psl_vm.getDname());
+            cell.setCellStyle(style);
+            cell = row.createCell(3);
+            cell.setCellStyle(style);
+
+
+            cell = row.createCell(4);
+            if (psl_vm.getCourse().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getCourse()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(5);
+            if (psl_vm.getStudents_number().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getStudents_number()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(6);
+            cell.setCellValue(psl_vm.getGroup_names());
+            cell.setCellStyle(style);
+
+            cell = row.createCell(7);
+            if (psl_vm.getLec_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getLec_hours()));
+            }
+            cell.setCellStyle(style);
+
+            cell = row.createCell(9);
+            if (psl_vm.getConsult_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getConsult_hours()));
+            }
+            cell.setCellStyle(style);
+
+            cell = row.createCell(11);
+            if (psl_vm.getLab_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getLab_hours()));
+            }
+            cell.setCellStyle(style);
+
+            cell = row.createCell(13);
+            if (psl_vm.getPract_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getPract_hours()));
+            }
+            cell.setCellStyle(style);
+
+            cell = row.createCell(15);
+            if (psl_vm.getInd_task_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getInd_task_hours()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(17);
+            if (psl_vm.getCp_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getCp_hours()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(19);
+            if (psl_vm.getZalik_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getZalik_hours()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(21);
+            if (psl_vm.getExam_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getExam_hours()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(23);
+            if (psl_vm.getDiploma_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getDiploma_hours()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(25);
+            if (psl_vm.getDec_cell().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getDec_cell()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(27);
+            if (psl_vm.getNdrs().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getNdrs()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(29);
+            if (psl_vm.getAspirant_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getAspirant_hours()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(31);
+            if (psl_vm.getPractice().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getPractice()));
+            }
+            cell.setCellStyle(style);
+            cell = row.createCell(33);
+            cell.setCellValue(0);
+            cell.setCellStyle(style);
+            cell = row.createCell(35);
+            if (psl_vm.getOther_forms_hours().isEmpty()) {
+                cell.setCellValue(0);
+            } else {
+                cell.setCellValue(Double.parseDouble(psl_vm.getOther_forms_hours()));
+            }
+            cell.setCellStyle(style);
+
+            for (int c = 8; c < 37; c += 2) {
+                cell = row.createCell(c);
+                cell.setCellValue(Double.parseDouble("0"));
+                cell.setCellStyle(style);
+            }
+            for (int c = 37; c < 49; c++) {
+                cell = row.createCell(c);
+                cell.setCellValue(0);
+                cell.setCellStyle(style);
+            }
+
+            cell = row.createCell(49);
+            cell.setCellFormula("H" + rownum + "+J" + rownum + "+L" + rownum + "+N" + rownum + "+P" + rownum +
+                    "+R" + rownum + "+T" + rownum + "+V" + rownum + "+X" + rownum + "+Z" + rownum +
+                    "+AB" + rownum + "+AD" + rownum + "+AF" + rownum + "+AH" + rownum + "+AL" + rownum + "+AJ" + rownum +
+                    "+AN" + rownum + "+AP" + rownum + "+AR" + rownum + "+AT" + rownum + "+AV" + rownum);
+            cell.setCellStyle(style);
+            cell = row.createCell(50);
+            cell.setCellFormula("I" + rownum + "+K" + rownum + "+M" + rownum + "+O" + rownum + "+Q" + rownum +
+                    "+S" + rownum + "+U" + rownum + "+W" + rownum + "+Y" + rownum + "+AA" + rownum + "+AC" + rownum +
+                    "+AE" + rownum + "+AG" + rownum + "+AI" + rownum + "+AK" + rownum + "+AM" + rownum + "+AO" + rownum +
+                    "+AQ" + rownum + "+AS" + rownum + "+AU" + rownum + "+AW" + rownum);
+            cell.setCellStyle(style);
+            row.setRowStyle(rowAutoHeightStyle);
+        }
+        return rownum;
+    }
+
     public static void writeToZipFile(String path, ZipOutputStream zipStream)
             throws FileNotFoundException, IOException {
-
-        System.out.println("Writing file : '" + path + "' to zip file");
 
         File aFile = new File(path);
         FileInputStream fis = new FileInputStream(aFile);

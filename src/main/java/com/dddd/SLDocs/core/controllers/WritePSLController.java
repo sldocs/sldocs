@@ -187,14 +187,14 @@ public class WritePSLController {
                         RegionUtil.setBorderRight(cell.getCellStyle().getBorderRight(), cellRangeAddress, sheet);
                         cell.setCellValue("Кафедра " + psl_vmList.get(0).getDep_name() + " на " + psl_vmList.get(0).getYear());
                         cell.setCellStyle(style14);
-                        rownum = 5;
+                        rownum = 6;
                         if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("1", professor.getName());
                             for (PSL_VM psl_vm : psl_vmList) {
-                                row = sheet.createRow(++rownum);
+                                row = sheet.createRow(rownum++);
                                 cell = row.createCell(0);
                                 cell = writeDisciplines(style, row, cell, psl_vm);
-                                cell.setCellFormula("SUM(E" + (rownum + 1) + ":S" + (rownum + 1) + ")");
+                                cell.setCellFormula("SUM(E" + rownum + ":S" + rownum + ")");
                                 cell.setCellStyle(style);
                                 row.setRowStyle(rowAutoHeightStyle);
                             }

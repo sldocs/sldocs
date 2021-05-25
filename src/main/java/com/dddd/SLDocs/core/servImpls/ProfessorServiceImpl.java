@@ -53,4 +53,9 @@ public class ProfessorServiceImpl implements ProfessorService {
         professorRepository.deleteAll();
     }
 
+    @Override
+    public List<Professor> listWithEmails() {
+        return professorRepository.listWithEmails();
+    }
+
 }
