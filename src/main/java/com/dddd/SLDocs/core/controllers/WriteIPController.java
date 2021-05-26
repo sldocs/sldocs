@@ -28,6 +28,7 @@ public class WriteIPController {
     private final PSL_VMServiceImpl pls_vmService;
     private final ProfessorServiceImpl professorService;
     private final FacultyServiceImpl facultyService;
+    private double total_sum;
 
     public WriteIPController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService,
                              FacultyServiceImpl facultyService) {
@@ -51,6 +52,7 @@ public class WriteIPController {
             int rownum;
             for (Professor professor : professors) {
                 if (!professor.getName().equals("")) {
+                    total_sum =0;
                     List<PSL_VM> psl_vmList;
                     FileInputStream iS = new FileInputStream("IndPlanExample.xlsx");
                     XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
@@ -299,6 +301,7 @@ public class WriteIPController {
 
                         if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("2", professor.getName());
+
                             rownum = getRownum(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
                         }
                         rownum = writeKerivnictvo(rownum, style, style12Bold, sheet, ends1);
@@ -334,7 +337,6 @@ public class WriteIPController {
                                 "+AQ" + rownum + "+AS" + rownum + "+AU" + rownum + "+AW" + rownum);
                         cell.setCellStyle(style12ThickBotTopRight);
 
-                        int whole_sum_row = rownum;
                         row = sheet.createRow(rownum++);
                         cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 6);
                         sheet.addMergedRegion(cellRangeAddress);
@@ -357,9 +359,6 @@ public class WriteIPController {
                                 "+AB" + rownum + "+AD" + rownum + "+AF" + rownum + "+AH" + rownum + "+AL" + rownum + "+AJ" + rownum +
                                 "+AN" + rownum + "+AP" + rownum + "+AR" + rownum + "+AT" + rownum + "+AV" + rownum);
                         cell.setCellStyle(style12ThickBotTop);
-                        cell = row.getCell(cell_count - 1);
-                        cell.getCachedFormulaResultType();
-                        double total_sum=cell.getNumericCellValue();
                         cell = row.createCell(cell_count);
                         cell.setCellFormula("I" + rownum + "+K" + rownum + "+M" + rownum + "+O" + rownum + "+Q" + rownum +
                                 "+S" + rownum + "+U" + rownum + "+W" + rownum + "+Y" + rownum + "+AA" + rownum + "+AC" + rownum +
@@ -401,11 +400,11 @@ public class WriteIPController {
                         sheet.getPrintSetup().setFitWidth((short) 1);
                         sheet.getPrintSetup().setFitHeight((short) 0);
                         sheet.getPrintSetup().setLandscape(true);
-
                         sheet = workbook.getSheetAt(1);
                         row= sheet.getRow(18);
-                        cell=row.getCell(3);
+                        cell=row.createCell(3);
                         cell.setCellValue(total_sum);
+                        cell.setCellStyle(style14B);
                         sheet.setFitToPage(true);
                         sheet.getPrintSetup().setLandscape(true);
                     }
@@ -415,6 +414,7 @@ public class WriteIPController {
                     workbook.write(outputStream);
                     workbook.close();
                     outputStream.close();
+
                     professor.setIp_file(FileUtils.readFileToByteArray(someFile));
                     professor.setIp_filename(someFile.getName());
                     professorService.save(professor);
@@ -494,6 +494,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getLec_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getLec_hours());
             }
             cell.setCellStyle(style);
 
@@ -502,6 +503,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getConsult_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getConsult_hours());
             }
             cell.setCellStyle(style);
 
@@ -510,6 +512,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getLab_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getLab_hours());
             }
             cell.setCellStyle(style);
 
@@ -518,6 +521,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getPract_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getPract_hours());
             }
             cell.setCellStyle(style);
 
@@ -526,6 +530,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getInd_task_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getInd_task_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(17);
@@ -533,6 +538,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getCp_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getCp_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(19);
@@ -540,6 +546,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getZalik_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getZalik_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(21);
@@ -547,6 +554,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getExam_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getExam_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(23);
@@ -554,6 +562,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getDiploma_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getDiploma_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(25);
@@ -561,6 +570,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getDec_cell()));
+                total_sum+=Double.parseDouble(psl_vm.getDec_cell());
             }
             cell.setCellStyle(style);
             cell = row.createCell(27);
@@ -568,6 +578,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getNdrs()));
+                total_sum+=Double.parseDouble(psl_vm.getNdrs());
             }
             cell.setCellStyle(style);
             cell = row.createCell(29);
@@ -575,6 +586,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getAspirant_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getAspirant_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(31);
@@ -582,6 +594,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getPractice()));
+                total_sum+=Double.parseDouble(psl_vm.getPractice());
             }
             cell.setCellStyle(style);
             cell = row.createCell(33);
@@ -592,6 +605,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getOther_forms_hours()));
+                total_sum+=Double.parseDouble(psl_vm.getOther_forms_hours());
             }
             cell.setCellStyle(style);
 

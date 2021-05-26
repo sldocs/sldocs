@@ -109,33 +109,6 @@ public class WriteEASController {
             workbook.close();
             outputStream.close();
 
-        /*try (POIFSFileSystem fs = new POIFSFileSystem()) {
-            EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile);
-            // EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile,
-            // CipherAlgorithm.aes192, HashAlgorithm.sha384, -1, -1, null);
-            Encryptor enc = info.getEncryptor();
-            enc.confirmPassword("hello");
-            // Read in an existing OOXML file and write to encrypted output stream
-            // don't forget to close the output stream otherwise the padding bytes aren't
-            // added
-            try (OPCPackage opc = OPCPackage.open(someFile, PackageAccess.READ_WRITE);
-                 OutputStream os = enc.getDataStream(fs)) {
-                opc.save(os);
-            } catch (InvalidFormatException | IOException | GeneralSecurityException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            // Write out the encrypted version
-            try (FileOutputStream fos = new FileOutputStream(someFile)) {
-                fs.writeFilesystem(fos);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        } catch (IOException e2) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace();
-        }*/
             List<Faculty> faculties = facultyService.ListAll();
             faculties.get(0).setEas_file(FileUtils.readFileToByteArray(someFile));
             faculties.get(0).setEas_filename(someFile.getName());

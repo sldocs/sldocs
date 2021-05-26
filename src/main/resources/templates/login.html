@@ -13,43 +13,17 @@
     <div id="logo">Study load docs</div>
     <label for="drop" class="toggle">Menu</label>
     <input type="checkbox" id="drop"/>
-    <ul class="menu">
-        <li><a href="/">Головна</a></li>
-        <li>
-            <label for="drop-1" class="toggle">Викладачі</label>
-            <a href=#>Викладачі</a>
-            <input type="checkbox" id="drop-1"/>
-            <ul>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors">Вказати посади, звання та ін.</a>
-                </li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors/docs">Розіслати документи</a></li>
-                <li sec:authorize="hasAnyAuthority('USER')"><a href="/professor/get">Завантажити індивідуальний
-                    план</a></li>
-            </ul>
-        </li>
-        <li>
-            <label for="drop-3" class="toggle">Налаштування бази даних</label>
-            <a href="#">Налаштування бд</a>
-            <input type="checkbox" id="drop-3"/>
-            <ul>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/delete">Очистити БД (Усе зчитане)</a></li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWOProfs">Очистити БД (викладачі
-                    залишаться)</a></li>
-            </ul>
-        </li>
-        <li><a href="/logout">Вийти</a></li>
-    </ul>
+
 </nav>
 <div class="login-page">
     <div class="form">
         <form th:action="@{/login}" method="post" class="login-form">
             <input type="email" name="username" placeholder="імейл" required/>
-            <input type="password" name="password" placeholder="password" required>
+            <input type="password" name="password" placeholder="пароль" required>
             <input type="submit" value="Увійти"/>
             <p class="message">Немає акаунта? <a href="/registration">Створіть акаунт</a></p>
         </form>
     </div>
-</div>
 </div>
 </body>
 <script>$('.message a').click(function () {
