@@ -15,10 +15,9 @@ import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
@@ -27,6 +26,7 @@ public class WritePSLController {
     private final PSL_VMServiceImpl pls_vmService;
     private final ProfessorServiceImpl professorService;
     private final FacultyServiceImpl facultyService;
+    private final String pslFileName = "Навантаження_по_викладачах_20_21.xlsx";
 
     public WritePSLController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService,
                               FacultyServiceImpl facultyService) {
@@ -169,6 +169,10 @@ public class WritePSLController {
                         cell.setCellStyle(style14);
 
                         cell = row.createCell(4);
+                        cell.setCellValue("Ставка");
+                        cell.setCellStyle(style14);
+
+                        cell = row.createCell(4);
                         cell.setCellValue(professor.getStavka());
                         cell.setCellStyle(style14);
 
@@ -206,7 +210,7 @@ public class WritePSLController {
                         rownum = writeKerivnictvo(style, style14RightAl, rownum, sheet, ends2);
 
 
-                        int autumn_sum=rownum;
+                        int autumn_sum = rownum;
                         row = sheet.createRow(rownum++);
                         cell = row.createCell(0);
                         cell.setCellValue("Усього за осінь");
@@ -323,11 +327,11 @@ public class WritePSLController {
                         cell_count = 4;
                         for (String sum : sums) {
                             cell = row.createCell(cell_count++);
-                            cell.setCellFormula("ROUND(SUM(" + sum + (autumn_sum+1) + "+" + sum +rownum + "),0)");
+                            cell.setCellFormula("ROUND(SUM(" + sum + (autumn_sum + 1) + "+" + sum + rownum + "),0)");
                             cell.setCellStyle(styleThickBotBord);
                         }
                         cell = row.createCell(cell_count);
-                        cell.setCellFormula("ROUND(SUM(T" + (autumn_sum+1) + "+" + "T" + rownum + "),0)");
+                        cell.setCellFormula("ROUND(SUM(T" + (autumn_sum + 1) + "+" + "T" + rownum + "),0)");
                         cell.setCellStyle(styleThickBotTopRightBord);
                         sheet.setFitToPage(true);
                         sheet.getPrintSetup().setLandscape(true);
@@ -337,20 +341,48 @@ public class WritePSLController {
 
             workbook.removeSheetAt(1);
             inputStream.close();
-            File someFile = new File("Навантаження_по_викладачах_20_21.xlsx");
+            File someFile = new File(pslFileName);
             FileOutputStream outputStream = new FileOutputStream(someFile);
             workbook.write(outputStream);
             workbook.close();
             outputStream.close();
             List<Faculty> faculties = facultyService.ListAll();
-            faculties.get(0).setPsl_file(FileUtils.readFileToByteArray(someFile));
             faculties.get(0).setPsl_filename(someFile.getName());
             facultyService.save(faculties.get(0));
+            writePSLforProf();
+
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
         }
         System.out.println(System.currentTimeMillis() - m);
         return "redirect:/";
+    }
+
+    private void writePSLforProf() throws IOException {
+        List<Professor> professors = professorService.ListAll();
+        for (Professor professor : professors) {
+            File originalWb = new File(pslFileName);
+            File clonedWb = new File(professor.getName() + " НВ.xlsx");
+            Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            FileInputStream iS = new FileInputStream(clonedWb);
+            XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
+            XSSFWorkbook workbook = wbF.create(iS);
+            while (workbook.getNumberOfSheets() > 1){
+                if (!professor.getName().equals(workbook.getSheetAt(0).getSheetName())) {
+                    workbook.removeSheetAt(0);
+                } else if(!professor.getName().equals(workbook.getSheetAt(1).getSheetName())){
+                    workbook.removeSheetAt(1);
+                }
+
+            }
+            iS.close();
+            FileOutputStream outputStream = new FileOutputStream(clonedWb);
+            workbook.write(outputStream);
+            workbook.close();
+            outputStream.close();
+            professor.setPsl_filename(clonedWb.getName());
+            professorService.save(professor);
+        }
     }
 
     private int writeLine(CellStyle style, int rownum, XSSFSheet sheet) {

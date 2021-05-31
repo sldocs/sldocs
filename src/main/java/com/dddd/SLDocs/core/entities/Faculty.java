@@ -17,15 +17,6 @@ public class Faculty {
     private String eas_filename;
     private String psl_filename;
     private String ipzip_filename;
-    @Lob
-    @Column
-    private byte[] eas_file;
-    @Lob
-    @Column
-    private byte[] psl_file;
-    @Lob
-    @Column
-    private byte[] ipzip_file;
 
     @OneToMany(mappedBy = "faculty", cascade = {CascadeType.ALL})
     private Set<Department> departments = new HashSet<>();
@@ -70,22 +61,6 @@ public class Faculty {
         this.psl_filename = psl_filename;
     }
 
-    public byte[] getEas_file() {
-        return eas_file;
-    }
-
-    public void setEas_file(byte[] eas_file) {
-        this.eas_file = eas_file;
-    }
-
-    public byte[] getPsl_file() {
-        return psl_file;
-    }
-
-    public void setPsl_file(byte[] psl_file) {
-        this.psl_file = psl_file;
-    }
-
     public Set<Department> getDepartments() {
         return departments;
     }
@@ -100,13 +75,5 @@ public class Faculty {
 
     public void setIpzip_filename(String ipzip_filename) {
         this.ipzip_filename = ipzip_filename;
-    }
-
-    public byte[] getIpzip_file() {
-        return ipzip_file;
-    }
-
-    public void setIpzip_file(byte[] ipzip_file) {
-        this.ipzip_file = ipzip_file;
     }
 }

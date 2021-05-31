@@ -5,7 +5,7 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Company ABC</title>
+    <title>Sign up to Study load docs</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
 <body>
@@ -16,7 +16,12 @@
 </nav>
 <div class="login-page">
     <div class="form">
+        <div style="color: #000000">
+            <div>У поле 'ім'я' вводіть прізвище та ініціали (Зразковенко П.И.)</div>
+            <br>
+        </div>
         <form th:action="@{/registration}" method="post" class="login-form">
+            <input type="text" placeholder="Ім'я" name="name"/>
             <input type="text" placeholder="імейл" name="username"/>
             <input type="password" name="password" id="password" placeholder="пароль"/>
             <input type="password" id="confirm_password" placeholder="повторіть пароль"/>

@@ -41,6 +41,7 @@ public class WriteEASController {
 
     @RequestMapping("/EdAsSt")
     public String createExcel() {
+        long m = System.currentTimeMillis();
         try {
             FileInputStream inputStream = new FileInputStream(new File("EdAsStExample.xlsx"));
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
@@ -110,13 +111,13 @@ public class WriteEASController {
             outputStream.close();
 
             List<Faculty> faculties = facultyService.ListAll();
-            faculties.get(0).setEas_file(FileUtils.readFileToByteArray(someFile));
             faculties.get(0).setEas_filename(someFile.getName());
             facultyService.save(faculties.get(0));
 
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
         }
+        System.out.println(System.currentTimeMillis() - m);
         return "redirect:/";
     }
 

@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
-    <title>Title</title>
+    <title>Форумвання витягів</title>
 </head>
 <body>
 <nav>
@@ -15,26 +15,32 @@
     <input type="checkbox" id="drop"/>
     <ul class="menu">
         <li><a href="/">Головна</a></li>
-        <li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
             <label for="drop-1" class="toggle">Викладачі</label>
             <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors">Вказати посади, звання та ін.</a>
+                <li><a href="/professors">Вказати посади, звання та ін.</a>
                 </li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/professors/docs">Розіслати документи</a></li>
-                <li sec:authorize="hasAnyAuthority('USER')"><a href="/professor/get">Завантажити індивідуальний
-                    план</a></li>
+                <li><a href="/professors/docs">Розіслати документи</a></li>
             </ul>
         </li>
-        <li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
             <label for="drop-3" class="toggle">Налаштування бази даних</label>
             <a href="#">Налаштування бд</a>
             <input type="checkbox" id="drop-3"/>
             <ul>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/delete">Очистити БД (Усе зчитане)</a></li>
-                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/deleteWOProfs">Очистити БД (викладачі
+                <li><a href="/delete">Очистити БД (Усе зчитане)</a></li>
+                <li><a href="/deleteWOProfs">Очистити БД (викладачі
                     залишаться)</a></li>
+            </ul>
+        </li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
+            <label for="drop-4" class="toggle">Налаштування акаунтів</label>
+            <a href="#">Налаштування акаунтів</a>
+            <input type="checkbox" id="drop-4"/>
+            <ul>
+                <li><a href="/users">Акаунти</a></li>
             </ul>
         </li>
         <li><a href="/logout">Вийти</a></li>
@@ -125,16 +131,18 @@
 
     </div>
 </div>
-<div sec:authorize="hasAnyAuthority('USER')">
-    <p>1. Завантажте або отримайте на пошту</p>
-    <form th:action="@{/professor/get}">
-        <input th:type="hidden" th:value="${#authentication.name}">
+<div sec:authorize="hasAnyAuthority('USER')" align="center">
+    <br>
+    <p>Завантажте індивідуальний план</p>
+    <form th:action="@{/professor/downloadIp}">
+        <input th:type="hidden" th:name="prof_name" th:value="${#authentication.name}">
         <input type="submit" value="Завантажити"/>
     </form>
-    <form th:action="@{/professor/getToMail}" method="post">
-        <label for="email">Оберіть файл для зчитування</label>
-        <input type="email" id="email" name="email">
-        <input type="submit" value="Відправити"/>
+    <br>
+    <p>Завантажте навантаження</p>
+    <form th:action="@{/professor/downloadPsl}">
+        <input th:type="hidden" th:name="prof_name" th:value="${#authentication.name}">
+        <input type="submit" value="Завантажити"/>
     </form>
 </div>
 </body>

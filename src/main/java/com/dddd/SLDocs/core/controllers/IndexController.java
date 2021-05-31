@@ -3,6 +3,7 @@ package com.dddd.SLDocs.core.controllers;
 
 import com.dddd.SLDocs.core.entities.Faculty;
 import com.dddd.SLDocs.core.servImpls.*;
+import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+
+import static com.dddd.SLDocs.core.utils.email.Sender.rfc5987_encode;
 
 @Controller
 public class IndexController {
@@ -47,7 +52,7 @@ public class IndexController {
             pslfn = facultyService.ListAll().get(0).getPsl_filename();
             ipzipfn = facultyService.ListAll().get(0).getIpzip_filename();
         } catch (IndexOutOfBoundsException ex) {
-            ex.printStackTrace();
+            System.out.println("no faculties");
         }
         boolean eas = true;
         boolean psl = true;
@@ -98,50 +103,32 @@ public class IndexController {
     }
 
     @GetMapping("/downloadEAS")
-    public ResponseEntity downloadEAS() throws UnsupportedEncodingException {
+    public ResponseEntity downloadEAS() throws IOException {
         Faculty faculty = facultyService.ListAll().get(0);
-
+        File file = new File(faculty.getEas_filename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + rfc5987_encode(faculty.getEas_filename()) + "\"")
-                .body(faculty.getEas_file());
+                .body(FileUtils.readFileToByteArray(file));
     }
 
     @GetMapping("/downloadPSL")
-    public ResponseEntity downloadPSL() throws UnsupportedEncodingException {
+    public ResponseEntity downloadPSL() throws IOException {
+
         Faculty faculty = facultyService.ListAll().get(0);
+        File file = new File(faculty.getPsl_filename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + rfc5987_encode(faculty.getPsl_filename()) + "\"")
-                .body(faculty.getPsl_file());
+                .body(FileUtils.readFileToByteArray(file));
     }
 
     @GetMapping(value = "/downloadProfZip", produces = "application/zip")
-    public ResponseEntity downloadIpZip() throws UnsupportedEncodingException {
+    public ResponseEntity downloadIpZip() throws IOException {
+        File file = new File(facultyService.ListAll().get(0).getIpzip_filename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + rfc5987_encode(facultyService.ListAll().get(0).getIpzip_filename()) + "\"")
-                .body(facultyService.ListAll().get(0).getIpzip_file());
-    }
-
-
-    public static String rfc5987_encode(final String s) throws UnsupportedEncodingException {
-        final byte[] s_bytes = s.getBytes(StandardCharsets.UTF_8);
-        final int len = s_bytes.length;
-        final StringBuilder sb = new StringBuilder(len << 1);
-        final char[] digits = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-        final byte[] attr_char = {'!','#','$','&','+','-','.','0','1','2','3','4','5','6','7','8','9',           'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','^','_','`',                        'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','|', '~'};
-        for (int i = 0; i < len; ++i) {
-            final byte b = s_bytes[i];
-            if (Arrays.binarySearch(attr_char, b) >= 0)
-                sb.append((char) b);
-            else {
-                sb.append('%');
-                sb.append(digits[0x0f & (b >>> 4)]);
-                sb.append(digits[b & 0x0f]);
-            }
-        }
-
-        return sb.toString();
+                .body(FileUtils.readFileToByteArray(file));
     }
 }

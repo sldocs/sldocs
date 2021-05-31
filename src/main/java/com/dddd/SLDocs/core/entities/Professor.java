@@ -18,13 +18,9 @@ public class Professor {
     private String stavka;
     private String note;
     private String ip_filename;
+    private String psl_filename;
     private String email_address;
     private String emailed_date;
-    @Lob
-    @Column
-    private byte[] ip_file;
-
-
 
     @ManyToMany(mappedBy = "professors", fetch = FetchType.LAZY)
     private Set<Curriculum> curriculums = new HashSet<>();
@@ -102,14 +98,6 @@ public class Professor {
         this.email_address = email_address;
     }
 
-    public byte[] getIp_file() {
-        return ip_file;
-    }
-
-    public void setIp_file(byte[] ip_file) {
-        this.ip_file = ip_file;
-    }
-
     public Set<Curriculum> getCurriculums() {
         return curriculums;
     }
@@ -124,5 +112,13 @@ public class Professor {
 
     public void setEmailed_date(String emailed_date) {
         this.emailed_date = emailed_date;
+    }
+
+    public String getPsl_filename() {
+        return psl_filename;
+    }
+
+    public void setPsl_filename(String psl_filename) {
+        this.psl_filename = psl_filename;
     }
 }

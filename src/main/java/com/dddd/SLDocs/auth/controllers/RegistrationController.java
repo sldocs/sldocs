@@ -23,14 +23,15 @@ public class RegistrationController {
         return "registration";
     }
     @PostMapping(path = "/registration")
-    public String createAccount(Model model, @RequestParam("password") String password,
+    public String createAccount(Model model, @RequestParam("name") String name, @RequestParam("password") String password,
                                 @RequestParam("username") String email) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         if (userService.getUserByUsername(email)==null) {
             User user = new User();
+            user.setName(name);
             user.setUsername(email);
             user.setPassword(bCryptPasswordEncoder.encode(password));
-            user.setEnabled(true);
+            user.setEnabled(false);
             userService.addUser(user);
         }else {
             String emailError="true";

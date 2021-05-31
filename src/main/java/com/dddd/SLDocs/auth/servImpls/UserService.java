@@ -6,6 +6,7 @@ import com.dddd.SLDocs.auth.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -24,7 +25,14 @@ public class UserService {
     }
 
     public void addUser(User user){
-        user.getRoles().add(roleRepository.getRoleByName("ADMIN"));
+        user.getRoles().add(roleRepository.getRoleByName("USER"));
+        userRepository.save(user);
+    }
+    public List<User> listAll(){
+        return userRepository.findAll();
+    }
+
+    public void save(User user){
         userRepository.save(user);
     }
 }

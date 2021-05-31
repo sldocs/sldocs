@@ -247,6 +247,9 @@ public class WriteIPController {
                         cell.setCellValue(professor.getVch_zvana());
                         cell.setCellStyle(style12BI);
                         cell = row.getCell(4);
+                        cell.setCellValue(professor.getStavka());
+                        cell.setCellStyle(style12BI);
+                        cell = row.getCell(5);
                         cell.setCellValue(professor.getNote());
                         cell.setCellStyle(style12BI);
 
@@ -415,7 +418,6 @@ public class WriteIPController {
                     workbook.close();
                     outputStream.close();
 
-                    professor.setIp_file(FileUtils.readFileToByteArray(someFile));
                     professor.setIp_filename(someFile.getName());
                     professorService.save(professor);
                     writeToZipFile(someFile.getName(), zipOS);
@@ -424,7 +426,6 @@ public class WriteIPController {
             Faculty faculty = facultyService.ListAll().get(0);
             zipOS.flush();
             zipOS.close();
-            faculty.setIpzip_file(FileUtils.readFileToByteArray(zipFile));
             faculty.setIpzip_filename(zipFile.getName());
             facultyService.save(faculty);
 

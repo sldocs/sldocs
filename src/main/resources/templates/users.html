@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html  lang="ua"
-       xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:th="http://www.thymeleaf.org"
-       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="ua"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Технічні складнощі</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <title>Налаштування користувачів</title>
 </head>
 <body>
 <nav>
@@ -46,6 +46,31 @@
         <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
-<p>Щось пішло не так</p>
+<div align="center">
+    <p></p>
+    <table style="border-color:#254441;" class="table__prof" border="1" cellpadding="10">
+        <thead>
+        <tr>
+            <th>Викладач</th>
+            <th>Електронна пошта</th>
+            <th>Статус</th>
+            <th>Дія</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <form th:action="@{/user/activate}" method="post">
+                <td th:text="*{user.name}"></td>
+                <td th:text="*{user.username}"></td>
+                <td th:text="*{user.enabled} ? 'Активовано' : 'Не активовано'"></td>
+                <input th:type="hidden" name="username" th:value="*{user.username}">
+                <td th:if="*{!user.enabled}"><input th:type="submit" value="Активувати"></td>
+                <td th:if="*{user.enabled}"><input th:type="submit" formaction="/user/deactivate" value="Деактивувати"></td>
+            </form>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

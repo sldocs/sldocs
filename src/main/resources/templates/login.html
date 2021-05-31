@@ -17,6 +17,10 @@
 </nav>
 <div class="login-page">
     <div class="form">
+        <div th:if="${error}"  style="color: #000000">
+            <div th:text="${error}"></div>
+            <br>
+        </div>
         <form th:action="@{/login}" method="post" class="login-form">
             <input type="email" name="username" placeholder="імейл" required/>
             <input type="password" name="password" placeholder="пароль" required>
@@ -26,7 +30,4 @@
     </div>
 </div>
 </body>
-<script>$('.message a').click(function () {
-    $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-});</script>
 </html>
