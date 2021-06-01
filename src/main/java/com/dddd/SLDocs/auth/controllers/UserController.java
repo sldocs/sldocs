@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class UserController {
 
@@ -18,8 +20,7 @@ public class UserController {
     }
 
     @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public String viewLoginPage(Model model) {
-
+    public String viewUserPage(Model model) {
         model.addAttribute("users", userService.listAll());
         return "users";
     }
@@ -40,4 +41,28 @@ public class UserController {
         return "redirect:/users";
     }
 
+    @RequestMapping(path = "/user/activateAll", method = RequestMethod.POST)
+    public String enableAllUsers(@RequestParam("username") String username) {
+        List<User> users = userService.listAll();
+        for (User user : users) {
+            if (!user.getUsername().equals(username)) {
+                user.setEnabled(true);
+                userService.save(user);
+            }
+        }
+
+        return "redirect:/users";
+    }
+
+    @RequestMapping(path = "/user/deactivateAll", method = RequestMethod.POST)
+    public String disableAllUsers(@RequestParam("username") String username) {
+        List<User> users = userService.listAll();
+        for (User user : users) {
+            if (!user.getUsername().equals(username)) {
+                user.setEnabled(false);
+                userService.save(user);
+            }
+        }
+        return "redirect:/users";
+    }
 }

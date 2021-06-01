@@ -47,6 +47,16 @@
     </ul>
 </nav>
 <div align="center">
+    <p>Активуйте або деактивуйте усіх користувачів</p>
+    <form th:action="@{/user/activateAll}" method="post">
+        <input th:type="hidden" th:name="username" th:value="${#authentication.name}">
+        <input th:type="submit" value="Активувати">
+    </form>
+    <p></p>
+    <form th:action="@{/user/deactivateAll}" method="post">
+        <input th:type="hidden" th:name="username" th:value="${#authentication.name}">
+        <input th:type="submit" value="Деактивувати">
+    </form>
     <p></p>
     <table style="border-color:#254441;" class="table__prof" border="1" cellpadding="10">
         <thead>
