@@ -74,17 +74,10 @@ public class ProfessorController {
        }catch (NullPointerException ex){
            return "errors/noFilesYet";
        }
-        String time_regex = "([0-9[-]]+)(T)(.{5})";
-        StringBuilder stringBuffer = new StringBuilder();
-        Pattern pattern = Pattern.compile(time_regex);
-        Matcher matcher = pattern.matcher(java.time.LocalDateTime.now().toString());
-        while (matcher.find()) {
-            stringBuffer.append(matcher.group(1)).append(" ").append(matcher.group(3));
-        }
-        professor.setEmailed_date(stringBuffer.toString());
-        professorService.save(professor);
-        return "redirect:/professors/docs";
+        return getTimeString(professor);
     }
+
+
 
     @RequestMapping("/professor/sendPslTo")
     public String sendPslTo(@RequestParam("name") String name, @RequestParam("email") String email) {
@@ -93,16 +86,7 @@ public class ProfessorController {
         }catch (NullPointerException ex){
             return "errors/noFilesYet";
         }
-        String time_regex = "([0-9[-]]+)(T)(.{5})";
-        StringBuilder stringBuffer = new StringBuilder();
-        Pattern pattern = Pattern.compile(time_regex);
-        Matcher matcher = pattern.matcher(java.time.LocalDateTime.now().toString());
-        while (matcher.find()) {
-            stringBuffer.append(matcher.group(1)).append(" ").append(matcher.group(3));
-        }
-        professor.setEmailed_date(stringBuffer.toString());
-        professorService.save(professor);
-        return "redirect:/professors/docs";
+        return getTimeString(professor);
     }
 
     @RequestMapping("/professor/sendIpToAll")
@@ -165,6 +149,17 @@ public class ProfessorController {
                 .body(FileUtils.readFileToByteArray(someFile));
     }
 
-
+    private String getTimeString(Professor professor) {
+        String time_regex = "([0-9[-]]+)(T)(.{5})";
+        StringBuilder stringBuffer = new StringBuilder();
+        Pattern pattern = Pattern.compile(time_regex);
+        Matcher matcher = pattern.matcher(java.time.LocalDateTime.now().toString());
+        while (matcher.find()) {
+            stringBuffer.append(matcher.group(1)).append(" ").append(matcher.group(3));
+        }
+        professor.setEmailed_date(stringBuffer.toString());
+        professorService.save(professor);
+        return "redirect:/professors/docs";
+    }
 
 }

@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import static com.dddd.SLDocs.core.utils.email.Sender.rfc5987_encode;
 

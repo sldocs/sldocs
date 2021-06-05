@@ -6,7 +6,6 @@ import com.dddd.SLDocs.core.entities.views.PSL_VM;
 import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
 import com.dddd.SLDocs.core.servImpls.PSL_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
-import org.apache.commons.io.FileUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -258,7 +257,7 @@ public class WriteIPController {
                         sheet = workbook.getSheetAt(2);
                         if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("1", professor.getName());
-                            rownum = getRownum(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
+                            rownum = writeHours(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
                         }
                         String[] ends1 = {"КЕРІВНИЦТВО"};
                         rownum = writeKerivnictvo(rownum, style, style12Bold, sheet, ends1);
@@ -305,7 +304,7 @@ public class WriteIPController {
                         if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("2", professor.getName());
 
-                            rownum = getRownum(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
+                            rownum = writeHours(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
                         }
                         rownum = writeKerivnictvo(rownum, style, style12Bold, sheet, ends1);
                         rownum = writeKerivnictvo(rownum, style, style12, sheet, ends2);
@@ -457,7 +456,7 @@ public class WriteIPController {
         return rownum;
     }
 
-    private int getRownum(XSSFCell cell, int rownum, List<PSL_VM> psl_vmList, CellStyle style, XSSFCellStyle rowAutoHeightStyle, XSSFSheet sheet) {
+    private int writeHours(XSSFCell cell, int rownum, List<PSL_VM> psl_vmList, CellStyle style, XSSFCellStyle rowAutoHeightStyle, XSSFSheet sheet) {
         XSSFRow row;
         for (PSL_VM psl_vm : psl_vmList) {
             row = sheet.createRow(rownum++);
