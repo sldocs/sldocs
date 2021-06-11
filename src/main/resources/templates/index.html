@@ -49,18 +49,26 @@
 <div sec:authorize="hasAnyAuthority('ADMIN')" align="center">
     <p>1. Зчитайте навантаження у базу даних</p>
 
-    <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/uploadObs}" method="post" enctype="multipart/form-data">
         <div>
-            <label for="file">Оберіть файл для зчитування</label>
-            <input type="file" id="file" name="file">
+            <label for="fileObs">Оберіть Обмяг навантаження</label>
+            <input type="file" id="fileObs" name="file">
         </div>
         <div>
             <button>Зчитати у базу даних</button>
         </div>
     </form>
 
-    <p>2. Вкажіть посади, звання, ставки зчитаним викладачам</p>
-    <a href="/professors">Перелік викладачів</a>
+    <p>2. Зчитайте посади, звання, ставки зчитаним викладачам</p>
+    <form th:action="@{/uploadPPS}" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="filePPS">Оберіть ППС+ставки</label>
+            <input type="file" id="filePPS" name="file">
+        </div>
+        <div>
+            <button>Зчитати у базу даних</button>
+        </div>
+    </form>
 
     <p>3. Сформуйте необхідні файли</p>
 
@@ -82,6 +90,16 @@
                                 <input type="submit" value="Завантажити"/>
                             </form>
                         </li>
+                        <li>
+                            <form th:action="@{/uploadEAS}" method="post" enctype="multipart/form-data">
+                                <div>
+                                    <input type="file" name="file">
+                                </div>
+                                <div>
+                                    <button>Завантажити редаговане</button>
+                                </div>
+                            </form>
+                        </li>
                     </div>
                 </ul>
             </li>
@@ -99,6 +117,16 @@
                         <li>
                             <form th:action="@{/downloadPSL}">
                                 <input type="submit" value="Завантажити"/>
+                            </form>
+                        </li>
+                        <li>
+                            <form th:action="@{/uploadPSL}" method="post" enctype="multipart/form-data">
+                                <div>
+                                    <input type="file" name="file">
+                                </div>
+                                <div>
+                                    <button>Завантажити редаговане</button>
+                                </div>
                             </form>
                         </li>
                     </div>
@@ -121,16 +149,22 @@
                                 <input type="submit" value="Завантажити"/>
                             </form>
                         </li>
+                        <li>
+                            <form th:action="@{/uploadProfZip}" method="post" enctype="multipart/form-data">
+                                <div>
+                                    <input type="file" name="file">
+                                </div>
+                                <div>
+                                    <button>Завантажити редаговане</button>
+                                </div>
+                            </form>
+                        </li>
                     </div>
                 </ul>
             </li>
         </ul>
         <p>4. Активуйте акаунти викладачів</p>
         <a href="/users">Перелік акаунтів викладачів</a>
-
-        <p>5. Надішліть готові файли на електронні адреси</p>
-        <a href="/professors/docs">Перелік викладачів для відправки</a>
-
 
     </div>
 </div>

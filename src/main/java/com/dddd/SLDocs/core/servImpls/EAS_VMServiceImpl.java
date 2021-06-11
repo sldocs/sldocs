@@ -20,13 +20,13 @@ public class EAS_VMServiceImpl implements EAS_VMService {
     }
 
     @Override
-    public List<EAS_VM> getEAS_VM4Data(String semester, String course) {
-        return eas_vmRepository.getEAS_VM4(semester, course);
+    public List<EAS_VM> getEAS_VM13Data(String semester, String course) {
+        return eas_vmRepository.getEAS_VM13(semester, course);
     }
 
     @Override
-    public List<EAS_VM> getEAS_VM13Data(String semester, String course) {
-        return eas_vmRepository.getEAS_VM13(semester, course);
+    public List<EAS_VM> getEAS_VMData(String semester, String course) {
+        return eas_vmRepository.getEAS_VM(semester, course);
     }
 
 }

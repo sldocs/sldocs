@@ -15,11 +15,22 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 @Controller
@@ -28,6 +39,7 @@ public class WriteIPController {
     private final ProfessorServiceImpl professorService;
     private final FacultyServiceImpl facultyService;
     private double total_sum;
+    private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     public WriteIPController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService,
                              FacultyServiceImpl facultyService) {
@@ -36,6 +48,49 @@ public class WriteIPController {
         this.facultyService = facultyService;
     }
 
+    private static final int BUFFER_SIZE = 4096;
+
+    @PostMapping("/uploadProfZip")
+    public String uploadAgain(@RequestParam("file") MultipartFile file) throws IOException {
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Path path = Paths.get(fileName);
+        try {
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ZipInputStream zipIn = new ZipInputStream(new FileInputStream(fileName), Charset.forName("KOI8-U"));
+        ZipEntry entry = zipIn.getNextEntry();
+        // iterates over entries in the zip file
+        while (entry != null) {
+            String filePath = entry.getName();
+            if (!entry.isDirectory()) {
+                // if the entry is a file, extracts it
+                System.out.println("file: " + filePath);
+                extractFile(zipIn, filePath);
+            }
+            zipIn.closeEntry();
+            try {
+                entry = zipIn.getNextEntry();
+            } catch (IllegalArgumentException e) {
+                System.out.println("IAE");
+                e.printStackTrace();
+            }
+        }
+        zipIn.close();
+
+        return "redirect:/";
+    }
+
+    private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+        byte[] bytesIn = new byte[BUFFER_SIZE];
+        int read = 0;
+        while ((read = zipIn.read(bytesIn)) != -1) {
+            bos.write(bytesIn, 0, read);
+        }
+        bos.close();
+    }
 
     @RequestMapping("/IP")
     public String createExcel() {
@@ -51,7 +106,7 @@ public class WriteIPController {
             int rownum;
             for (Professor professor : professors) {
                 if (!professor.getName().equals("")) {
-                    total_sum =0;
+                    total_sum = 0;
                     List<PSL_VM> psl_vmList;
                     FileInputStream iS = new FileInputStream("IndPlanExample.xlsx");
                     XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
@@ -59,55 +114,55 @@ public class WriteIPController {
 
                     XSSFFont defaultFont = workbook.createFont();
                     defaultFont.setFontHeightInPoints((short) 12);
-                    defaultFont.setFontName("Times New Roman");
+                    defaultFont.setFontName(TIMES_NEW_ROMAN);
                     defaultFont.setBold(false);
                     defaultFont.setItalic(false);
 
                     XSSFFont font10 = workbook.createFont();
                     font10.setFontHeightInPoints((short) 10);
-                    font10.setFontName("Times New Roman");
+                    font10.setFontName(TIMES_NEW_ROMAN);
                     font10.setBold(false);
                     font10.setItalic(false);
 
                     XSSFFont font12 = workbook.createFont();
                     font12.setFontHeightInPoints((short) 12);
-                    font12.setFontName("Times New Roman");
+                    font12.setFontName(TIMES_NEW_ROMAN);
                     font12.setBold(false);
                     font12.setItalic(false);
 
                     XSSFFont font12Bold = workbook.createFont();
                     font12Bold.setFontHeightInPoints((short) 12);
-                    font12Bold.setFontName("Times New Roman");
+                    font12Bold.setFontName(TIMES_NEW_ROMAN);
                     font12Bold.setBold(true);
                     font12Bold.setItalic(false);
 
                     XSSFFont font12I = workbook.createFont();
                     font12I.setFontHeightInPoints((short) 12);
-                    font12I.setFontName("Times New Roman");
+                    font12I.setFontName(TIMES_NEW_ROMAN);
                     font12I.setBold(false);
                     font12I.setItalic(true);
 
                     XSSFFont font12BI = workbook.createFont();
                     font12BI.setFontHeightInPoints((short) 12);
-                    font12BI.setFontName("Times New Roman");
+                    font12BI.setFontName(TIMES_NEW_ROMAN);
                     font12BI.setBold(true);
                     font12BI.setItalic(true);
 
                     XSSFFont font14 = workbook.createFont();
                     font14.setFontHeightInPoints((short) 14);
-                    font14.setFontName("Times New Roman");
+                    font14.setFontName(TIMES_NEW_ROMAN);
                     font14.setBold(false);
                     font14.setItalic(false);
 
                     XSSFFont font16 = workbook.createFont();
                     font16.setFontHeightInPoints((short) 16);
-                    font16.setFontName("Times New Roman");
+                    font16.setFontName(TIMES_NEW_ROMAN);
                     font16.setBold(false);
                     font16.setItalic(false);
 
                     XSSFFont font20 = workbook.createFont();
                     font16.setFontHeightInPoints((short) 20);
-                    font16.setFontName("Times New Roman");
+                    font16.setFontName(TIMES_NEW_ROMAN);
                     font16.setBold(true);
                     font16.setItalic(false);
 
@@ -196,6 +251,16 @@ public class WriteIPController {
                     style14B.setBorderRight(BorderStyle.THIN);
                     style14B.setBorderTop(BorderStyle.THIN);
 
+                    CellStyle style14Bot = workbook.createCellStyle();
+                    style14Bot.setVerticalAlignment(VerticalAlignment.CENTER);
+                    style14Bot.setAlignment(HorizontalAlignment.CENTER);
+                    style14Bot.setFont(font14);
+                    style14Bot.setWrapText(true);
+                    style14Bot.setBorderBottom(BorderStyle.MEDIUM);
+                    style14Bot.setBorderLeft(BorderStyle.THIN);
+                    style14Bot.setBorderRight(BorderStyle.THIN);
+                    style14Bot.setBorderTop(BorderStyle.THIN);
+
                     CellStyle style16Bot = workbook.createCellStyle();
                     style16Bot.setVerticalAlignment(VerticalAlignment.CENTER);
                     style16Bot.setAlignment(HorizontalAlignment.CENTER);
@@ -230,8 +295,8 @@ public class WriteIPController {
                         cell.setCellStyle(style16Bot);
                         row = sheet.getRow(23);
                         cell = row.getCell(0);
-                        cell.setCellValue(professor.getName());
-                        cell.setCellStyle(style20Bot);
+                        cell.setCellValue(professor.getFull_name());
+                        //cell.setCellStyle(style20Bot);
                         row = sheet.getRow(33);
                         cell = row.getCell(0);
                         cell.setCellValue(psl_vmList.get(0).getYear());
@@ -256,15 +321,15 @@ public class WriteIPController {
                         rownum = 4;
                         sheet = workbook.getSheetAt(2);
                         if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0) {
+                            psl_vmList.clear();
                             psl_vmList = pls_vmService.getPSL_VMData("1", professor.getName());
                             rownum = writeHours(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
                         }
                         String[] ends1 = {"КЕРІВНИЦТВО"};
-                        rownum = writeKerivnictvo(rownum, style, style12Bold, sheet, ends1);
-                        String[] ends2 = {"                  Аспірант", "                  Докторанти",
-                                "                  Магістр", "                  Фахівець",
-                                "                  Курсові", "                  Курсові 5 курс"};
-                        rownum = writeKerivnictvo(rownum, style, style12, sheet, ends2);
+                        rownum = writeKerivnictvo(rownum, professor, style, style12Bold, sheet, true, ends1);
+                        String[] ends2 = {"                  Аспіранти", "                  Докторанти",
+                                "                  Магістри", "                  Курсові", "                  Курсові 5 курс"};
+                        rownum = writeKerivnictvo(rownum, professor, style, style12, sheet, true, ends2);
                         row = sheet.createRow(rownum++);
                         int autumn_sum = rownum;
                         CellRangeAddress cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 6);
@@ -302,12 +367,13 @@ public class WriteIPController {
                         cell.setCellStyle(style12ThickBotTopRight);
 
                         if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
+                            psl_vmList.clear();
                             psl_vmList = pls_vmService.getPSL_VMData("2", professor.getName());
 
                             rownum = writeHours(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
                         }
-                        rownum = writeKerivnictvo(rownum, style, style12Bold, sheet, ends1);
-                        rownum = writeKerivnictvo(rownum, style, style12, sheet, ends2);
+                        rownum = writeKerivnictvo(rownum, professor, style, style12Bold, sheet, false, ends1);
+                        rownum = writeKerivnictvo(rownum, professor, style, style12, sheet, false, ends2);
                         row = sheet.createRow(rownum++);
                         int spring_sum = rownum;
                         cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 6);
@@ -403,12 +469,16 @@ public class WriteIPController {
                         sheet.getPrintSetup().setFitHeight((short) 0);
                         sheet.getPrintSetup().setLandscape(true);
                         sheet = workbook.getSheetAt(1);
-                        row= sheet.getRow(18);
-                        cell=row.createCell(3);
+                        row = sheet.getRow(14);
+                        cell = row.createCell(3);
                         cell.setCellValue(total_sum);
                         cell.setCellStyle(style14B);
                         sheet.setFitToPage(true);
                         sheet.getPrintSetup().setLandscape(true);
+                        row = sheet.getRow(18);
+                        cell = row.createCell(3);
+                        cell.setCellFormula("SUM(D15:D18)");
+                        cell.setCellStyle(style14Bot);
                     }
                     iS.close();
                     File someFile = new File(professor.getName() + ".xlsx");
@@ -437,7 +507,7 @@ public class WriteIPController {
         return "redirect:/";
     }
 
-    private int writeKerivnictvo(int rownum, CellStyle style, CellStyle style12Bold, XSSFSheet sheet, String[] ends1) {
+    private int writeKerivnictvo(int rownum, Professor professor, CellStyle style, CellStyle style12Bold, XSSFSheet sheet, boolean autumn, String[] ends1) {
         XSSFRow row;
         XSSFCell cell;
         for (String end : ends1) {
@@ -447,13 +517,43 @@ public class WriteIPController {
             cell = row.createCell(2);
             cell.setCellValue(end);
             cell.setCellStyle(style12Bold);
-            for (int l = 3; l < 51; l++) {
-                cell = row.createCell(l);
-                cell.setCellValue("");
-                cell.setCellStyle(style);
+            for (int l = 3; l < 50; l++) {
+                if (l == 29 && end.trim().equals("Аспіранти")) {
+                    writeAspHours(style, professor, autumn, row, l);
+                } else {
+                    cell = row.createCell(l);
+                    cell.setCellValue("");
+                    cell.setCellStyle(style);
+                }
             }
+            cell = row.createCell(50);
+            cell.setCellFormula("SUM(E" + (rownum-1) + ":S" + (rownum-1) + ")");
+            cell.setCellStyle(style);
         }
         return rownum;
+    }
+
+    private void writeAspHours(CellStyle style, Professor professor, boolean autumn, XSSFRow row, int l) {
+        XSSFCell cell;
+        if (autumn) {
+            cell = row.createCell(l);
+            if(professor.getAutumn_asp()!=null&&!professor.getAutumn_asp().equals("")){
+                cell.setCellValue(Double.parseDouble(professor.getAutumn_asp()));
+                total_sum+=Double.parseDouble(professor.getAutumn_asp());
+            }else{
+                cell.setCellValue(professor.getAutumn_asp());
+            }
+            cell.setCellStyle(style);
+        } else {
+            cell = row.createCell(l);
+            if(professor.getSpring_asp()!=null&&!professor.getSpring_asp().equals("")){
+                cell.setCellValue(Double.parseDouble(professor.getSpring_asp()));
+                total_sum+=Double.parseDouble(professor.getSpring_asp());
+            }else{
+                cell.setCellValue(professor.getSpring_asp());
+            }
+            cell.setCellStyle(style);
+        }
     }
 
     private int writeHours(XSSFCell cell, int rownum, List<PSL_VM> psl_vmList, CellStyle style, XSSFCellStyle rowAutoHeightStyle, XSSFSheet sheet) {
@@ -494,7 +594,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getLec_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getLec_hours());
+                total_sum += Double.parseDouble(psl_vm.getLec_hours());
             }
             cell.setCellStyle(style);
 
@@ -503,7 +603,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getConsult_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getConsult_hours());
+                total_sum += Double.parseDouble(psl_vm.getConsult_hours());
             }
             cell.setCellStyle(style);
 
@@ -512,7 +612,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getLab_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getLab_hours());
+                total_sum += Double.parseDouble(psl_vm.getLab_hours());
             }
             cell.setCellStyle(style);
 
@@ -521,7 +621,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getPract_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getPract_hours());
+                total_sum += Double.parseDouble(psl_vm.getPract_hours());
             }
             cell.setCellStyle(style);
 
@@ -530,7 +630,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getInd_task_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getInd_task_hours());
+                total_sum += Double.parseDouble(psl_vm.getInd_task_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(17);
@@ -538,7 +638,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getCp_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getCp_hours());
+                total_sum += Double.parseDouble(psl_vm.getCp_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(19);
@@ -546,15 +646,15 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getZalik_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getZalik_hours());
+                total_sum += Double.parseDouble(psl_vm.getZalik_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(21);
             if (psl_vm.getExam_hours().isEmpty()) {
                 cell.setCellValue(0);
             } else {
-                cell.setCellValue(Double.parseDouble(psl_vm.getExam_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getExam_hours());
+                cell.setCellValue(Math.round(Double.parseDouble(psl_vm.getExam_hours())));
+                total_sum += Math.round(Double.parseDouble(psl_vm.getExam_hours()));
             }
             cell.setCellStyle(style);
             cell = row.createCell(23);
@@ -562,7 +662,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getDiploma_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getDiploma_hours());
+                total_sum += Double.parseDouble(psl_vm.getDiploma_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(25);
@@ -570,7 +670,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getDec_cell()));
-                total_sum+=Double.parseDouble(psl_vm.getDec_cell());
+                total_sum += Double.parseDouble(psl_vm.getDec_cell());
             }
             cell.setCellStyle(style);
             cell = row.createCell(27);
@@ -578,7 +678,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getNdrs()));
-                total_sum+=Double.parseDouble(psl_vm.getNdrs());
+                total_sum += Double.parseDouble(psl_vm.getNdrs());
             }
             cell.setCellStyle(style);
             cell = row.createCell(29);
@@ -586,7 +686,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getAspirant_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getAspirant_hours());
+                total_sum += Double.parseDouble(psl_vm.getAspirant_hours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(31);
@@ -594,7 +694,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getPractice()));
-                total_sum+=Double.parseDouble(psl_vm.getPractice());
+                total_sum += Double.parseDouble(psl_vm.getPractice());
             }
             cell.setCellStyle(style);
             cell = row.createCell(33);
@@ -605,7 +705,7 @@ public class WriteIPController {
                 cell.setCellValue(0);
             } else {
                 cell.setCellValue(Double.parseDouble(psl_vm.getOther_forms_hours()));
-                total_sum+=Double.parseDouble(psl_vm.getOther_forms_hours());
+                total_sum += Double.parseDouble(psl_vm.getOther_forms_hours());
             }
             cell.setCellStyle(style);
 

@@ -12,12 +12,19 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class WritePSLController {
@@ -32,6 +39,19 @@ public class WritePSLController {
         this.pls_vmService = pls_vmService;
         this.professorService = professorService;
         this.facultyService = facultyService;
+    }
+
+    @PostMapping("/uploadPSL")
+    public String uploadPSLToLFS(@RequestParam("file") MultipartFile file) throws IOException {
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Path path = Paths.get(fileName);
+        try {
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        writePSLforProf();
+        return "redirect:/";
     }
 
 
@@ -204,10 +224,10 @@ public class WritePSLController {
                             }
                         }
                         rownum = writeLine(style, rownum, sheet);
-                        String[] ends1 = {"КЕРІВНИЦТВО", "здобувач"};
-                        rownum = writeKerivnictvo(style, style14Bold, rownum, sheet, ends1);
-                        String[] ends2 = {"Аспірант", "Докторант", "Магістр", "Фахівець", "Курсові", "Курсові 5 курс"};
-                        rownum = writeKerivnictvo(style, style14RightAl, rownum, sheet, ends2);
+                        String[] ends1 = {"КЕРІВНИЦТВО"};
+                        rownum = writeKerivnictvo(style, professor, style14Bold, rownum, sheet, true, ends1);
+                        String[] ends2 = {"Аспіранти", "Докторанти", "Магістри", "Курсові", "Курсові 5 курс"};
+                        rownum = writeKerivnictvo(style, professor, style14RightAl, rownum, sheet, true, ends2);
 
 
                         int autumn_sum = rownum;
@@ -247,29 +267,10 @@ public class WritePSLController {
                         cell = row.createCell(0);
                         cell.setCellValue("Норматив");
                         cell.setCellStyle(styleThickBotTopBord);
-                        for (int n = 1; n < 19; n++) {
-                            switch (n) {
-                                case 8:
-                                    cell = row.createCell(n);
-                                    cell.setCellValue("0,25");
-                                    cell.setCellStyle(styleThickBotTopBord);
-                                    break;
-                                case 11:
-                                    cell = row.createCell(n);
-                                    cell.setCellValue("0,33");
-                                    cell.setCellStyle(styleThickBotTopBord);
-                                    break;
-                                case 13 | 14:
-                                    cell = row.createCell(n);
-                                    cell.setCellValue("0,5");
-                                    cell.setCellStyle(styleThickBotTopBord);
-                                    break;
-                                default:
-                                    cell = row.createCell(n);
-                                    cell.setCellValue("");
-                                    cell.setCellStyle(styleThickBotTopBord);
-                                    break;
-                            }
+                        for (int k = 1; k < 19; k++) {
+                            cell = row.createCell(k);
+                            cell.setCellValue("");
+                            cell.setCellStyle(styleThickBotTopBord);
                         }
                         cell = row.createCell(19);
                         cell.setCellValue("");
@@ -289,8 +290,8 @@ public class WritePSLController {
                         }
                         rownum = writeLine(style, rownum, sheet);
 
-                        rownum = writeKerivnictvo(style, style14Bold, rownum, sheet, ends1);
-                        rownum = writeKerivnictvo(style, style14RightAl, rownum, sheet, ends2);
+                        rownum = writeKerivnictvo(style, professor, style14Bold, rownum, sheet, false, ends1);
+                        rownum = writeKerivnictvo(style, professor, style14RightAl, rownum, sheet, false, ends2);
 
                         row = sheet.createRow(rownum++);
                         cell = row.createCell(0);
@@ -313,7 +314,7 @@ public class WritePSLController {
                         cell.setCellFormula("ROUND(SUM(T" + first_sum_cell_spring + ":" + "T" + last_vert_cell_sum + "),0)");
                         cell.setCellStyle(styleThickBotTopRightBord);
 
-                        row = sheet.createRow(rownum);
+                        row = sheet.createRow(rownum++);
                         cell = row.createCell(0);
                         cell.setCellValue("Загальний ПІДСУМОК");
                         cell.setCellStyle(styleThickBotBord);
@@ -327,12 +328,20 @@ public class WritePSLController {
                         cell_count = 4;
                         for (String sum : sums) {
                             cell = row.createCell(cell_count++);
-                            cell.setCellFormula("ROUND(SUM(" + sum + (autumn_sum + 1) + "+" + sum + rownum + "),0)");
+                            cell.setCellFormula("ROUND(SUM(" + sum + (autumn_sum + 1) + "+" + sum + (rownum - 1) + "),0)");
                             cell.setCellStyle(styleThickBotBord);
                         }
                         cell = row.createCell(cell_count);
-                        cell.setCellFormula("ROUND(SUM(T" + (autumn_sum + 1) + "+" + "T" + rownum + "),0)");
+                        cell.setCellFormula("ROUND(SUM(T" + (autumn_sum + 1) + "+" + "T" + (rownum - 1) + "),0)");
                         cell.setCellStyle(styleThickBotTopRightBord);
+
+                        if (!(professor.getPosada() == null || professor.getPosada().equals(""))) {
+                            row = sheet.createRow(rownum + 2);
+                            cell = row.createCell(cell_count++);
+                            cell.setCellValue(getStandartHours(professor.getStavka(), professor.getPosada(), workbook));
+                            cell = row.createCell(cell_count);
+                            cell.setCellFormula("T" + rownum + "-T" + (rownum + 3));
+                        }
                         sheet.setFitToPage(true);
                         sheet.getPrintSetup().setLandscape(true);
                     }
@@ -358,6 +367,49 @@ public class WritePSLController {
         return "redirect:/";
     }
 
+    private double getStandartHours(String stavka, String posada, XSSFWorkbook workbook) {
+
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        XSSFRow row;
+        XSSFCell cell;
+
+        switch (posada) {
+            case "проф.":
+                row = sheet.getRow(2);
+                cell = row.getCell(getByStavka(stavka));
+                return cell.getNumericCellValue();
+            case "доц.":
+                row = sheet.getRow(3);
+                cell = row.getCell(getByStavka(stavka));
+                return cell.getNumericCellValue();
+            case "ст. викл.":
+                row = sheet.getRow(4);
+                cell = row.getCell(getByStavka(stavka));
+                return cell.getNumericCellValue();
+            case "ас.":
+                row = sheet.getRow(5);
+                cell = row.getCell(getByStavka(stavka));
+                return cell.getNumericCellValue();
+        }
+        return 400;
+    }
+
+    private int getByStavka(String stavka) {
+        switch (stavka) {
+            case "0,25":
+                return 6;
+            case "0,5":
+                return 5;
+            case "1":
+                return 4;
+            case "1,25":
+                return 3;
+            case "1,5":
+                return 2;
+        }
+        return 2;
+    }
+
     private void writePSLforProf() throws IOException {
         List<Professor> professors = professorService.ListAll();
         for (Professor professor : professors) {
@@ -367,10 +419,10 @@ public class WritePSLController {
             FileInputStream iS = new FileInputStream(clonedWb);
             XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
             XSSFWorkbook workbook = wbF.create(iS);
-            while (workbook.getNumberOfSheets() > 1){
+            while (workbook.getNumberOfSheets() > 1) {
                 if (!professor.getName().equals(workbook.getSheetAt(0).getSheetName())) {
                     workbook.removeSheetAt(0);
-                } else if(!professor.getName().equals(workbook.getSheetAt(1).getSheetName())){
+                } else if (!professor.getName().equals(workbook.getSheetAt(1).getSheetName())) {
                     workbook.removeSheetAt(1);
                 }
 
@@ -515,7 +567,7 @@ public class WritePSLController {
         return cell;
     }
 
-    private int writeKerivnictvo(CellStyle style, CellStyle style14Bold, int rownum, XSSFSheet sheet, String[] ends1) {
+    private int writeKerivnictvo(CellStyle style, Professor professor, CellStyle style14Bold, int rownum, XSSFSheet sheet, boolean autumn, String[] ends1) {
         XSSFRow row;
         XSSFCell cell;
         for (String end : ends1) {
@@ -523,12 +575,41 @@ public class WritePSLController {
             cell = row.createCell(0);
             cell.setCellValue(end);
             cell.setCellStyle(style14Bold);
-            for (int l = 1; l < 20; l++) {
-                cell = row.createCell(l);
-                cell.setCellValue("");
-                cell.setCellStyle(style);
+            for (int l = 1; l < 19; l++) {
+                if (l == 15 && end.trim().equals("Аспіранти")) {
+                    writeAspHours(style, professor, autumn, row, l);
+                } else {
+                    cell = row.createCell(l);
+                    cell.setCellValue("");
+                    cell.setCellStyle(style);
+                }
             }
+            cell = row.createCell(19);
+            cell.setCellFormula("SUM(E" + (rownum-1) + ":S" + (rownum-1) + ")");
+            cell.setCellStyle(style);
+
         }
         return rownum;
+    }
+
+    private void writeAspHours(CellStyle style, Professor professor, boolean autumn, XSSFRow row, int l) {
+        XSSFCell cell;
+        if (autumn) {
+            cell = row.createCell(l);
+            if(professor.getAutumn_asp()!=null&&!professor.getAutumn_asp().equals("")){
+                cell.setCellValue(Double.parseDouble(professor.getAutumn_asp()));
+            }else{
+                cell.setCellValue(professor.getAutumn_asp());
+            }
+            cell.setCellStyle(style);
+        } else {
+            cell = row.createCell(l);
+            if(professor.getSpring_asp()!=null&&!professor.getSpring_asp().equals("")){
+                cell.setCellValue(Double.parseDouble(professor.getSpring_asp()));
+            }else{
+                cell.setCellValue(professor.getSpring_asp());
+            }
+            cell.setCellStyle(style);
+        }
     }
 }

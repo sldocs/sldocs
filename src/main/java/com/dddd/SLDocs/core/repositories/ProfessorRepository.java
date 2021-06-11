@@ -10,6 +10,9 @@ import java.util.List;
 
 public interface ProfessorRepository extends JpaRepository<Professor,Long> {
 
+    @Query("SELECT u FROM Professor u order by u.name")
+    List<Professor> listAllOrderName();
+
     @Modifying
     @Query("delete from Professor p")
     void deleteAll();

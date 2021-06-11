@@ -12,6 +12,7 @@ public class Professor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String full_name;
     private String posada;
     private String nauk_stupin;
     private String vch_zvana;
@@ -21,6 +22,9 @@ public class Professor {
     private String psl_filename;
     private String email_address;
     private String emailed_date;
+    private String autumn_asp;
+    private String spring_asp;
+    private String asp_num;
 
     @ManyToMany(mappedBy = "professors", fetch = FetchType.LAZY)
     private Set<Curriculum> curriculums = new HashSet<>();
@@ -120,5 +124,37 @@ public class Professor {
 
     public void setPsl_filename(String psl_filename) {
         this.psl_filename = psl_filename;
+    }
+
+    public String getFull_name() {
+        return full_name;
+    }
+
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
+    }
+
+    public String getAutumn_asp() {
+        return autumn_asp;
+    }
+
+    public void setAutumn_asp(String autumn_asp) {
+        this.autumn_asp = autumn_asp;
+    }
+
+    public String getSpring_asp() {
+        return spring_asp;
+    }
+
+    public void setSpring_asp(String spring_asp) {
+        this.spring_asp = spring_asp;
+    }
+
+    public String getAsp_num() {
+        return asp_num;
+    }
+
+    public void setAsp_num(String asp_num) {
+        this.asp_num = asp_num;
     }
 }

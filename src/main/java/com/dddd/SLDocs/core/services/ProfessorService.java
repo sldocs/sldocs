@@ -9,6 +9,7 @@ import java.util.List;
 public interface ProfessorService {
 
     List<Professor> ListAll();
+    List<Professor> listAllOrderName();
     void save(Professor professor);
     Professor findByName(String name);
     Professor getByID(long id);

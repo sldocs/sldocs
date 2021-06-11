@@ -24,6 +24,11 @@ public class ProfessorServiceImpl implements ProfessorService {
     }
 
     @Override
+    public List<Professor> listAllOrderName() {
+        return professorRepository.listAllOrderName();
+    }
+
+    @Override
     public void save(Professor professor) {
         professorRepository.save(professor);
     }

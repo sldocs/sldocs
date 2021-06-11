@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface EAS_VMService {
 
-    List<EAS_VM> getEAS_VM4Data(String semester, String course);
     List<EAS_VM> getEAS_VM13Data(String semester, String course);
+    List<EAS_VM> getEAS_VMData(String semester, String course);
+
 }

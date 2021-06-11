@@ -34,7 +34,7 @@ public class ProfessorController {
 
     @RequestMapping("/professors")
     public String viewProfessorsPage(Model model) {
-        List<Professor> professors = professorService.listUnedited();
+        List<Professor> professors = professorService.listAllOrderName();
         model.addAttribute("professors", professors);
         return "professors";
     }

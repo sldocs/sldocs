@@ -8,10 +8,19 @@ import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +36,18 @@ public class WriteEASController {
     public WriteEASController(EAS_VMServiceImpl eas_vmService, FacultyServiceImpl facultyService) {
         this.eas_vmService = eas_vmService;
         this.facultyService = facultyService;
+    }
+
+    @PostMapping("/uploadEAS")
+    public String uploadPSLToLFS(@RequestParam("file") MultipartFile file) throws IOException {
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Path path = Paths.get(fileName);
+        try {
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/";
     }
 
     @RequestMapping("/EdAsSt")
@@ -70,28 +91,55 @@ public class WriteEASController {
             rowAutoHeightStyle.setWrapText(true);
 
             XSSFSheet sheet = workbook.getSheetAt(0);
+            //Autumn 1-3 semesters
             int rowCount = 5;
             List<EAS_VM> data = eas_vmService.getEAS_VM13Data("1", "4.0");
 
             writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
-
+            //Autumn 4 semester
             sheet = workbook.getSheetAt(1);
             rowCount = 5;
-            data = eas_vmService.getEAS_VM4Data("1", "4.0");
+            data = eas_vmService.getEAS_VMData("1", "4.0");
 
             writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
-
+            //Autumn 5 semester
             sheet = workbook.getSheetAt(2);
+            rowCount = 5;
+            data = eas_vmService.getEAS_VMData("1", "5.0");
+
+            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+            //Autumn 6 semester
+            sheet = workbook.getSheetAt(3);
+            rowCount = 5;
+            data = eas_vmService.getEAS_VMData("1", "6.0");
+
+            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+            //Spring 1-3 semesters
+            sheet = workbook.getSheetAt(4);
             rowCount = 5;
             data = eas_vmService.getEAS_VM13Data("2", "4.0");
 
             writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
-
-            sheet = workbook.getSheetAt(3);
+            //Spring 4 semester
+            sheet = workbook.getSheetAt(5);
             rowCount = 5;
-            data = eas_vmService.getEAS_VM4Data("2", "4.0");
+            data = eas_vmService.getEAS_VMData("2", "4.0");
 
             writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+            //Spring 5 semester
+            sheet = workbook.getSheetAt(6);
+            rowCount = 5;
+            data = eas_vmService.getEAS_VMData("2", "5.0");
+
+            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+            //Spring 6 semester
+            sheet = workbook.getSheetAt(7);
+            rowCount = 5;
+            data = eas_vmService.getEAS_VMData("2", "6.0");
+
+            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+
+
 
             inputStream.close();
             File someFile = new File("Відомість_учбових_доручень.xlsx");
