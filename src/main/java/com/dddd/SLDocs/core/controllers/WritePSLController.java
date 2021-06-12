@@ -515,7 +515,7 @@ public class WritePSLController {
         if (psl_vm.getExam_hours().isEmpty()) {
             cell.setCellValue(psl_vm.getExam_hours());
         } else {
-            cell.setCellValue(Double.parseDouble(psl_vm.getExam_hours()));
+            cell.setCellValue(Math.round(Double.parseDouble(psl_vm.getExam_hours())));
         }
         cell.setCellStyle(style);
         cell = row.createCell(12);
@@ -585,7 +585,7 @@ public class WritePSLController {
                 }
             }
             cell = row.createCell(19);
-            cell.setCellFormula("SUM(E" + (rownum-1) + ":S" + (rownum-1) + ")");
+            cell.setCellFormula("SUM(E" + (rownum) + ":S" + (rownum) + ")");
             cell.setCellStyle(style);
 
         }

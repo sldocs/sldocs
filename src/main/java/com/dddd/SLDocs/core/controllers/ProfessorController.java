@@ -55,14 +55,14 @@ public class ProfessorController {
         professor.setNote(note);
         professor.setEmail_address(email_address);
         professorService.save(professor);
-        List<Professor> professors = professorService.listUnedited();
+        List<Professor> professors = professorService.listAllOrderName();
         model.addAttribute("professors", professors);
         return "professors";
     }
 
     @RequestMapping("/professors/docs")
     public String viewProfDocsSendPage(Model model) {
-        List<Professor> professors = professorService.listUnedited();
+        List<Professor> professors = professorService.listAllOrderName();
         model.addAttribute("professors", professors);
         return "professors_docs";
     }

@@ -48,11 +48,11 @@
 </nav>
 <div align="center">
     <p>Надіслати усім заповненим або окремим викладачам</p>
-    <form th:action="@{/professor/sendIpToAll}" method="post">
-        <td><input type="submit" value="Надіслати індивідуальні плани усім"/></td>
-    </form>
     <form th:action="@{/professor/sendPslToAll}" method="post">
-        <td><input type="submit" value="Надіслати навантаження усім"/></td>
+        <input type="submit" value="Надіслати навантаження усім"/>
+    </form>
+    <form th:action="@{/professor/sendIpToAll}" method="post">
+        <input type="submit" value="Надіслати індивідуальні плани усім"/>
     </form>
 <p></p>
     <table style="border-color:#254441;" class="table__prof" border="1" cellpadding="10">

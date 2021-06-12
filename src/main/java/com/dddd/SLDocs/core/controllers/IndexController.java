@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static com.dddd.SLDocs.core.utils.email.Sender.rfc5987_encode;
 
@@ -120,12 +122,43 @@ public class IndexController {
                 .body(FileUtils.readFileToByteArray(file));
     }
 
-    @GetMapping(value = "/downloadProfZip", produces = "application/zip")
+    @GetMapping(value = "/downloadIp", produces = "application/zip")
     public ResponseEntity downloadIpZip() throws IOException {
-        File file = new File(facultyService.ListAll().get(0).getIpzip_filename());
+        File zipFile = new File("Інд_плани.zip");
+        FileOutputStream fos = new FileOutputStream(zipFile);
+        ZipOutputStream zipOS = new ZipOutputStream(fos);
+        List<String> fileNames = professorService.listIpFilenames();
+        for(String fileName : fileNames){
+            File someFile = new File(fileName);
+            writeToZipFile(someFile.getName(), zipOS);
+        }
+        Faculty faculty = facultyService.ListAll().get(0);
+        zipOS.flush();
+        zipOS.close();
+        faculty.setIpzip_filename(zipFile.getName());
+        facultyService.save(faculty);
+        fos.close();
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + rfc5987_encode(facultyService.ListAll().get(0).getIpzip_filename()) + "\"")
-                .body(FileUtils.readFileToByteArray(file));
+                .body(FileUtils.readFileToByteArray(zipFile));
+    }
+
+    public static void writeToZipFile(String path, ZipOutputStream zipStream)
+            throws IOException {
+
+        File aFile = new File(path);
+        FileInputStream fis = new FileInputStream(aFile);
+        ZipEntry zipEntry = new ZipEntry(path);
+        zipStream.putNextEntry(zipEntry);
+
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zipStream.write(bytes, 0, length);
+        }
+
+        zipStream.closeEntry();
+        fis.close();
     }
 }

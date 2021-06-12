@@ -120,7 +120,7 @@
                             </form>
                         </li>
                         <li>
-                            <form th:action="@{/uploadPSL}" method="post" enctype="multipart/form-data">
+                            <form th:action="@{/uploadPSL}" method="post" enctype="multipart/form-data" >
                                 <div>
                                     <input type="file" name="file">
                                 </div>
@@ -145,14 +145,14 @@
                     </li>
                     <div th:if="${ip==true}">
                         <li>
-                            <form th:action="@{/downloadProfZip}">
+                            <form th:action="@{/downloadIp}">
                                 <input type="submit" value="Завантажити"/>
                             </form>
                         </li>
                         <li>
-                            <form th:action="@{/uploadProfZip}" method="post" enctype="multipart/form-data">
+                            <form th:action="@{/uploadIp}" method="post" enctype="multipart/form-data">
                                 <div>
-                                    <input type="file" name="file">
+                                    <input type="file" name="file" multiple>
                                 </div>
                                 <div>
                                     <button>Завантажити редаговане</button>

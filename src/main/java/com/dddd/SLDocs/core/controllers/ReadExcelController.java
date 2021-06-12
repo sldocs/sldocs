@@ -153,7 +153,6 @@ public class ReadExcelController {
             }
 
             String space_regex = "\\s+";
-            String[] res = workbook.getSheetAt(2).getRow(0).getCell(0).toString().split(space_regex);
             StringBuffer stringBuffer = new StringBuffer();
             for (int p = 0; p < 2; p++) {
                 String[] values = dep_fac_sem.get(p).toString().split(space_regex);
@@ -174,8 +173,6 @@ public class ReadExcelController {
                     }
                 }
             }
-            dep_fac_sem.add(res[0]);
-
             if (facultyService.findByName(dep_fac_sem.get(1).toString()) == null) {
                 studyLoad.getDepartment().setName(dep_fac_sem.get(0).toString());
                 studyLoad.getFaculty().setName(dep_fac_sem.get(1).toString());
@@ -213,7 +210,7 @@ public class ReadExcelController {
                 studyLoad.getCurriculum().setAspirant_hours(arrayList.get(28).toString());
                 studyLoad.getCurriculum().setPractice(arrayList.get(29).toString());
                 studyLoad.getCurriculum().setOther_forms_hours(arrayList.get(31).toString());
-                studyLoad.getCurriculum().setYear(dep_fac_sem.get(4).toString());
+                studyLoad.getCurriculum().setYear(dep_fac_sem.get(3).toString());
                 studyLoad.getCurriculum().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
 
 

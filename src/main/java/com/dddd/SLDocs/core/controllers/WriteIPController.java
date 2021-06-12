@@ -7,10 +7,7 @@ import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
 import com.dddd.SLDocs.core.servImpls.PSL_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
@@ -48,9 +45,7 @@ public class WriteIPController {
         this.facultyService = facultyService;
     }
 
-    private static final int BUFFER_SIZE = 4096;
-
-    @PostMapping("/uploadProfZip")
+    @PostMapping("/uploadIp")
     public String uploadAgain(@RequestParam("file") MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         Path path = Paths.get(fileName);
@@ -59,37 +54,7 @@ public class WriteIPController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ZipInputStream zipIn = new ZipInputStream(new FileInputStream(fileName), Charset.forName("KOI8-U"));
-        ZipEntry entry = zipIn.getNextEntry();
-        // iterates over entries in the zip file
-        while (entry != null) {
-            String filePath = entry.getName();
-            if (!entry.isDirectory()) {
-                // if the entry is a file, extracts it
-                System.out.println("file: " + filePath);
-                extractFile(zipIn, filePath);
-            }
-            zipIn.closeEntry();
-            try {
-                entry = zipIn.getNextEntry();
-            } catch (IllegalArgumentException e) {
-                System.out.println("IAE");
-                e.printStackTrace();
-            }
-        }
-        zipIn.close();
-
         return "redirect:/";
-    }
-
-    private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
-        byte[] bytesIn = new byte[BUFFER_SIZE];
-        int read = 0;
-        while ((read = zipIn.read(bytesIn)) != -1) {
-            bos.write(bytesIn, 0, read);
-        }
-        bos.close();
     }
 
     @RequestMapping("/IP")
@@ -99,9 +64,6 @@ public class WriteIPController {
             List<Professor> professors = professorService.ListAll();
             XSSFRow row;
             XSSFCell cell;
-            File zipFile = new File("Інд_плани.zip");
-            FileOutputStream fos = new FileOutputStream(zipFile);
-            ZipOutputStream zipOS = new ZipOutputStream(fos);
             int last_vert_cell_sum;
             int rownum;
             for (Professor professor : professors) {
@@ -317,6 +279,15 @@ public class WriteIPController {
                         cell.setCellValue(professor.getNote());
                         cell.setCellStyle(style12BI);
 
+                        sheet = workbook.getSheetAt(4);
+                        row = sheet.getRow(12);
+                        cell = row.createCell(1);
+                        cell.setCellValue("Звіт про виконання індивідуального плану за" +
+                                " 2021/2022 навчальний рік викладача "+ getCellValue(workbook,0,23, 0) +
+                                " розглянуто "+ getCellValue(workbook,5,1, 9)+ " на засіданні кафедри " +
+                                getCellValue(workbook,0,11, 1) + " й ухвалено рішення ( " +
+                                getCellValue(workbook,5,2, 9) + "): Індивідуальний план виконано в повному обсязі.");
+                        cell.setCellStyle(style12);
 
                         rownum = 4;
                         sheet = workbook.getSheetAt(2);
@@ -489,22 +460,23 @@ public class WriteIPController {
 
                     professor.setIp_filename(someFile.getName());
                     professorService.save(professor);
-                    writeToZipFile(someFile.getName(), zipOS);
                 }
             }
             Faculty faculty = facultyService.ListAll().get(0);
-            zipOS.flush();
-            zipOS.close();
-            faculty.setIpzip_filename(zipFile.getName());
+            faculty.setIpzip_filename("someFileName");
             facultyService.save(faculty);
-
-            fos.close();
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
         }
         System.out.println(System.currentTimeMillis() - m);
 
         return "redirect:/";
+    }
+
+    private String getCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int cellNum){
+        XSSFSheet sheet = workbook.getSheetAt(sheetNum);
+        XSSFRow row = sheet.getRow(rowNum);
+        return row.getCell(cellNum).getStringCellValue();
     }
 
     private int writeKerivnictvo(int rownum, Professor professor, CellStyle style, CellStyle style12Bold, XSSFSheet sheet, boolean autumn, String[] ends1) {
@@ -526,8 +498,8 @@ public class WriteIPController {
                     cell.setCellStyle(style);
                 }
             }
-            cell = row.createCell(50);
-            cell.setCellFormula("SUM(E" + (rownum-1) + ":S" + (rownum-1) + ")");
+            cell = row.createCell(49);
+            cell.setCellFormula("SUM(H" + (rownum) + ":AW" + (rownum) + ")");
             cell.setCellStyle(style);
         }
         return rownum;
@@ -735,23 +707,5 @@ public class WriteIPController {
             row.setRowStyle(rowAutoHeightStyle);
         }
         return rownum;
-    }
-
-    public static void writeToZipFile(String path, ZipOutputStream zipStream)
-            throws FileNotFoundException, IOException {
-
-        File aFile = new File(path);
-        FileInputStream fis = new FileInputStream(aFile);
-        ZipEntry zipEntry = new ZipEntry(path);
-        zipStream.putNextEntry(zipEntry);
-
-        byte[] bytes = new byte[1024];
-        int length;
-        while ((length = fis.read(bytes)) >= 0) {
-            zipStream.write(bytes, 0, length);
-        }
-
-        zipStream.closeEntry();
-        fis.close();
     }
 }
