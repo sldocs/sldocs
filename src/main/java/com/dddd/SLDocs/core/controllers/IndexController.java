@@ -70,6 +70,12 @@ public class IndexController {
         model.addAttribute("ip", ip);
         return "index";
     }
+
+    @RequestMapping(path = "/help", method = RequestMethod.GET)
+    public String viewHelpPage() {
+        return "help";
+    }
+
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
     public String viewDeletePage() {
         return "deleteAllConf";

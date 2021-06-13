@@ -20,8 +20,7 @@
             <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li><a href="/professors">Вказати посади, звання та ін.</a>
-                </li>
+                <li><a href="/professors">Перевірити зчитаних з ППС</a></li>
                 <li><a href="/professors/docs">Розіслати документи</a></li>
             </ul>
         </li>
@@ -42,6 +41,9 @@
             <ul>
                 <li><a href="/users">Акаунти</a></li>
             </ul>
+        </li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
+            <a href="/help">Довідка</a>
         </li>
         <li><a href="/logout">Вийти</a></li>
     </ul>
@@ -69,8 +71,10 @@
             <button>Зчитати у базу даних</button>
         </div>
     </form>
+    <p>3. Перевірте зчитане з ППС</p>
+    <a href="/professors">Перелік викладачів</a>
 
-    <p>3. Сформуйте необхідні файли</p>
+    <p>4. Сформуйте необхідні файли</p>
 
     <div class="content">
         <ul class="content__list">
@@ -88,16 +92,6 @@
                         <li>
                             <form th:action="@{/downloadEAS}">
                                 <input type="submit" value="Завантажити"/>
-                            </form>
-                        </li>
-                        <li>
-                            <form th:action="@{/uploadEAS}" method="post" enctype="multipart/form-data">
-                                <div>
-                                    <input type="file" name="file">
-                                </div>
-                                <div>
-                                    <button>Завантажити редаговане</button>
-                                </div>
                             </form>
                         </li>
                     </div>
@@ -163,8 +157,9 @@
                 </ul>
             </li>
         </ul>
-        <p>4. Активуйте акаунти викладачів</p>
-        <a href="/users">Перелік акаунтів викладачів</a>
+        <p>5. Активуйте акаунти викладачів або замостійно розішліть документи</p>
+        <a href="/users">Перелік акаунтів викладачів</a><br>
+        <a href="/professors/docs">Перелік викладачів для відправки</a>
 
     </div>
 </div>

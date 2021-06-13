@@ -20,8 +20,7 @@
             <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li><a href="/professors">Вказати посади, звання та ін.</a>
-                </li>
+                <li><a href="/professors">Перевірити зчитаних з ППС</a></li>
                 <li><a href="/professors/docs">Розіслати документи</a></li>
             </ul>
         </li>
@@ -43,78 +42,18 @@
                 <li><a href="/users">Акаунти</a></li>
             </ul>
         </li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
+            <a href="/help">Довідка</a>
+        </li>
         <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
 <div align="center">
-    <div class="content">
-        <ul class="content__list">
-            <li class="content__elem">
-                <div class="content__title">
-                    Посади:
-                </div>
-                <ul class="content__text">
-                    <li>Завідувач кафедри</li>
-                    <li>Професор</li>
-                    <li>Доцент</li>
-                    <li>Старший викладач</li>
-                    <li>Асистент</li>
-                </ul>
-            </li>
-            <li class="content__elem">
-                <div class="content__title">
-                    Наукові ступені:
-                </div>
-                <ul class="content__text">
-                    <li>к.т.н.</li>
-
-                </ul>
-            </li>
-            <li class="content__elem">
-                <div class="content__title">
-                    Вчені звання:
-                </div>
-                <ul class="content__text">
-                    <li>Професор</li>
-                    <li>Доцент</li>
-                    <li>Старший науковий співробітник</li>
-                    <li>Старший дослідник</li>
-                </ul>
-            </li>
-            <li class="content__elem">
-                <div class="content__title">
-                    Ставки:
-                </div>
-                <ul class="content__text">
-                    <li>1.5</li>
-                    <li>1.25</li>
-                    <li>1</li>
-                    <li>0.5</li>
-                    <li>0.25</li>
-                </ul>
-            </li>
-            <li class="content__elem">
-                <div class="content__title">
-                    Примітки:
-                </div>
-                <ul class="content__text">
-                    <li class="content__text-elem">Штат.</li>
-                    <li class="content__text-elem">Внутрішній сумісник</li>
-                    <li class="content__text-elem">Зовнішній сумісник</li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-
     <table style="border-color:#254441;" class="table__prof" border="1" cellpadding="10">
         <thead>
         <tr>
             <th>Викладач</th>
-            <th>Посада</th>
-            <th>Науковий ступінь</th>
-            <th>Вчене звання</th>
-            <th>Ставка</th>
-            <th>Примітка</th>
+            <th>П.І.Б.</th>
             <th>Електронна пошта</th>
         </tr>
         </thead>
@@ -123,11 +62,7 @@
             <form th:action="@{/professor/save}" method="post">
                 <input type="hidden" th:name="id" th:value="*{professor.id}"/>
                 <td> <input type="text" th:name="name" th:value="*{professor.name}"/> </td>
-                <td> <input type="text" th:name="posada" th:value="*{professor.posada}"/> </td>
-                <td> <input type="text" th:name="nauk_stupin" th:value="*{professor.nauk_stupin}"/> </td>
-                <td> <input type="text" th:name="vch_zvana" th:value="*{professor.vch_zvana}"/> </td>
-                <td> <input type="text" th:name="stavka" th:value="*{professor.stavka}"/> </td>
-                <td> <input type="text" th:name="note" th:value="*{professor.note}"/> </td>
+                <td> <input type="text" th:name="full_name" th:value="*{professor.full_name}"/> </td>
                 <td> <input type="text" th:name="email_address" th:value="*{professor.email_address}"/> </td>
                 <td> <input type="submit" th:value="Зберегти"/></td>
             </form>

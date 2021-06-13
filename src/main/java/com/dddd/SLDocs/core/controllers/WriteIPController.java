@@ -46,13 +46,15 @@ public class WriteIPController {
     }
 
     @PostMapping("/uploadIp")
-    public String uploadAgain(@RequestParam("file") MultipartFile file) throws IOException {
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        Path path = Paths.get(fileName);
-        try {
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String uploadAgain(@RequestParam("file") MultipartFile[] files) throws IOException {
+        for(MultipartFile file : files){
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            Path path = Paths.get(fileName);
+            try {
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return "redirect:/";
     }
@@ -137,6 +139,16 @@ public class WriteIPController {
                     style.setBorderLeft(BorderStyle.THIN);
                     style.setBorderRight(BorderStyle.THIN);
                     style.setBorderTop(BorderStyle.THIN);
+
+                    CellStyle style10 = workbook.createCellStyle();
+                    style10.setVerticalAlignment(VerticalAlignment.CENTER);
+                    style10.setAlignment(HorizontalAlignment.LEFT);
+                    style10.setFont(font10);
+                    //style10.setWrapText(true);
+                    style10.setBorderBottom(BorderStyle.THIN);
+                    style10.setBorderLeft(BorderStyle.THIN);
+                    style10.setBorderRight(BorderStyle.THIN);
+                    style10.setBorderTop(BorderStyle.THIN);
 
                     CellStyle style12 = workbook.createCellStyle();
                     style12.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -281,13 +293,14 @@ public class WriteIPController {
 
                         sheet = workbook.getSheetAt(4);
                         row = sheet.getRow(12);
-                        cell = row.createCell(1);
-                        cell.setCellValue("Звіт про виконання індивідуального плану за" +
-                                " 2021/2022 навчальний рік викладача "+ getCellValue(workbook,0,23, 0) +
-                                " розглянуто "+ getCellValue(workbook,5,1, 9)+ " на засіданні кафедри " +
-                                getCellValue(workbook,0,11, 1) + " й ухвалено рішення ( " +
-                                getCellValue(workbook,5,2, 9) + "): Індивідуальний план виконано в повному обсязі.");
-                        cell.setCellStyle(style12);
+                        cell = row.getCell(1);
+                        String sb = "Звіт про виконання індивідуального плану за" + " 2021/2022 навчальний рік викладача " +
+                                getCellValue(workbook, 0, 23, 0) + " розглянуто " +
+                                getCellValue(workbook, 5, 1, 9) + " на засіданні кафедри " +
+                                getCellValue(workbook, 0, 11, 1) + " й ухвалено рішення ( " +
+                                getCellValue(workbook, 5, 2, 9) + "): Індивідуальний план виконано в повному обсязі.";
+                        cell.setCellValue(sb);
+                        cell.setCellStyle(style10);
 
                         rownum = 4;
                         sheet = workbook.getSheetAt(2);

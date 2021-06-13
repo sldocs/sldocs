@@ -13,7 +13,40 @@
     <div id="logo">Study load docs</div>
     <label for="drop" class="toggle">Menu</label>
     <input type="checkbox" id="drop"/>
-
+    <ul class="menu">
+        <li><a href="/">Головна</a></li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
+            <label for="drop-1" class="toggle">Викладачі</label>
+            <a href=#>Викладачі</a>
+            <input type="checkbox" id="drop-1"/>
+            <ul>
+                <li><a href="/professors">Перевірити зчитаних з ППС</a></li>
+                <li><a href="/professors/docs">Розіслати документи</a></li>
+            </ul>
+        </li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
+            <label for="drop-3" class="toggle">Налаштування бази даних</label>
+            <a href="#">Налаштування бд</a>
+            <input type="checkbox" id="drop-3"/>
+            <ul>
+                <li><a href="/delete">Очистити БД (Усе зчитане)</a></li>
+                <li><a href="/deleteWOProfs">Очистити БД (викладачі
+                    залишаться)</a></li>
+            </ul>
+        </li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
+            <label for="drop-4" class="toggle">Налаштування акаунтів</label>
+            <a href="#">Налаштування акаунтів</a>
+            <input type="checkbox" id="drop-4"/>
+            <ul>
+                <li><a href="/users">Акаунти</a></li>
+            </ul>
+        </li>
+        <li sec:authorize="hasAnyAuthority('ADMIN')">
+            <a href="/help">Довідка</a>
+        </li>
+        <li><a href="/logout">Вийти</a></li>
+    </ul>
 </nav>
 <div class="login-page">
     <div class="form">

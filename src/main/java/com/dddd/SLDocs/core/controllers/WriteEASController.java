@@ -38,23 +38,11 @@ public class WriteEASController {
         this.facultyService = facultyService;
     }
 
-    @PostMapping("/uploadEAS")
-    public String uploadPSLToLFS(@RequestParam("file") MultipartFile file) throws IOException {
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        Path path = Paths.get(fileName);
-        try {
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/";
-    }
-
     @RequestMapping("/EdAsSt")
     public String createExcel() {
         long m = System.currentTimeMillis();
         try {
-            FileInputStream inputStream = new FileInputStream(new File("EdAsStExample.xlsx"));
+            FileInputStream inputStream = new FileInputStream("EdAsStExample.xlsx");
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
             XSSFWorkbook workbook = workbookFactory.create(inputStream);
 
