@@ -78,11 +78,11 @@ public class IndexController {
 
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
     public String viewDeletePage() {
-        return "deleteAllConf";
+        return "confirmation/deleteAllConf";
     }
     @RequestMapping(path = "/deleteWOProfs", method = RequestMethod.GET)
     public String viewDeleteWOprofsPage() {
-        return "deleteWOprofsConf";
+        return "confirmation/deleteWOprofsConf";
     }
 
     @RequestMapping(path = "/deleteAll", method = RequestMethod.GET)
@@ -93,7 +93,7 @@ public class IndexController {
         facultyService.deleteAll();
         professorService.deleteAll();
         specialtyService.deleteAll();
-        return "deleteAllSuc";
+        return "success/deleteAllSuc";
     }
 
 
@@ -104,7 +104,7 @@ public class IndexController {
         disciplineService.deleteAll();
         facultyService.deleteAll();
         specialtyService.deleteAll();
-        return "deleteWOprofsSuc";
+        return "success/deleteWOprofsSuc";
     }
 
     @GetMapping("/downloadEAS")
@@ -130,7 +130,7 @@ public class IndexController {
 
     @GetMapping(value = "/downloadIp", produces = "application/zip")
     public ResponseEntity downloadIpZip() throws IOException {
-        File zipFile = new File("Інд_плани.zip");
+        File zipFile = new File("Ind_plans.zip");
         FileOutputStream fos = new FileOutputStream(zipFile);
         ZipOutputStream zipOS = new ZipOutputStream(fos);
         List<String> fileNames = professorService.listIpFilenames();

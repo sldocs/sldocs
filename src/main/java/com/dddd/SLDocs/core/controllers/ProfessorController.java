@@ -72,7 +72,7 @@ public class ProfessorController {
         Professor professor = professorService.findByName(name);
        try{ Sender.Send(email, professor.getIp_filename());
        }catch (NullPointerException ex){
-           return "errors/noFilesYet";
+           return "error/noFilesYet";
        }
         return getTimeString(professor);
     }
@@ -84,7 +84,7 @@ public class ProfessorController {
         Professor professor = professorService.findByName(name);
         try{ Sender.Send(email, professor.getPsl_filename());
         }catch (NullPointerException ex){
-            return "errors/noFilesYet";
+            return "error/noFilesYet";
         }
         return getTimeString(professor);
     }
@@ -96,17 +96,10 @@ public class ProfessorController {
         StringBuilder stringBuffer = new StringBuilder();
         for(Professor professor : professors){
             Sender.Send(professor.getEmail_address(),professor.getIp_filename());
-            Pattern pattern = Pattern.compile(time_regex);
-            Matcher matcher = pattern.matcher(java.time.LocalDateTime.now().toString());
-            while (matcher.find()) {
-                stringBuffer.append(matcher.group(1)).append(" ").append(matcher.group(3));
-
-            }
-            professor.setEmailed_date(stringBuffer.toString());
-            professorService.save(professor);
+            setEmailedDate(professor, time_regex, stringBuffer);
             stringBuffer = new StringBuilder();
         }
-        return "redirect:/professors/docs";
+        return "success/emailSent";
     }
 
     @RequestMapping("/professor/sendPslToAll")
@@ -116,17 +109,10 @@ public class ProfessorController {
         StringBuilder stringBuffer = new StringBuilder();
         for(Professor professor : professors){
             Sender.Send(professor.getEmail_address(),professor.getPsl_filename());
-            Pattern pattern = Pattern.compile(time_regex);
-            Matcher matcher = pattern.matcher(java.time.LocalDateTime.now().toString());
-            while (matcher.find()) {
-                stringBuffer.append(matcher.group(1)).append(" ").append(matcher.group(3));
-
-            }
-            professor.setEmailed_date(stringBuffer.toString());
-            professorService.save(professor);
+            setEmailedDate(professor, time_regex, stringBuffer);
             stringBuffer = new StringBuilder();
         }
-        return "redirect:/professors/docs";
+        return "success/emailSent";
     }
 
     @GetMapping("/professor/downloadIp")
@@ -152,6 +138,11 @@ public class ProfessorController {
     private String getTimeString(Professor professor) {
         String time_regex = "([0-9[-]]+)(T)(.{5})";
         StringBuilder stringBuffer = new StringBuilder();
+        setEmailedDate(professor, time_regex, stringBuffer);
+        return "success/emailSent";
+    }
+
+    private void setEmailedDate(Professor professor, String time_regex, StringBuilder stringBuffer) {
         Pattern pattern = Pattern.compile(time_regex);
         Matcher matcher = pattern.matcher(java.time.LocalDateTime.now().toString());
         while (matcher.find()) {
@@ -159,7 +150,6 @@ public class ProfessorController {
         }
         professor.setEmailed_date(stringBuffer.toString());
         professorService.save(professor);
-        return "redirect:/professors/docs";
     }
 
 }

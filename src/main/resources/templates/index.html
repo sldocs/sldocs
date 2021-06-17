@@ -49,11 +49,12 @@
     </ul>
 </nav>
 <div sec:authorize="hasAnyAuthority('ADMIN')" align="center">
+    Файли для зчитування повинні бути названі латиницею
     <p>1. Зчитайте навантаження у базу даних</p>
 
     <form th:action="@{/uploadObs}" method="post" enctype="multipart/form-data">
         <div>
-            <label for="fileObs">Оберіть Обмяг навантаження</label>
+            <label for="fileObs">Оберіть Обсяг навантаження</label>
             <input type="file" id="fileObs" name="file">
         </div>
         <div>

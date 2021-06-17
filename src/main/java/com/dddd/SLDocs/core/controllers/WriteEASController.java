@@ -8,27 +8,19 @@ import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
 public class WriteEASController {
 
-    private final String comma_regex = ",";
-    private final String group_regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})(.[.].*|[і].*|.[і].*|[\\p{L}]*)?$";
+    private static final String comma_regex = ",";
+    private static final String group_regex = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})(.[.].*|[і].*|.[і].*|[\\p{L}]*)?$";
+    private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     private final EAS_VMServiceImpl eas_vmService;
     private final FacultyServiceImpl facultyService;
@@ -42,20 +34,20 @@ public class WriteEASController {
     public String createExcel() {
         long m = System.currentTimeMillis();
         try {
-            FileInputStream inputStream = new FileInputStream("EdAsStExample.xlsx");
+            InputStream in = getClass().getResourceAsStream("/BOOT-INF/classes/EdAsStExample.xlsx");
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
-            XSSFWorkbook workbook = workbookFactory.create(inputStream);
+            XSSFWorkbook workbook = workbookFactory.create(in);
 
             XSSFFont defaultFont = workbook.createFont();
             defaultFont.setFontHeightInPoints((short) 12);
-            defaultFont.setFontName("Times New Roman");
+            defaultFont.setFontName(TIMES_NEW_ROMAN);
             defaultFont.setColor(IndexedColors.BLACK.getIndex());
             defaultFont.setBold(false);
             defaultFont.setItalic(false);
 
             XSSFFont font = workbook.createFont();
             font.setFontHeightInPoints((short) 12);
-            font.setFontName("Times New Roman");
+            font.setFontName(TIMES_NEW_ROMAN);
             font.setColor(IndexedColors.BLACK.getIndex());
             font.setBold(false);
             font.setItalic(false);
@@ -129,7 +121,7 @@ public class WriteEASController {
 
 
 
-            inputStream.close();
+            in.close();
             File someFile = new File("Відомість_учбових_доручень.xlsx");
             FileOutputStream outputStream = new FileOutputStream(someFile);
             workbook.write(outputStream);
@@ -228,11 +220,11 @@ public class WriteEASController {
 
         row = sheet.createRow(rows + 1);
         Cell cell = row.createCell(1);
-        cell.setCellValue("\"_____\" ______________________ 2020 р.");
+        cell.setCellValue("\"_____\" ______________________ 20__ р.");
         CellStyle style2 = workbook.createCellStyle();
         XSSFFont fontCustom = workbook.createFont();
         fontCustom.setFontHeightInPoints((short) 12);
-        fontCustom.setFontName("Times New Roman");
+        fontCustom.setFontName(TIMES_NEW_ROMAN);
         fontCustom.setColor(IndexedColors.BLACK.getIndex());
         fontCustom.setItalic(true);
         style2.setFont(fontCustom);
@@ -242,7 +234,7 @@ public class WriteEASController {
         style2 = workbook.createCellStyle();
         fontCustom = workbook.createFont();
         fontCustom.setFontHeightInPoints((short) 12);
-        fontCustom.setFontName("Times New Roman");
+        fontCustom.setFontName(TIMES_NEW_ROMAN);
         fontCustom.setColor(IndexedColors.BLACK.getIndex());
         fontCustom.setItalic(true);
         fontCustom.setBold(true);

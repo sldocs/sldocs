@@ -6,6 +6,7 @@ import com.dddd.SLDocs.core.entities.views.PSL_VM;
 import com.dddd.SLDocs.core.servImpls.FacultyServiceImpl;
 import com.dddd.SLDocs.core.servImpls.PSL_VMServiceImpl;
 import com.dddd.SLDocs.core.servImpls.ProfessorServiceImpl;
+import com.dddd.SLDocs.core.utils.cyrToLatin.UkrainianToLatin;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -32,7 +33,8 @@ public class WritePSLController {
     private final PSL_VMServiceImpl pls_vmService;
     private final ProfessorServiceImpl professorService;
     private final FacultyServiceImpl facultyService;
-    private final String pslFileName = "Навантаження_по_викладачах_20_21.xlsx";
+    private static final String pslFileName = "personal_study_load.xlsx";
+    private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     public WritePSLController(PSL_VMServiceImpl pls_vmService, ProfessorServiceImpl professorService,
                               FacultyServiceImpl facultyService) {
@@ -60,31 +62,31 @@ public class WritePSLController {
 
         long m = System.currentTimeMillis();
         try {
-            FileInputStream inputStream = new FileInputStream("PSLExample.xlsx");
+            InputStream inputStream = getClass().getResourceAsStream("/BOOT-INF/classes/PSLExample.xlsx");
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
             XSSFWorkbook workbook = workbookFactory.create(inputStream);
 
             XSSFFont defaultFont = workbook.createFont();
             defaultFont.setFontHeightInPoints((short) 12);
-            defaultFont.setFontName("Times New Roman");
+            defaultFont.setFontName(TIMES_NEW_ROMAN);
             defaultFont.setBold(false);
             defaultFont.setItalic(false);
 
             XSSFFont font10 = workbook.createFont();
             font10.setFontHeightInPoints((short) 10);
-            font10.setFontName("Times New Roman");
+            font10.setFontName(TIMES_NEW_ROMAN);
             font10.setBold(false);
             font10.setItalic(false);
 
             XSSFFont font14 = workbook.createFont();
             font14.setFontHeightInPoints((short) 14);
-            font14.setFontName("Times New Roman");
+            font14.setFontName(TIMES_NEW_ROMAN);
             font14.setBold(false);
             font14.setItalic(false);
 
             XSSFFont font14Bold = workbook.createFont();
             font14Bold.setFontHeightInPoints((short) 14);
-            font14Bold.setFontName("Times New Roman");
+            font14Bold.setFontName(TIMES_NEW_ROMAN);
             font14Bold.setBold(true);
             font14Bold.setItalic(false);
 
@@ -223,10 +225,9 @@ public class WritePSLController {
                                 row.setRowStyle(rowAutoHeightStyle);
                             }
                         }
-                        rownum = writeLine(style, rownum, sheet);
                         String[] ends1 = {"КЕРІВНИЦТВО"};
                         rownum = writeKerivnictvo(style, professor, style14Bold, rownum, sheet, true, ends1);
-                        String[] ends2 = {"Аспіранти", "Докторанти", "Магістри", "Курсові", "Курсові 5 курс"};
+                        String[] ends2 = {"Аспіранти, докторанти", "Магістри професійні", "Бакалаври", "Курсові 5 курс"};
                         rownum = writeKerivnictvo(style, professor, style14RightAl, rownum, sheet, true, ends2);
 
 
@@ -288,8 +289,7 @@ public class WritePSLController {
                                 row.setRowStyle(rowAutoHeightStyle);
                             }
                         }
-                        rownum = writeLine(style, rownum, sheet);
-
+                        ends2 = new String[]{"Аспіранти, докторанти", "Магістри наукові", "Бакалаври", "Курсові 5 курс"};
                         rownum = writeKerivnictvo(style, professor, style14Bold, rownum, sheet, false, ends1);
                         rownum = writeKerivnictvo(style, professor, style14RightAl, rownum, sheet, false, ends2);
 
@@ -396,15 +396,15 @@ public class WritePSLController {
 
     private int getByStavka(String stavka) {
         switch (stavka) {
-            case "0,25":
+            case "0.25":
                 return 6;
-            case "0,5":
+            case "0.5":
                 return 5;
-            case "1":
+            case "1.0":
                 return 4;
-            case "1,25":
+            case "1.25":
                 return 3;
-            case "1,5":
+            case "1.5":
                 return 2;
         }
         return 2;
@@ -414,7 +414,7 @@ public class WritePSLController {
         List<Professor> professors = professorService.ListAll();
         for (Professor professor : professors) {
             File originalWb = new File(pslFileName);
-            File clonedWb = new File(professor.getName() + " НВ.xlsx");
+            File clonedWb = new File(UkrainianToLatin.generateLat(professor.getName()) + " personal_study_load.xlsx");
             Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
             FileInputStream iS = new FileInputStream(clonedWb);
             XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
@@ -434,6 +434,96 @@ public class WritePSLController {
             outputStream.close();
             professor.setPsl_filename(clonedWb.getName());
             professorService.save(professor);
+        }
+    }
+
+    private int writeKerivnictvo(CellStyle style, Professor professor, CellStyle style14Bold, int rownum, XSSFSheet sheet, boolean autumn, String[] ends1) {
+        XSSFRow row;
+        XSSFCell cell;
+        for (String end : ends1) {
+            row = sheet.createRow(rownum++);
+            cell = row.createCell(0);
+            cell.setCellValue(end);
+            cell.setCellStyle(style14Bold);
+            for (int l = 1; l < 19; l++) {
+                switch (end.trim()) {
+                    case ("Аспіранти, докторанти"):
+                        if (l == 15) {
+                            cell = row.createCell(l);
+                            cell.setCellFormula("C" + (rownum - 1) + "*25");
+                            cell.setCellStyle(style);
+                        }
+
+                        if (l == 2) {
+                            if (professor.getAsp_num() != null && !professor.getAsp_num().equals("")) {
+                                cell = row.createCell(l);
+                                cell.setCellValue(Double.parseDouble(professor.getAsp_num()));
+                                cell.setCellStyle(style);
+                            }
+                        }
+
+                        break;
+                    case ("Магістри професійні"):
+                    case ("Магістри наукові"):
+                        if (l == 12) {
+                            cell = row.createCell(l);
+                            cell.setCellFormula("C" + (rownum - 1) + "*27");
+                            cell.setCellStyle(style);
+                        }
+                        break;
+                    case ("Бакалаври"):
+                        if(autumn){
+                            if (l == 9) {
+                                cell = row.createCell(l);
+                                cell.setCellFormula("C" + (rownum - 1) + "*3");
+                                cell.setCellStyle(style);
+                            }
+                        }else{
+                            if (l == 12) {
+                                cell = row.createCell(l);
+                                cell.setCellFormula("C" + (rownum - 1) + "*3");
+                                cell.setCellStyle(style);
+                            }
+                        }
+                    case ("Курсові 5 курс"):
+                        if (l == 9) {
+                            cell = row.createCell(l);
+                            cell.setCellFormula("C" + (rownum - 1) + "*3");
+                            cell.setCellStyle(style);
+                        }
+                        break;
+                    default:
+                        cell = row.createCell(l);
+                        cell.setCellValue("");
+                        cell.setCellStyle(style);
+                }
+            }
+            cell = row.createCell(19);
+            cell.setCellFormula("SUM(E" + (rownum) + ":S" + (rownum) + ")");
+            cell.setCellStyle(style);
+
+        }
+        return rownum;
+    }
+
+    private void writeAspHours(CellStyle style, Professor professor, boolean autumn, XSSFRow row, int l) {
+        XSSFCell cell;
+        if (autumn) {
+            cell = row.createCell(l);
+            if (professor.getAutumn_asp() != null && !professor.getAutumn_asp().equals("")) {
+                cell.setCellValue(Double.parseDouble(professor.getAutumn_asp()));
+            } else {
+                cell.setCellValue(professor.getAutumn_asp());
+            }
+            cell.setCellStyle(style);
+        } else {
+            cell = row.createCell(l);
+            if (professor.getSpring_asp() != null && !professor.getSpring_asp().equals("")) {
+                cell.setCellValue(Double.parseDouble(professor.getSpring_asp()));
+            } else {
+                cell.setCellValue(professor.getSpring_asp());
+            }
+            cell.setCellStyle(style);
         }
     }
 
@@ -567,49 +657,5 @@ public class WritePSLController {
         return cell;
     }
 
-    private int writeKerivnictvo(CellStyle style, Professor professor, CellStyle style14Bold, int rownum, XSSFSheet sheet, boolean autumn, String[] ends1) {
-        XSSFRow row;
-        XSSFCell cell;
-        for (String end : ends1) {
-            row = sheet.createRow(rownum++);
-            cell = row.createCell(0);
-            cell.setCellValue(end);
-            cell.setCellStyle(style14Bold);
-            for (int l = 1; l < 19; l++) {
-                if (l == 15 && end.trim().equals("Аспіранти")) {
-                    writeAspHours(style, professor, autumn, row, l);
-                } else {
-                    cell = row.createCell(l);
-                    cell.setCellValue("");
-                    cell.setCellStyle(style);
-                }
-            }
-            cell = row.createCell(19);
-            cell.setCellFormula("SUM(E" + (rownum) + ":S" + (rownum) + ")");
-            cell.setCellStyle(style);
 
-        }
-        return rownum;
-    }
-
-    private void writeAspHours(CellStyle style, Professor professor, boolean autumn, XSSFRow row, int l) {
-        XSSFCell cell;
-        if (autumn) {
-            cell = row.createCell(l);
-            if(professor.getAutumn_asp()!=null&&!professor.getAutumn_asp().equals("")){
-                cell.setCellValue(Double.parseDouble(professor.getAutumn_asp()));
-            }else{
-                cell.setCellValue(professor.getAutumn_asp());
-            }
-            cell.setCellStyle(style);
-        } else {
-            cell = row.createCell(l);
-            if(professor.getSpring_asp()!=null&&!professor.getSpring_asp().equals("")){
-                cell.setCellValue(Double.parseDouble(professor.getSpring_asp()));
-            }else{
-                cell.setCellValue(professor.getSpring_asp());
-            }
-            cell.setCellStyle(style);
-        }
-    }
 }

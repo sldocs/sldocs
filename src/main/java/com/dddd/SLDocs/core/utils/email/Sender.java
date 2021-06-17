@@ -49,7 +49,7 @@ public class Sender {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject("Витяги з розподілу навантаження");
+            message.setSubject("Study load documents");
             message.setText("");
             message.setContent(multipart);
             Transport.send(message);

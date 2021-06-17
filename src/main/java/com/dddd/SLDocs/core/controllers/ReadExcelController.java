@@ -76,7 +76,7 @@ public class ReadExcelController {
 
         String[] parts = path.split("\\.");
         if (!parts[1].equals("xlsx")) {
-            return "errors/bad_file";
+            return "error/bad_file";
         }
 
         FileInputStream fis = new FileInputStream(path);
@@ -85,10 +85,10 @@ public class ReadExcelController {
             String space_regex = "\\s+";
             String[] res = workbook.getSheetAt(0).getRow(3).getCell(3).toString().split(space_regex);
             if (!res[0].equals("ПЛАН")) {
-                return "errors/bad_file";
+                return "error/bad_file";
             }
         } catch (Exception ex) {
-            return "errors/bad_file";
+            return "error/bad_file";
         }
         long m = System.currentTimeMillis();
         for (int i = 0; i < 2; i++) {
@@ -98,14 +98,14 @@ public class ReadExcelController {
         fis.close();
         System.out.println(System.currentTimeMillis() - m);
 
-        return "redirect:/";
+        return "success/obsyagToDB";
     }
 
     @RequestMapping("/readPPS")
     private String readPPS(@RequestParam("path") String path) throws IOException {
         String[] parts = path.split("\\.");
         if (!parts[1].equals("xlsx")) {
-            return "errors/bad_file";
+            return "error/bad_file";
         }
 
         FileInputStream fis = new FileInputStream(path);
@@ -116,7 +116,7 @@ public class ReadExcelController {
         fis.close();
         System.out.println(System.currentTimeMillis() - m);
 
-        return "redirect:/";
+        return "success/ppsToDB";
     }
 
 
@@ -213,12 +213,6 @@ public class ReadExcelController {
                 studyLoad.getCurriculum().setYear(dep_fac_sem.get(3).toString());
                 studyLoad.getCurriculum().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
 
-
-                if (arrayList.get(35).toString().equals("курсові")) {
-                    System.out.println("Викладач: " + arrayList.get(36).toString());
-                    System.out.println("empty: " + !(arrayList.get(36).toString().equals("") || arrayList.get(36).toString().isEmpty()));
-                    System.out.println("kursov: " + (arrayList.get(36).toString().equals("курсові")));
-                }
                 if (professorService.findByName(arrayList.get(36).toString().trim()) == null) {
                     if (!(arrayList.get(36).toString().equals("") || arrayList.get(36).toString().equals("курсові"))) {
                         studyLoad.getProfessor().setName(arrayList.get(36).toString().trim());
@@ -278,14 +272,12 @@ public class ReadExcelController {
             String[] res = arrayList.get(0).toString().split(space_regex);
             String name = (res[1]+" " + res[2]).trim();
             Professor professor = professorService.findByName(name);
-            if (professor == null) {
-                professor = new Professor();
-                professor.setName(name);
+            if (!(professor == null)) {
+                professor.setAsp_num(arrayList.get(1).toString());
+                professor.setAutumn_asp(arrayList.get(2).toString());
+                professor.setSpring_asp(arrayList.get(3).toString());
+                professorService.save(professor);
             }
-            professor.setAsp_num(arrayList.get(1).toString());
-            professor.setAutumn_asp(arrayList.get(2).toString());
-            professor.setSpring_asp(arrayList.get(3).toString());
-            professorService.save(professor);
             arrayList = new ArrayList<>();
         }
     }

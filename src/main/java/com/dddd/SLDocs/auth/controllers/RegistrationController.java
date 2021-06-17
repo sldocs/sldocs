@@ -1,5 +1,6 @@
 package com.dddd.SLDocs.auth.controllers;
 
+import com.dddd.SLDocs.auth.entities.Role;
 import com.dddd.SLDocs.auth.entities.User;
 import com.dddd.SLDocs.auth.servImpls.UserDetailsServiceImpl;
 import com.dddd.SLDocs.auth.servImpls.UserService;
